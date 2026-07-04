@@ -1,0 +1,169 @@
+Dieses Projekt hat sich durch deine Erweiterungen von einem reinen Software-Tool zu einer echten, industrietauglichen Broadcast-Plattform entwickelt. Das ist der exakt richtige Ansatz für moderne Produktionsumgebungen.
+
+Um sicherzustellen, dass sowohl menschliche Senior Developer als auch KI-Entwicklungsassistenten (wie GitHub Copilot, Cursor oder AutoGPT) dieses Dokument fehlerfrei verarbeiten können, ist das folgende Lastenheft streng modular aufgebaut. Es nutzt klare Ontologien, logische Datenflüsse und explizite Systemgrenzen.
+
+Hier ist das finale, maschienen- und menschenlesbare Lastenheft (Requirements Specification) unter strikter Einhaltung des Halluzinationsverbots und der Branchenstandards (Stand 2026).
+
+---
+
+# 📄 SYSTEM REQUIREMENTS SPECIFICATION (SRS)
+
+**PROJEKT:** Enterprise Teleprompter & Content Routing OS (Tier-1 Broadcast Standard)
+**VERSION:** 1.0 (Machine-Readable & Human-Actionable)
+**ARCHITEKTUR-PARADIGMA:** Headless Node.js Server + WebSocket + WebGL/PWA Thin Clients
+
+---
+
+## 1. EXECUTIVE BRIEFING & SYSTEMKONTEXT
+
+**Für menschliche Entwickler:** Dieses System ist kein Text-Editor, sondern ein hochverfügbarer IP-Knotenpunkt. Texte werden extern (z. B. in ClickUp) verfasst, automatisiert über n8n in das System injiziert (Ingest), durch eine LLM-Instanz strukturell für das Prompter-Display optimiert (Sanitizing) und in Echtzeit an die zugeordneten Endgeräte (Studios/Moderatoren) verteilt. Latenzfreiheit und Ausfallsicherheit haben absolute Priorität.
+
+**Für KI-Agenten (Context Contextualization):**
+
+* `TARGET_ENV`: Node.js (Backend), React/Vue (Frontend PWA).
+* `CRITICAL_CONSTRAINT_1`: 0% Frame-Drops im WebGL-Render-Loop des Clients erlaubt.
+* `CRITICAL_CONSTRAINT_2`: Hitless Redundancy (Zero-Intervention Failover).
+* `INGEST_METHOD`: RESTful API via Webhooks (keine manuelle Dateneingabe im Core).
+* `AUDIO_PROCESSING`: Hardware-agnostischer Ingest via Web Audio API (Frontend) / Native OS Audio (Backend).
+
+---
+
+## 2. DATENMODELL & ORCHESTRIERUNG (DATABASE SCHEMA)
+
+Die relationale Datenbank (z. B. PostgreSQL via Prisma ORM) muss mandantenfähig (Multi-Tenant) aufgebaut sein.
+
+### 2.1 Hierarchische Strukturen
+
+1. **Tenants (Workspaces):** Produktionsfirma oder Sender.
+2. **Profiles (Ziel-Routings):**
+* `Studio_Profile`: Definiert Hardware-Ausgänge (z. B. NDI Channel 1, ST 2110 Multicast-IP).
+* `Presenter_Profile`: Speichert Lese-Präferenzen (Schriftgröße, Farben, ASR-Toleranz).
+* `Show_Profile`: Definiert UI-Overlays (Countdowns, spezifische Dark-Mode Farbpaletten für "News" vs. "Podcast").
+
+
+3. **Slots (Vorlagenfächer):** Logische Platzhalter innerhalb eines `Show_Profile` (z. B. `Slot_01_Intro`, `Slot_02_Interview`).
+
+### 2.2 Datenfluss (State Machine Pipeline)
+
+`DRAFT` (ClickUp) -> `WEBHOOK` (n8n) -> `INGEST_API` (Teleprompter) -> `AI_SANITIZER` (LLM Tagging) -> `READY_STATE` -> `WEBSOCKET_PUSH` (Studio Client) -> `ACTIVE_RENDER_LOOP`
+
+---
+
+## 3. AUTOMATISIERTE INGESTION & KI-PIPELINE
+
+Das System empfängt Daten passiv von Drittsystemen.
+
+* **SYS-REQ-3.1 (n8n & ClickUp API):** Das Backend öffnet dedizierte REST-Endpunkte (`/api/v1/ingest`). Eingehende JSON-Payloads müssen via Zod streng validiert werden (Erforderlich: `targetProfileId`, `slotKey`, `rawText`).
+* **SYS-REQ-3.2 (AI Sanitizing):** Der eingehende Text durchläuft obligatorisch einen LLM-Prozess (OpenAI/Anthropic oder lokal Whisper/Llama-3).
+* *Aufgabe der KI:* Text bleibt inhaltlich unangetastet. Regieanweisungen, SOTs (Sound-on-Tape) oder Kamerawechsel werden in maschinenlesbare Tags umgewandelt (z. B. `<cloak>KAMERA 2</cloak>`).
+
+
+* **SYS-REQ-3.3 (Hot-Updation):** Wird ein Skript im Status `ACTIVE_RENDER_LOOP` überschrieben (Breaking News), muss das Backend die Text-Deltas via WebSocket an das Frontend pushen. Das Rendering darf dabei nicht stottern.
+
+
+
+---
+
+## 4. FUNKTIONALE ANFORDERUNGEN NACH LEISTUNGSKLASSEN (TIERS)
+
+### 4.1 BASIC TIER (Content Creator / Podcast)
+
+* 
+**Architektur:** Progressive Web App (PWA) für Windows, macOS, iOS, Android.
+
+
+* 
+**Signal-Transport:** NDI (Network Device Interface) Ausgabe direkt aus dem System.
+
+
+* 
+**Steuerung:** Fernsteuerung via lokaler Smartphone-App (WebSocket) und Bluetooth-Pedalen.
+
+
+* 
+**ASR-Voice-Tracking:** Cloud-basierte Spracherkennung (z. B. Google Speech-to-Text), die das Skript wortgenau scrollen lässt.
+
+
+
+### 4.2 PROFESSIONAL TIER (Regional Broadcast)
+
+* 
+**Legacy Integration:** Nativer Support des MOS-Protokolls v2.8.5 (Profile 0 und 2) für Newsroom-Systeme via TCP/IP zu WebSocket-Bridge.
+
+
+* 
+**Geräte-Management:** Auto-Discovery und Steuerung von PoE-basierten IP-Controllern und Fußpedalen im lokalen Netzwerk.
+
+
+* **Sprachen:** Volle Unicode-Unterstützung inkl. RTL (Right-to-Left) für Arabisch/Hebräisch.
+
+
+* 
+**Redaktionelle Tools:** "Cloak Text" verbirgt nicht-bestätigte Textpassagen vor dem Moderator.
+
+
+
+### 4.3 EXPERT TIER (Enterprise & Tier-1 Broadcast)
+
+* **Missionskritische Redundanz:** A/B-Mirroring-Architektur. Ein lokaler Primär- und Backup-Server synchronisieren sich via IP. Fällt ein System aus, übernimmt das Backup nahtlos ("Hitless Protection").
+
+
+* 
+**High-End Signal-Transport:** Volle Kompatibilität mit dem unkomprimierten SMPTE ST 2110 Standard (inklusive Multicast und PTP-Synchronisation).
+
+
+* 
+**Offline KI & ASR:** Die Spracherkennung läuft komplett On-Premise (lokale Server-Hardware) für absolute Null-Latenz und Datensicherheit.
+
+
+* 
+**Barrierefreiheit:** Nativer Export der Scroll-Daten als CEA-708 kompatible Untertitel (Closed Captions) mit dynamischer Positionierung für Hardware-Inserter.
+
+
+
+---
+
+## 5. SUB-SYSTEME: AUDIO-ROUTING & ASR (SPRACKERKENNUNG)
+
+Die Spracherkennung entscheidet über den Erfolg des Systems. Sie muss hardware-nahe Audioquellen auswerten.
+
+* **SYS-REQ-5.1 (Hardware-Audio-Routing):** Die Applikation (PWA) muss via Web Audio API (`navigator.mediaDevices`) in der Lage sein, angeschlossene USB-Mischpulte, Dante-Virtual-Soundcards oder externe Mikrofone direkt auszuwählen.
+* **SYS-REQ-5.2 (Channel-Splitting):** Das System muss Mehrkanal-Audioeingänge trennen können (Mix-Minus), um ausschließlich die isolierte Sprecher-Spur an die ASR-Engine zu leiten.
+* **SYS-REQ-5.3 (ASR-Parameter-Tuning):** Die Regie (Director Client) verfügt über anpassbare Slider für:
+* *Sensibilität/Damping:* Wie "hart" das Skript dem Wort folgt (exponentielle Glättung).
+* 
+*Ad-Lib-Tolerance:* Zeitfenster für Sprecher-Improvisation, bevor das Scrollen pausiert.
+
+
+
+
+* **SYS-REQ-5.4 (Override-Konvention):** Die "Last-device-in-control convention" gilt. Sobald ein Mensch den Hardware-Controller berührt, wird die KI-Steuerung verzögerungsfrei überschrieben.
+
+
+
+---
+
+## 6. FRONTEND: RENDER-ENGINE & UX (VISUALISIERUNG)
+
+Normale Web-Technologien (HTML/CSS) reichen für das Prompter-Display nicht aus.
+
+* **SYS-REQ-6.1 (WebGL Rendering):** Die Textausgabe auf dem Endgerät für den Sprecher MUSS zwingend in WebGL (z. B. via PixiJS) erfolgen. CSS-Transformationen (`translateY`) sind aufgrund von Reflow-Mikrorucklern untersagt.
+
+
+* 
+**SYS-REQ-6.2 (Image Flip):** Horizontales/Vertikales Mirroring wird auf GPU-Ebene (Skalierung -1) ressourcenschonend durchgeführt.
+
+
+* **SYS-REQ-6.3 (Spoken Text Highlighting):** Der von der KI erkannte, gesprochene Text muss farblich markierbar sein.
+* *Architektur-Vorgabe:* Das Highlighting erfolgt über Text-Tinting innerhalb der WebGL-Engine. DOM-Manipulationen (`<span>` Injektionen in Echtzeit) sind strengstens verboten, da sie den Render-Loop zerstören.
+* *Anpassbarkeit:* Farben und Hervorhebungs-Modi (Wort-für-Wort vs. Block) sind über die `Presenter_Profiles` definierbar.
+
+
+
+---
+
+## 7. ENTWICKLUNGS- & DEPLOYMENT-VORGABEN
+
+* **Monorepo:** Verwendung von Turborepo oder Nx zur strikten Trennung von `backend-server`, `pwa-director`, `pwa-prompter`, und `shared-types`.
+* **Sprache:** TypeScript strict mode.
+* **Sicherheit:** HTTPS für alle Verbindungen. WebSockets müssen TLS-verschlüsselt (WSS) und über strikte CORS-Richtlinien gesichert sein.
