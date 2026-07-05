@@ -7,7 +7,7 @@ Autor: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
 
 Das Projekt ist auf dem neuen Repository konsolidiert, baubar und testbar.
 Frontend und Backend sind im Voll-Gate-Lauf gruen (Build + Tests).
-Damit ist der MVP fuer den echten LAN-Langzeittest betriebsbereit.
+Damit ist der MVP fuer den LAN-Einsatz brauchbar, aber die Testphase ist noch nicht abgeschlossen.
 
 ## 2. Technischer Ist-Stand (heute verifiziert)
 
@@ -97,3 +97,9 @@ Damit ist der MVP fuer den echten LAN-Langzeittest betriebsbereit.
 - Fuer die oeffentliche MVP-Variante ist ein eigener VPS die passende Loesung.
 - Hostinger VPS ist der bevorzugte Zielpfad, weil dort ein Node/Express-Backend mit WebSockets dauerhaft betrieben werden kann.
 - WordPress oder klassisches Shared Hosting sind fuer diesen Stack nicht geeignet.
+
+## 10. Offen trotz gruenem Gate
+
+- Der Kernworkflow ist erfolgreich vorgefuehrt, aber die Testreihe ist noch nicht abgeschlossen.
+- ASR / Voice Tracking erzeugt weiter Laufzeitfehler und braucht eine gesonderte Stabilisierung.
+- Deshalb ist der aktuelle Stand: funktional weit fortgeschritten, aber noch nicht abschliessend freigegeben.

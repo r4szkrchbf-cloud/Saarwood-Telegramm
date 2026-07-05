@@ -6,8 +6,9 @@ _Stand: 2026-07-05 02:45 UTC (Code- und Doku-Abgleich nach P0-Testharness-Fix)_
 
 Das Projekt ist als Monorepo vollstaendig lauffaehig wiederhergestellt (Frontend, Backend, Electron, Docs).
 Build und Tests sind fuer Frontend und Backend gruen.
-Der MVP ist damit betriebsbereit fuer den echten LAN-Langzeittest mit echten Nutzern.
-Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
+Der MVP ist fuer den LAN-Einsatz brauchbar, aber wir befinden uns weiterhin in der aktiven Testphase.
+Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfuehrung von A bis Z ebenfalls.
+ASR / Voice Tracking bleibt offen und verhindert noch den Abschluss der Testphase.
 
 ## 2. Aktueller technischer Ist-Stand
 
@@ -34,12 +35,13 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
 ## 4. MVP-Readiness fuer realen Langzeittest
 
 ### Technisch ausreichend fuer Start
- Die App ist damit betriebsbereit fuer den echten LAN-Langzeittest mit echten Nutzern.
- Wir befinden uns weiterhin in der Testphase; der naechste Schritt ist die oeffentliche MVP-Variante auf einem VPS.
- Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
+Die App ist fuer den echten LAN-Langzeittest geeignet, aber die Testphase ist noch nicht abgeschlossen.
+Wir befinden uns weiterhin in der Testphase; der naechste Schritt ist die oeffentliche MVP-Variante auf einem VPS.
+Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfuehrung von A bis Z ebenfalls.
 1. Frontend-Testharness stabilisieren (erledigt)
 2. Smoke-Test-Skript fuer LAN-Lauf dokumentieren (Start, Browser-Checks, WS-Verbindung)
-3. Akzeptanzkriterien fuer Langzeittest festziehen (Dauer, Nutzeranzahl, Erfolgsmetriken, Abbruchkriterien)
+3. ASR / Voice Tracking stabilisieren und erneut pruefen
+4. Akzeptanzkriterien fuer Langzeittest festziehen (Dauer, Nutzeranzahl, Erfolgsmetriken, Abbruchkriterien)
 
 ## 5. Relevante Risiken
 
@@ -47,6 +49,11 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
 1. Hostinger VPS als Public-Hosting-Variante festlegen
 2. Frontend/Backend-Deployment fuer oeffentlichen Zugriff vorbereiten
 3. WebSocket-URL und Betriebsdoku fuer externe Nutzer anpassen
+
+### Noch offene Testthemen
+1. ASR / Voice Tracking stabilisieren
+2. `recognition has already started`-Fehler untersuchen
+3. Nach Behebung erneut einen echten Langzeittest mit Nutzern laufen lassen
 
 1. Bundle-Groesse
 - Risiko: langsameres Initial-Load auf schwachen Clients.

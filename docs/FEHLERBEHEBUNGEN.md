@@ -238,6 +238,32 @@ Kontext: Erster Live-Test direkt im Browser, inklusive sichtbarer Bedienung und 
 
 ---
 
+## Eintrag 2026-07-05 01:03 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Live-Vorfuehrung des Prompters von A bis Z im Browser.
+
+### Durchgefuehrt
+- App im Browser gezeigt und von der lokalen Entwicklungsinstanz aus bedient.
+- Settings-Panel ausgeblendet, um die Bedienung klar zu halten.
+- Zwischen Editor, Split und Prompter gewechselt.
+- Titel, Segmentanlage und Text-Eingabe demonstriert.
+- Transport und Anzeige im Prompter live getestet (Play, Speed, Rotation, Mirror, Stop).
+
+### Ergebnis
+- Kernworkflow funktioniert sichtbar und nachvollziehbar.
+- Testphase ist weiterhin offen, da ASR/Voice Tracking noch Fehler erzeugt.
+
+### Offene Punkte
+- ASR meldet weiterhin `network`-Warnungen.
+- SpeechRecognition erzeugt wiederholt `recognition has already started`.
+- Sprachsteuerung muss separat stabilisiert werden, bevor der Testzyklus abgeschlossen ist.
+
+### Lessons Learned
+- Die App ist fuer die manuelle Vorfuehrung brauchbar.
+- Sprachfeatures sind noch nicht betriebssicher und bleiben Testthema.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)

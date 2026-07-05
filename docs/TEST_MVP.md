@@ -291,3 +291,44 @@ Ersten realen Bedien-Test direkt in der laufenden Browser-Instanz durchfuehren u
 | 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
 | 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
 | 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+
+---
+
+## Runde 5 — 2026-07-05 01:03 UTC (Live-Vorfuehrung A bis Z)
+
+### Ziel
+
+Den Prompter von der Bedienung her einmal komplett live vorfuehren, um den realen Workflow sicht- und nachvollziehbar zu pruefen.
+
+### Durchgefuehrte Schritte
+
+1. App im Browser gestartet und Zustand geprueft.
+2. Settings-Panel geschlossen, damit die Demo frei bedienbar bleibt.
+3. Zwischen `Editor`, `Split` und `Prompter` gewechselt.
+4. Script-Titel auf `A bis Z Live Demo` gesetzt.
+5. Neues Segment angelegt und Text eingefuegt.
+6. Im Prompter `Play`, Speed +5, Rotation +90° und H-Mirror getestet.
+7. Danach `Stop and reset` ausgefuehrt.
+
+### Beobachtungen
+
+- Der Kern-Workflow funktioniert sichtbar und interaktiv.
+- Editor-Inhalt erscheint im Prompter live.
+- Steuerung, Rotation und Spiegelung reagieren korrekt.
+- Voice Tracking / ASR erzeugt weiterhin Laufzeitwarnungen und Fehler (`network`, `recognition has already started`).
+
+### Bewertung Runde 5
+
+- Ergebnis: Teilweise erfolgreich, funktionaler Kernlauf ok.
+- Status: Vorfuehrung erfolgreich, aber Testphase noch nicht abgeschlossen.
+- Offene Punkte: ASR-Stabilitaet und Sprachsteuerung muessen weiter untersucht werden.
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
