@@ -37,13 +37,22 @@
 .btn--pause { background: #f39c12; color: #fff; border-color: #f39c12; }
 .btn--stop  { background: #2980b9; color: #fff; border-color: #2980b9; }
 .btn--restart { background: #8e44ad; color: #fff; border-color: #8e44ad; }
+.btn--voice-on { background: #c0392b; color: #fff; border-color: #c0392b; }
+.btn--voice-off { background: #7f8c8d; color: #fff; border-color: #7f8c8d; }
 
 .btn--play:hover  { background: #2ecc71; }
 .btn--pause:hover { background: #f1c40f; }
 .btn--stop:hover  { background: #3498db; }
 .btn--restart:hover { background: #9b59b6; }
+.btn--voice-on:hover { background: #e74c3c; }
+.btn--voice-off:hover { background: #95a5a6; }
 
 .transport-buttons {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.voice-quick-controls {
   display: flex;
   gap: 0.3rem;
 }

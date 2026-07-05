@@ -51,6 +51,17 @@
   box-shadow: 0 0 8px rgba(231, 76, 60, 0.9);
 }
 
+.prompter-voice-indicator {
+  position: absolute;
+  top: 0.7rem;
+  left: 1rem;
+  z-index: 22;
+  color: #ff3b30;
+  font-size: 1.25rem;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(255, 59, 48, 0.85);
+}
+
 /* ─── Scrollable Content ──────────────────────────────────────────────────── */
 
 .prompter-content {

@@ -18,8 +18,10 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  Space        → Play / Pause toggle
  *  +            → Speed +5 px/s
  *  -            → Speed −5 px/s
+ *  v / V        → Voice tracking ON
+ *  m / M        → Voice tracking OFF
  *  r / R        → Reset (stop + position = 0)
- *  m / M        → Mirror horizontal toggle
+ *  h / H        → Mirror horizontal toggle
  *  f / F        → Fullscreen toggle
  *  Escape       → Stop
  *  [            → Rotate −90°
@@ -31,6 +33,7 @@ export function useHotkeyManager(): void {
   const stop = usePrompterStore((s) => s.stop);
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
+  const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   useEffect(() => {
@@ -88,6 +91,19 @@ export function useHotkeyManager(): void {
       wsService.send('SET_DIRECTION', { direction: 'down' });
     });
 
+    hotkeyManager.register('v', 'Voice tracking ON', () => {
+      setSpeechEnabled(true);
+    });
+    hotkeyManager.register('V', 'Voice tracking ON', () => {
+      setSpeechEnabled(true);
+    });
+    hotkeyManager.register('m', 'Voice tracking OFF', () => {
+      setSpeechEnabled(false);
+    });
+    hotkeyManager.register('M', 'Voice tracking OFF', () => {
+      setSpeechEnabled(false);
+    });
+
     hotkeyManager.register('r', 'Reset (Stop)', () => {
       stop();
       wsService.send('STOP');
@@ -103,11 +119,11 @@ export function useHotkeyManager(): void {
     });
 
     // ── Mirror ─────────────────────────────────────────────────────────────
-    hotkeyManager.register('m', 'Mirror horizontal', () => {
+    hotkeyManager.register('h', 'Mirror horizontal', () => {
       const { display } = usePrompterStore.getState();
       setDisplay({ mirrorHorizontal: !display.mirrorHorizontal });
     });
-    hotkeyManager.register('M', 'Mirror horizontal', () => {
+    hotkeyManager.register('H', 'Mirror horizontal', () => {
       const { display } = usePrompterStore.getState();
       setDisplay({ mirrorHorizontal: !display.mirrorHorizontal });
     });
@@ -145,5 +161,5 @@ export function useHotkeyManager(): void {
     return () => {
       hotkeyManager.disable();
     };
-  }, [play, pause, stop, setSpeed, setDirection, setDisplay]);
+  }, [play, pause, stop, setSpeed, setDirection, setSpeechEnabled, setDisplay]);
 }

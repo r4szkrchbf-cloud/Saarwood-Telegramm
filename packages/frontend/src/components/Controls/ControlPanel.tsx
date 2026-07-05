@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
+import { speechService } from '../../services/SpeechRecognitionService';
 import { wsService } from '../../services/WebSocketService';
 import './ControlPanel.css';
 
@@ -37,6 +38,8 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
   const stop = usePrompterStore((s) => s.stop);
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
+  const speechEnabled = usePrompterStore((s) => s.speechEnabled);
+  const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
   const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
   useEffect(() => {
@@ -90,10 +93,14 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
   const handleRestart = useCallback(() => {
     usePrompterStore.getState().setPosition(0);
     wsService.send('SET_POSITION', { position: 0 });
-    play();
-    wsService.send('PLAY');
+    stop();
+    wsService.send('STOP');
+    setTimeout(() => {
+      play();
+      wsService.send('PLAY');
+    }, 80);
     notifyManualControl();
-  }, [play, notifyManualControl]);
+  }, [play, stop, notifyManualControl]);
 
   const handleSpeedNudge = useCallback(
     (delta: number) => {
@@ -164,6 +171,30 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
           >
             Prompter NeuStart
           </button>
+        )}
+
+        {viewMode !== 'prompter' && (
+          <div className="voice-quick-controls" role="group" aria-label="Voice tracking">
+            <button
+              type="button"
+              className={['btn', 'btn--voice-on', speechEnabled ? 'active' : ''].join(' ')}
+              onClick={() => setSpeechEnabled(true)}
+              aria-label="Voice tracking an"
+              title={speechService.isSupported ? 'Voice tracking an (Hotkey: V)' : 'Web Speech API wird in diesem Browser nicht unterstuetzt'}
+              disabled={!speechService.isSupported}
+            >
+              Voice ON
+            </button>
+            <button
+              type="button"
+              className={['btn', 'btn--voice-off', !speechEnabled ? 'active' : ''].join(' ')}
+              onClick={() => setSpeechEnabled(false)}
+              aria-label="Voice tracking aus"
+              title="Voice tracking aus (Hotkey: M)"
+            >
+              Voice OFF
+            </button>
+          </div>
         )}
 
         {isPlaying ? (

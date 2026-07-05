@@ -183,6 +183,16 @@ export function PrompterDisplay() {
             title={wsConnected ? 'Remote connected' : 'Remote disconnected'}
           />
 
+          {speechEnabled && (
+            <div
+              className="prompter-voice-indicator"
+              aria-label="Voice tracking aktiv"
+              title="Voice tracking aktiv"
+            >
+              🎤
+            </div>
+          )}
+
           {/* Cue marker overlay */}
           <div
             className="cue-marker"
