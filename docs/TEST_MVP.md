@@ -862,3 +862,58 @@ Neu gemeldete Punkte finalisieren: Vollflaechen-Hochkant bei 90 Grad, Reset-Butt
 | 14 | 2026-07-05 12:16:39 | Direction- und Slider-Test unter Play-Betrieb | n/a | GRUEN |
 | 15 | 2026-07-05 12:23:48 | Start/Stop-Regressionsfix + 90-Grad-Hochkantmodus | PASS | GRUEN |
 | 16 | 2026-07-05 12:30:37 | Vollflaeche Hochkant + Runtime-Stabilisierung | PASS | GRUEN |
+
+---
+
+## Runde 17 - 2026-07-05 12:40:24 UTC (Speed-Bedienung umgestellt + Dev-Session stabilisiert)
+
+### Ziel
+
+Gewuenschte Bedienlogik fuer Geschwindigkeit final umsetzen und das beobachtete Terminal-Springen technisch stabilisieren.
+
+### Durchgefuehrte Testpunkte
+
+1. Speed-Slider entfernt, neue Eingabe eingefuehrt:
+	- Slider ist entfernt.
+	- Speed wird jetzt ueber `+`/`-` Buttons und numerisches Eingabefeld gesteuert.
+	- Wertebereich bleibt 0..400 px/s.
+	- Ergebnis: PASS
+
+2. Hotkeys fuer Speed auf `+` / `-` gelegt:
+	- `+` erhoeht um 5
+	- `-` reduziert um 5
+	- (inkl. gaengiger Keyboard-Varianten)
+	- Ergebnis: PASS
+
+3. Dev-Terminal-Stabilisierung:
+	- Das vorherige Springen/Neustarten war nicht normal.
+	- Ursache: Watcher reagierte auf `node_modules`-Aenderungen plus parallele Altprozesse/Port-Konflikte.
+	- Fix: `tsx watch` schliesst `node_modules` aus und Ports wurden bereinigt; saubere Einzelinstanz laeuft.
+	- Ergebnis: PASS
+
+### Ergebnis Runde 17
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
+| 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+| 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
+| 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
+| 12 | 2026-07-05 12:14:54 | Rotation 180/270 plus Fit-Nachweis | n/a | GRUEN |
+| 13 | 2026-07-05 12:15:48 | Space-Hotkey in Normal-/Input-Fokus geprueft | n/a | GRUEN |
+| 14 | 2026-07-05 12:16:39 | Direction- und Slider-Test unter Play-Betrieb | n/a | GRUEN |
+| 15 | 2026-07-05 12:23:48 | Start/Stop-Regressionsfix + 90-Grad-Hochkantmodus | PASS | GRUEN |
+| 16 | 2026-07-05 12:30:37 | Vollflaeche Hochkant + Runtime-Stabilisierung | PASS | GRUEN |
+| 17 | 2026-07-05 12:40:24 | Speed-UI umgestellt und Dev-Watcher stabilisiert | PASS | GRUEN |
