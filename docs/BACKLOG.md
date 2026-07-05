@@ -199,6 +199,7 @@ Support-Zugang direkt in der App (Kontakt, Chat, Ticketformular), ohne Einfluss 
 - [ ] Kontakt-E-Mail und Chat-Link konfigurierbar via Backend-Env
 - [ ] Ticket-Erstellung via API-Endpunkt erfolgreich
 - [ ] Ticket wird serverseitig gespeichert und optional per Webhook weitergeleitet
+- [ ] Ticket-ID ist zentral fortlaufend und supportfaehig (z. B. `SWD-YYYY-XXXXXX`)
 - [ ] Output-Only-View (`?view=prompter&output=1`) bleibt frei von Support-UI
 
 ---

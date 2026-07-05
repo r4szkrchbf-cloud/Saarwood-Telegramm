@@ -351,6 +351,12 @@
   align-items: center;
 }
 
+.support-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
 .support-label {
   min-width: 100px;
   font-size: 0.85rem;

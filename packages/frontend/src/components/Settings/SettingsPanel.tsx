@@ -49,9 +49,11 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [calibrationRecommendation, setCalibrationRecommendation] = useState<number | null>(null);
   const [scriptIoInfo, setScriptIoInfo] = useState('');
   const [supportInfo, setSupportInfo] = useState({
-    contactEmail: 'support@saarwood.local',
     chatUrl: '' as string | null,
     chatLabel: 'Support Chat',
+    handbookUrl: '' as string | null,
+    testerGuideUrl: '' as string | null,
+    testerFormUrl: '' as string | null,
   });
   const [supportStatus, setSupportStatus] = useState('');
   const [supportSending, setSupportSending] = useState(false);
@@ -89,15 +91,19 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         const response = await fetch('/api/support/info');
         if (!response.ok) return;
         const payload = await response.json() as {
-          contactEmail?: string;
           chatUrl?: string | null;
           chatLabel?: string;
+          handbookUrl?: string | null;
+          testerGuideUrl?: string | null;
+          testerFormUrl?: string | null;
         };
         if (!active) return;
         setSupportInfo({
-          contactEmail: payload.contactEmail || 'support@saarwood.local',
           chatUrl: payload.chatUrl || null,
           chatLabel: payload.chatLabel || 'Support Chat',
+          handbookUrl: payload.handbookUrl || null,
+          testerGuideUrl: payload.testerGuideUrl || null,
+          testerFormUrl: payload.testerFormUrl || null,
         });
       } catch {
         // Keep defaults when support service info is unavailable.
@@ -385,8 +391,8 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         return;
       }
 
-      const payload = await response.json() as { id?: string };
-      setSupportStatus(`Ticket erstellt: ${payload.id ?? 'ok'}`);
+      const payload = await response.json() as { ticketId?: string };
+      setSupportStatus(`Ticket erstellt: ${payload.ticketId ?? 'ok'}`);
       setTicketSubject('');
       setTicketMessage('');
     } catch {
@@ -794,13 +800,6 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         <legend>Support</legend>
 
         <div className="settings-row support-row">
-          <span className="support-label">Kontakt</span>
-          <a href={`mailto:${supportInfo.contactEmail}`} className="support-link">
-            {supportInfo.contactEmail}
-          </a>
-        </div>
-
-        <div className="settings-row support-row">
           <span className="support-label">Direkt-Chat</span>
           {supportInfo.chatUrl ? (
             <button
@@ -813,6 +812,39 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           ) : (
             <span className="settings-value support-muted">Chat aktuell nicht konfiguriert</span>
           )}
+        </div>
+
+        <div className="settings-row support-row">
+          <span className="support-label">Ressourcen</span>
+          <div className="support-actions">
+            {supportInfo.handbookUrl && (
+              <button
+                type="button"
+                className="btn-small"
+                onClick={() => window.open(supportInfo.handbookUrl as string, '_blank', 'noopener,noreferrer')}
+              >
+                Handbuch
+              </button>
+            )}
+            {supportInfo.testerGuideUrl && (
+              <button
+                type="button"
+                className="btn-small"
+                onClick={() => window.open(supportInfo.testerGuideUrl as string, '_blank', 'noopener,noreferrer')}
+              >
+                Tester-Guide
+              </button>
+            )}
+            {supportInfo.testerFormUrl && (
+              <button
+                type="button"
+                className="btn-small"
+                onClick={() => window.open(supportInfo.testerFormUrl as string, '_blank', 'noopener,noreferrer')}
+              >
+                Testformular
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="settings-row support-form-row">

@@ -92,7 +92,11 @@ Umgebungsvariablen für das Backend:
 | `SUPPORT_CHAT_URL` | _(leer)_ | Externer Direkt-Chat-Link (z. B. Crisp, Tawk, Slack-Bridge) |
 | `SUPPORT_CHAT_LABEL` | `Support Chat` | Label des Chat-Buttons im UI |
 | `SUPPORT_TICKET_FILE` | `packages/backend/data/support-tickets.ndjson` | Lokale Ablage fuer Supporttickets |
+| `SUPPORT_TICKET_SEQUENCE_FILE` | `packages/backend/data/support-ticket-sequence.json` | Zentraler Ticket-Counter fuer fortlaufende Ticket-ID |
 | `SUPPORT_TICKET_WEBHOOK_URL` | _(leer)_ | Optionaler Webhook fuer Ticket-Weiterleitung (z. B. Helpdesk) |
+| `SUPPORT_HANDBOOK_URL` | _(leer)_ | Link zum Handbuch-Download (oeffnet in neuem Fenster) |
+| `SUPPORT_TESTER_GUIDE_URL` | _(leer)_ | Link zum Tester-Guide-Download (oeffnet in neuem Fenster) |
+| `SUPPORT_TESTER_FORM_URL` | _(leer)_ | Link zum interaktiven Tester-Formular (oeffnet in neuem Fenster) |
 
 Beispiel mit allen Features:
 ```bash
@@ -122,6 +126,14 @@ Phase-C Admin-API (nur mit `ADMIN_API_KEY`):
 Support-API:
 - `GET /api/support/info`
 - `POST /api/support/tickets`
+
+Deploy-Set fuer Hostinger:
+- `deploy/hostinger/nginx.teleprompter.conf`
+- `deploy/hostinger/ecosystem.config.cjs`
+- `deploy/hostinger/saarwood-teleprompter.service`
+- `deploy/hostinger/.env.production.template`
+- `deploy/hostinger/smoke-test.sh`
+- `deploy/hostinger/update-app.sh`
 
 ---
 

@@ -9,6 +9,7 @@ Die App soll oeffentlich ueber Internet testbar sein, inklusive:
 1. stabiler Teleprompter-Betrieb,
 2. Lizenzsteuerung (Phase A-C),
 3. Supportkontakt, Direkt-Chat und Ticket-Erstellung.
+4. Zentrale Hauptwebsite fuer mehrere Apps mit eigenen Unterseiten je App.
 
 Wichtig: Support-Features duerfen den Prompter-Output nicht beeinflussen.
 
@@ -22,11 +23,19 @@ Wichtig: Support-Features duerfen den Prompter-Output nicht beeinflussen.
 
 ### 2.2 Routing
 
-- `/` -> Frontend (statisch aus Backend oder Build-Ordner)
-- `/api/*` -> Express API
-- `/ws` -> WebSocket Upgrade
+- `/` -> Hauptseite (App-Portfolio, Produktseiten)
+- `/apps/teleprompter/` -> Teleprompter-Frontend
+- `/apps/teleprompter/api/*` -> Teleprompter-API
+- `/apps/teleprompter/ws` -> Teleprompter-WebSocket
+- Weitere Apps analog unter `/apps/<app-name>/...`
 
-### 2.3 Prozessbetrieb
+### 2.3 Dokumente und Tester-Formular auf Website
+
+- Handbuch und Tester-Guide als Download auf der Teleprompter-Unterseite bereitstellen.
+- Interaktives Tester-Formular unter fester URL bereitstellen (z. B. `/apps/teleprompter/test-form`).
+- Diese URLs in der App (Settings -> Support) als separate Fenster oeffnen.
+
+### 2.4 Prozessbetrieb
 
 - PM2 oder systemd fuer Neustart bei Crash
 - getrennte `.env` fuer Production
@@ -36,23 +45,27 @@ Wichtig: Support-Features duerfen den Prompter-Output nicht beeinflussen.
 
 ### 3.1 In der App
 
-- Support-Kontakt (E-Mail)
 - Direkt-Chat-Button (konfigurierbare URL)
 - Ticketformular in Settings
+- Buttons fuer Handbuch, Tester-Guide und Tester-Formular (jeweils neues Fenster)
 
 ### 3.2 Strikte Trennung vom Prompter-Output
 
 - Support-UI nur im Settings-Bereich (Operator-Seite)
 - Output-Only-Ansicht (`?view=prompter&output=1`) zeigt keine Support-Elemente
 - Ticket-Requests laufen nur on-demand und triggern keinen Renderpfad im Prompter
+- Oeffentliche Support-E-Mail wird nicht in der App angezeigt
 
 ## 4. Backend-Konfiguration (neue Variablen)
 
-- `SUPPORT_CONTACT_EMAIL`
 - `SUPPORT_CHAT_URL`
 - `SUPPORT_CHAT_LABEL`
 - `SUPPORT_TICKET_FILE`
+- `SUPPORT_TICKET_SEQUENCE_FILE`
 - `SUPPORT_TICKET_WEBHOOK_URL`
+- `SUPPORT_HANDBOOK_URL`
+- `SUPPORT_TESTER_GUIDE_URL`
+- `SUPPORT_TESTER_FORM_URL`
 
 Lizenz-/Admin-Variablen (bereits vorhanden):
 
@@ -77,12 +90,22 @@ Lizenz-/Admin-Variablen (bereits vorhanden):
 3. WebSocket unter `/ws` ueber 443 pruefen.
 4. Lizenzmodus `enforce` erfolgreich getestet (aktiv/revoked/expired).
 5. Support-Flow getestet:
-   - Kontakt sichtbar
+   - Chat-Link oeffnet
+   - Handbuch/Tester-Guide/Formular oeffnen jeweils in neuem Fenster
    - Chat-Link oeffnet
    - Ticket wird erstellt und gespeichert/weitergeleitet
+   - Ticket-ID ist zentral fortlaufend (Format `SWD-YYYY-XXXXXX`)
 6. Output-Only-Ansicht getestet: keine Support-/Settings-UI sichtbar.
 
-## 7. Prioritaetsprotokoll
+## 7. Update-Funktion fuer die Public-Beta-Variante
+
+- Standard-Update ueber VPS-Script `deploy/hostinger/update-app.sh`:
+  1. `git pull`
+  2. Build Frontend + Backend
+  3. Prozess-Neustart per pm2 oder systemd
+- Optional spaeter: automatisierter Deploy-Job ueber CI.
+
+## 8. Prioritaetsprotokoll
 
 Anweisung umgesetzt:
 

@@ -1,0 +1,17 @@
+[Unit]
+Description=Saarwood Teleprompter Backend
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/srv/saarwood_telepromter
+EnvironmentFile=/srv/saarwood_telepromter/.env.production
+ExecStart=/usr/bin/node /srv/saarwood_telepromter/packages/backend/dist/server.js
+Restart=always
+RestartSec=3
+StandardOutput=append:/var/log/saarwood-teleprompter/out.log
+StandardError=append:/var/log/saarwood-teleprompter/error.log
+
+[Install]
+WantedBy=multi-user.target
