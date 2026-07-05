@@ -1,0 +1,67 @@
+/* ─── Teleprompter Viewport ────────────────────────────────────────────────── */
+
+.prompter-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: none; /* hide cursor during presentation */
+  /* Hardware-compositing hint */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* ─── Scrollable Content ──────────────────────────────────────────────────── */
+
+.prompter-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 8%;
+  box-sizing: border-box;
+  /* GPU compositor layer — updated via JS transform, never scrollTop */
+  will-change: transform;
+  transform: translateY(0);
+}
+
+.prompter-segment {
+  padding-block: 0.25em;
+}
+
+/* Director's notes: dim in director UI, hidden in presenter view */
+.prompter-segment[data-directors-note] {
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.prompter-end-pad {
+  height: 70vh; /* ensures last line can scroll fully to cue marker */
+}
+
+/* ─── Cue Marker ──────────────────────────────────────────────────────────── */
+
+.cue-marker {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 80, 0, 0.7);
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 0 8px rgba(255, 80, 0, 0.5);
+}
+
+/* ─── Status Overlay ──────────────────────────────────────────────────────── */
+
+.prompter-status-overlay {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.15em;
+  pointer-events: none;
+  z-index: 20;
+}

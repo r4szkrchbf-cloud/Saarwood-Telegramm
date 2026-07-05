@@ -1,0 +1,220 @@
+/* ─── App Layout ──────────────────────────────────────────────────────────── */
+
+.app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: 1fr;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+
+.app-header {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 48px;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.logo-icon { font-size: 1.2rem; }
+.logo-text { letter-spacing: -0.01em; }
+
+.beta-badge {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background: #e65c00;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  line-height: 1.5;
+  user-select: none;
+}
+
+/* ─── View Switcher ───────────────────────────────────────────────────────── */
+
+.view-switcher {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.view-btn {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background 0.1s, color 0.1s;
+}
+
+.view-btn:hover { background: var(--hover); color: var(--text); }
+.view-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.settings-toggle {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.1s;
+}
+
+.settings-toggle:hover { background: var(--hover); }
+
+/* ─── Control bar ─────────────────────────────────────────────────────────── */
+/* (grid row 2 — rendered by ControlPanel) */
+
+/* ─── Workspace ───────────────────────────────────────────────────────────── */
+
+.app-workspace {
+  grid-row: 3;
+  display: flex;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* ─── Editor / Prompter panes ─────────────────────────────────────────────── */
+
+.editor-pane {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+}
+
+.prompter-pane {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Split view proportions */
+.view-split .editor-pane { flex: 0 0 40%; }
+.view-split .prompter-pane { flex: 1; }
+.view-editor .prompter-pane { display: none; }
+.view-prompter .editor-pane { display: none; }
+
+/* ─── Editor Title Bar ────────────────────────────────────────────────────── */
+
+.editor-title-bar {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.script-title-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.25rem 0.4rem;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.script-title-input:focus {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.script-title-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ─── Add Segment ─────────────────────────────────────────────────────────── */
+
+.add-segment-btn {
+  display: block;
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.1s, color 0.1s;
+}
+
+.add-segment-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* ─── Settings Drawer ─────────────────────────────────────────────────────── */
+
+.settings-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  z-index: 100;
+  overflow-y: auto;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.18s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ─── Responsive: mobile / tablet ────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .view-split .editor-pane,
+  .view-split .prompter-pane {
+    flex: 1;
+  }
+
+  .view-split .editor-pane {
+    display: none; /* default to prompter on small screens */
+  }
+
+  .settings-drawer {
+    width: 100%;
+  }
+
+  .logo-text { display: none; }
+}

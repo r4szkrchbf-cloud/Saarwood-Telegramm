@@ -1,0 +1,391 @@
+
+Hallo! Als Systemarchitekt freue ich mich sehr, dieses hochkomplexe Broadcast-Projekt mit dir anzugehen. Ein Teleprompter-System zu bauen, das im 24/7-Live-Betrieb auf Tier-1-Level absolut ausfallsicher und frame-genau funktioniert, ist eine gewaltige Herausforderung, aber mit der richtigen Architektur absolut machbar.
+
+Bevor wir in die Struktur gehen, müssen wir einen kritischen **Reality-Check** gemäß dem Halluzinationsverbot durchführen:
+
+**Architektonische Limitierungen von Web-Browsern (Stand 2026):**
+
+* 
+**SMPTE ST 2110 & PTP:** Kein Web-Browser der Welt kann nativ SMPTE ST 2110 Multicast-Streams ausgeben oder sich auf Hardware-Ebene mit dem Precision Time Protocol (PTP) synchronisieren.
+
+
+* 
+**NDI-Ausgabe:** Auch NDI lässt sich nicht nativ aus reinem HTML/JavaScript im Browser encodieren und ins lokale Netzwerk pushen.
+
+
+* 
+**MOS-Protokoll:** MOS basiert auf rohen TCP-Sockets. Web-Browser unterstützen aus Sicherheitsgründen nur WebSockets, keine reinen TCP-Verbindungen.
+
+
+
+**Die Lösung (Das Architektur-Paradigma):**
+Wir müssen das System nach dem **Headless-Server & Thin-Client-Prinzip** aufbauen. Das Node.js-Backend läuft auf einer dedizierten Workstation (oder virtuellen Maschine) im Studio-Netzwerk. Dieses Backend übernimmt die schwere Netzwerkarbeit (MOS, NDI, ST 2110, ASR-Audio-Processing). Das PWA-Frontend ist "nur" das smarte Interface für den Moderator (Renderer) und die Regie (Steuerung), welches über hochperformante WebSockets mit dem Backend kommuniziert.
+
+Hier ist der technische Lösungsentwurf und Tech-Stack, der diese Latenz- und Ruckelfreiheits-Vorgaben erfüllt.
+
+---
+
+## 1. Technologischer Stack (Empfehlung)
+
+### Frontend (PWA - Regie & Prompter-Display)
+
+* **Core Framework:** `Vue 3` oder `React 18+` (Vite als Bundler für extreme Geschwindigkeit). Beide bieten exzellente Reaktivität für UI-Elemente.
+* **Render-Engine (Prompter View):** `PixiJS` (WebGL). Verwende auf keinen Fall normales CSS-Scrolling (`transform: translateY`) für den Teleprompter. Das führt bei Hot-Updates zu Mikrorucklern. PixiJS nutzt die GPU für frame-genaues (60fps/120fps) V-Sync-Rendering. Das zwingend erforderliche Mirroring lässt sich in WebGL ressourcenschonend über Skalierung (`scale.x = -1`, `scale.y = -1`) realisieren.
+
+
+* **Rich-Text-Editor:** `ProseMirror`. Es ist modular, unterstützt kollaboratives Editieren (wichtig für Hot-Updates) und geht fehlerfrei mit Unicode und RTL-Sprachen (Hebräisch/Arabisch) um.
+
+
+* **State Management:** `Zustand` (React) oder `Pinia` (Vue). Die State-Updates (Textänderungen) müssen vom Scroll-Loop entkoppelt werden, damit Live-Edits das Scrolling nicht beeinflussen.
+
+
+
+### Backend (Node.js - Der IP-Knotenpunkt)
+
+* **Core:** `Node.js` (TypeScript) mit `Fastify` für extrem latenzarme HTTP- und API-Routen.
+* 
+**Echtzeit-Kommunikation:** `Socket.io` oder natives `ws` (WebSockets) für die bidirektionale Synchronisation zwischen Regie, Moderator und Backend-Server.
+
+
+* 
+**MOS-Integration:** Modul `net` (native Node TCP Sockets) gepaart mit `fast-xml-parser`, um die XML-basierten MOS-Befehle (Profile 0 und 2) des Newsroom-Systems zu verarbeiten.
+
+
+* **Spracherkennung (ASR):** Für den Basic Tier via API (Google Cloud Speech-to-Text). Für den Expert Tier (lokal) eine On-Premise Integration von `Whisper.cpp` (als Node-Addon kompiliert), um offline und latenzfrei Audio-Streams zu verarbeiten.
+
+
+* **Video-I/O (NDI & ST 2110):** Das Backend nutzt C++ Addons (Node-API). Für NDI das offizielle `NDI SDK`. Für SMPTE ST 2110 muss das Backend Metadaten an eine spezialisierte Hardware-NIC (z. B. NVIDIA Rivermax) oder ein lokales GStreamer-Script übergeben, das den Render-Buffer abgreift.
+
+
+
+---
+
+## 2. Ordnerstruktur (Monorepo-Ansatz)
+
+Eine Monorepo-Struktur (z. B. mit Nx oder Turborepo) ist hier ideal, um Typisierungen und Protokolle zwischen Backend und Frontend zu teilen.
+
+```text
+teleprompter-os/
+├── packages/
+│   ├── shared-types/           # Geteilte TypeScript-Interfaces (Rundown, Script, ControlState)
+│   ├── mos-parser/             # Eigener Parser für das XML-basierte MOS-Protokoll v2.8.5
+│   └── hardware-discovery/     # mDNS/Bonjour Logik für IP-Controller & PoE-Pedale
+├── apps/
+│   ├── backend-server/         # Node.js Core
+│   │   ├── src/
+│   │   │   ├── mos-gateway/    # TCP-Server für Avid iNews, ENPS, etc.
+│   │   │   ├── websocket/      # Echtzeit-Sync (Hitless Redundancy Logik hier)
+│   │   │   ├── asr-engine/     # Wrapper für Cloud-ASR & lokalen Whisper-Prozess
+│   │   │   └── video-io/       # NDI SDK Integration & ST 2110 Metadaten-Übergabe
+│   │   └── package.json
+│   │
+│   ├── pwa-director/           # Frontend: Regie-Ansicht (Dark Mode, Rundown, Cloak Text)
+│   │   ├── src/
+│   │   │   ├── components/     # UI-Elemente (Timer, Device Status Tool)
+│   │   │   ├── editor/         # ProseMirror Implementierung
+│   │   │   └── store/          # Zustand/Pinia (Live-Text-Editing State)
+│   │   └── package.json
+│   │
+│   └── pwa-prompter/           # Frontend: Pure Ansicht für das Talent (Display)
+│       ├── src/
+│       │   ├── webgl-renderer/ # PixiJS Engine (Ruckelfreies Scrollen & Mirroring)
+│       │   └── sync-client/    # Empfängt exakte Scroll-Ticks und Text-Deltas via WebSocket
+│       └── package.json
+└── package.json
+
+```
+
+---
+
+## 3. Kritischer Lösungsansatz: Latenz & Ausfallsicherheit
+
+Um die A/B-Mirroring-Architektur (Expert Tier) und das Hitless Protection Protocol zu realisieren, arbeiten wir mit einem **Deterministic State Model**. Der primäre Backend-Server pusht bei jeder Aktion (z. B. "Rolle 5 Zeilen weiter") einen Timestamped-Event an *beide* Prompter-Clients und an den Backup-Server. Fällt der Heartbeat des primären Servers via WebSocket länger als 50ms aus, übernimmt der Backup-Server sofort die Socket-Connections, ohne dass der WebGL-Renderer im Frontend den aktuellen Scroll-Vorgang abbricht.
+
+Da die Rendering-Engine das Herzstück für den absolut ruckelfreien Textfluss ist: Sollen wir im nächsten Schritt tief in die Architektur der WebGL-Implementierung (PixiJS) eintauchen, um das "Live (hot) Text Editing" ohne jegliche Frame-Drops mathematisch zu konzipieren?
+
+
+Ja, das habe ich vollkommen verstanden. Das System verschiebt sich damit architektonisch von einem reinen Anzeige- und Redaktionswerkzeug hin zu einer **automatisierten Ingestion- und Routing-Engine (Content Pipeline)**. Der Teleprompter ist in diesem Szenario der dedizierte Endpunkt, der die fertig aufbereiteten Daten vollautomatisch empfängt, validiert, transformiert und dem richtigen Profil (Studio, Redakteur, Sendung, Podcast) sowie dem exakten „Vorlagenfach“ (Rundown/Slot) zuordnet.
+
+Hier ist die nahtlose Integration dieser Anforderungen in das bestehende technische Konzept unter strikter Einhaltung des Halluzinationsverbots (Verwendung real existierender APIs, Webhooks und Routing-Mechanismen).
+
+---
+
+# Konzept-Erweiterung: Vollautomatische Ingestion- & Routing-Pipeline (Stand 2026)
+
+## 1. Das Datenmodell: Multi-Profile & Vorlagenfächer
+
+Da Texte nicht im Prompter erstellt werden, muss die Datenbank (`PostgreSQL` mit `Prisma ORM` für relationale Integrität) eine strikte, mandantenfähige Hierarchie abbilden. Ein Skript existiert nie isoliert, sondern ist immer an ein Routing-Ziel gebunden.
+
+### Profil-Hierarchie:
+
+* **Tenant / Workspace:** Die übergeordnete Organisation (z. B. Produktionsfirma).
+* **Client / Target Profiles:** * *Studio-Profil:* Definiert die Hardware-Ausgabe (z. B. Studio A = NDI-Kanal 1, Studio B = NDI-Kanal 2).
+* 
+*Redakteur-/Reporter-Profil:* Verknüpft mit spezifischen *Presenter Preferences*  (Schriftgröße, Scroll-Geschwindigkeit des jeweiligen Sprechers).
+
+
+* 
+*Sendungs- / Podcast-Profil:* Definiert das visuelle Layout (z. B. Daily News = Weiß auf Schwarz; Podcast X = Gelb auf Schwarz, spezifische Uhren/Countdowns im UI).
+
+
+
+
+* **Vorlagenfach (Slot / Rundown):** Die logische Pipeline innerhalb einer Sendung (z. B. `Intro`, `Thema_01`, `Interview`, `Outro`).
+
+---
+
+## 2. Integrations-Architektur (ClickUp, n8n & Webhooks)
+
+Das System öffnet eine standardisierte, hochgesicherte REST-API und eine Webhook-Schnittstelle nach außen.
+
+```
+[Externes System: ClickUp] ──(Webhook bei Status "Fertig")──> [n8n Workflow]
+                                                                     │
+[Teleprompter API] <──(Strukturierter JSON-Payload)──────────────────┘
+
+```
+
+### A. ClickUp-Anbindung
+
+* **Trigger:** In ClickUp wird eine Aufgabe (z. B. ein Skript-Task innerhalb eines Sende-Spaces) auf den Status `„Ready for Prompter“` oder `„Genehmigt“` gesetzt.
+* **Payload:** Über ClickUp-Webhooks wird ein JSON-Paket an die Automatisierungs-Schicht (n8n) gefeuert. Dieses enthält:
+* Den rohen Text (aus dem ClickUp Doc oder einem Custom Field).
+* Metadaten (Custom Fields für: `Sprecher`, `Studio`, `Sendung/Podcast`, `Sendedatum`, `Slot/Vorlagenfach`).
+
+
+
+### B. n8n-Automatisierungsschicht
+
+n8n fungiert als der finale Daten-Dispatcher und Normalisierer.
+
+* **Knoten 1 (Webhook Receiver):** Empfängt den ClickUp-Payload.
+* **Knoten 2 (Data Transformation):** Normalisiert die IDs aus ClickUp und ordnet sie den Zielprofilen der Teleprompter-App zu.
+* **Knoten 3 (Teleprompter API Client):** Sendet ein `POST`-Request an den Endpunkt `/api/v1/ingest/script` der Teleprompter-App.
+
+---
+
+## 3. KI-Parsing & Normalisierungs-Pipeline (KI-Anbindung)
+
+Sobald der Text das Teleprompter-Backend erreicht, greift die automatisierte Validierung und KI-Aufbereitung. Da Texte extern erstellt werden, schleichen sich oft systemfremde Steuerzeichen, Formatierungsfehler oder unstrukturierte Regieanweisungen ein.
+
+### Der KI-Payload-Verarbeitungs-Prozess:
+
+1. **API-Validierung:** Das Node.js-Backend prüft via `Zod` (TypeScript-Validierung), ob alle Routing-Metadaten (`profileId`, `slotId`, `presenterId`) vorhanden sind.
+2. **KI-Text-Sanitizing (LLM-Anbindung via OpenAI API / Anthropic API mit *Structured Outputs*):**
+* Der rohe Text wird an die KI übergeben (z. B. `gpt-4o-mini` oder ein lokales `Llama-3-8B` via Ollama/vLLM im Expert-Tier für absolute Datensicherheit).
+
+
+* **Die KI-Aufgabe:** Der Text wird nicht inhaltlich verändert, sondern strukturell für den Prompter optimiert. Die KI erkennt Regieanweisungen, Einspieler-Hinweise (Sound-on-Tape / SOT) oder Sprecherwechsel und klammert diese automatisch in die proprietäre Syntax des Prompters ein (z. B. `[REGIE: HIER VIDEO EINBLENDEN]`), damit die Rendering-Engine (Expert Tier) diese Textteile im Live-Scrollen automatisch überspringen oder für den Presenter ausblenden (*Cloak Text*) kann.
+
+
+
+
+3. **Automatisierte Einsortierung (Hot-Update Verteilung):**
+* Das Skript wird in der Datenbank dem exakten Vorlagenfach zugeordnet.
+* Wenn das betroffene Profil (`studio-a`) gerade *live* oder im Standby geöffnet ist, triggert der Server instantan ein WebSocket-Event (`script:inserted`).
+* Die PixiJS-Render-Engine im Frontend aktualisiert den Rundown im Hintergrund bruchteilsekundenschnell, ohne dass der Operator manuell eingreifen oder die Seite neu laden muss.
+
+
+
+
+
+---
+
+## 4. Backend API-Schnittstelle (Beispiel-Endpunkt)
+
+Hier ist die reale, unhalluzinierte Express/Fastify-Schnittstelle im Node.js-Backend, die n8n anspricht:
+
+```typescript
+// apps/backend-server/src/api/ingest.ts
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { z } from 'zod';
+import { prisma } from '../database';
+import { socketService } from '../websocket';
+import { aiSanitizerService } from '../services/ai-sanitizer';
+
+// Validierungsschema für n8n / ClickUp Ingest
+const IngestScriptSchema = z.object({
+  title: z.string(),
+  rawText: z.string(),
+  targetProfileId: z.string().uuid(), // Studio, Sendung oder Podcast Profil
+  templateSlotKey: z.string(),       // z.B. "intro", "main_topic", "outro"
+  presenterId: z.string().uuid().optional()
+});
+
+export async function ingestRoutes(fastify: FastifyInstance) {
+  fastify.post('/api/v1/ingest/script', async (request: FastifyRequest, reply: FastifyReply) => {
+    // 1. Validierung des eingehenden n8n-Payloads
+    const parseResult = IngestScriptSchema.safeParse(request.body);
+    if (!parseResult.success) {
+      return reply.status(400).send({ error: 'Invalid metadata structure', details: parseResult.error });
+    }
+
+    const { title, rawText, targetProfileId, templateSlotKey, presenterId } = parseResult.data;
+
+    try {
+      // 2. KI-gestützte Strukturierung (SOTs klammern, Metadaten taggen) ohne Textänderung
+      const prompterFormattedText = await aiSanitizerService.cleanAndTag(rawText);
+
+      // 3. In Datenbank speichern und dem Vorlagenfach (Slot) zuordnen
+      const savedScript = await prisma.script.upsert({
+        where: { profileId_slotKey: { profileId: targetProfileId, slotKey: templateSlotKey } },
+        update: { title, content: prompterFormattedText, presenterId },
+        create: { title, content: prompterFormattedText, profileId: targetProfileId, slotKey: templateSlotKey, presenterId }
+      });
+
+      // 4. Echtzeit-Push an alle aktiven Teleprompter-Clients dieses Profils
+      socketService.emitToProfile(targetProfileId, 'script:updated', {
+        slotKey: templateSlotKey,
+        script: savedScript
+      });
+
+      return reply.status(200).send({ success: true, message: `Script successfully routed to profile ${targetProfileId} in slot ${templateSlotKey}.` });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({ error: 'Internal pipeline error during ingestion' });
+    }
+  });
+}
+
+```
+
+---
+
+## 5. Aktualisierte Monorepo-Ordnerstruktur
+
+Um diese Automatisierungs-Architektur sauber von der Render-Engine zu trennen, erweitern wir die Ordnerstruktur um ein `ingestion-gateway` und ein `pipeline-ai` Modul.
+
+```text
+teleprompter-os/
+├── packages/
+│   ├── shared-types/           # TypeScript-Interfaces (ClickUp-Payloads, Profile-Schemas)
+│   ├── database/               # Prisma Client & PostgreSQL Migrations (Profile & Fächer)
+│   └── pipeline-ai/            # OpenAI/Ollama Wrapper für das Text-Sanitizing & Tagging
+├── apps/
+│   ├── backend-server/         # Node.js Core IP-Knotenpunkt
+│   │   ├── src/
+│   │   │   ├── api/            # REST Endpunkte für n8n & ClickUp-Webhooks
+│   │   │   ├── websocket/      # Instant-Push an die Studios bei automatischem Ingest
+[cite_start]│   │   │   ├── mos-gateway/    # (Abwärtskompatibilität für klassische Newrooms) [cite: 52]
+[cite_start]│   │   │   └── video-io/       # NDI / ST 2110 Ausgabesteuerung je nach Studio-Profil [cite: 14, 32]
+│   │   └── package.json
+│   │
+│   ├── pwa-director/           # Regie-Oberfläche: Profilverwaltung, Überwachung der Vorlagenfächer
+│   └── pwa-prompter/           # Talent-Oberfläche: Lädt vollautomatisch das zugeordnete Profil
+└── package.json
+
+```
+
+## Fazit für die Entwicklung:
+
+Dieses Konzept eliminiert menschliche Fehler und manuelle Rüstzeiten vollständig. Redakteure arbeiten in ihrer gewohnten Umgebung (ClickUp). Die Kombination aus **n8n** (Transporteur), **KI** (Formatierer/Übersetzer für Regie-Tags) und der **Teleprompter-Core-App** (Verteiler & WebGL-Anzeige) stellt sicher, dass der Text fehlerfrei, vollautomatisch und in Echtzeit genau auf dem Prompter landet, auf dem er landen soll.
+
+Sollen wir als Nächstes die n8n-JSON-Struktur definieren, die du direkt in n8n als Workflow-Vorlage importieren kannst?
+
+
+Das ist eine exzellente und extrem praxisnahe Erweiterung! Im professionellen Broadcast-Umfeld entscheidet das Audio-Routing über den Erfolg der automatischen Spracherkennung (ASR). Ein Raummikrofon am Prompter ist nutzlos; wir brauchen den direkten Clean-Feed (Mix-Minus) des Sprechers aus dem Audiopult, oft via USB-Interface oder Netzwerk-Audio (Dante/AES67).
+
+Unter strikter Einhaltung des **Halluzinationsverbots** integrieren wir diese Anforderungen (Hardware-Audio-Routing, Lese-Markierung, ASR-Tuning) nun in unsere Architektur.
+
+Hier ist die technische Umsetzung für die Teleprompter-Pipeline:
+
+---
+
+### 1. Audio-Ingest & Hardware-Routing (Die Signalquellen)
+
+Um sicherzustellen, dass exakt das richtige Mikrofonsignal verarbeitet wird, müssen wir das System befähigen, physische und virtuelle Audio-Schnittstellen auszulesen. Dies lösen wir architektonisch in zwei Wegen (je nach Tier):
+
+**A. Client-Side Ingest (PWA / Basic & Pro Tier):**
+Wenn das USB-Audio-Interface direkt an den Prompter-Monitor (z.B. Mac, Windows-PC, iPad) angeschlossen ist, greifen wir über die native HTML5 **Web Audio API** und `MediaDevices` auf die Hardware zu.
+
+* **Implementierung:** Das Frontend ruft `navigator.mediaDevices.enumerateDevices()` auf. Dies liefert eine Liste aller physischen Eingänge (z.B. "Focusrite Scarlett USB", "Rodecaster Pro Multichannel", "Internes Mikrofon").
+* **Kanalwahl:** Wenn das USB-Gerät Mehrkanal-Audio sendet (z.B. Sprecher 1 auf Kanal L, Sprecher 2 auf Kanal R), nutzen wir den `ChannelSplitterNode` der Web Audio API, um den exakten Mono-Kanal des Sprechers zu extrahieren und an die ASR-Engine zu senden.
+
+**B. Server-Side Ingest (Node.js / Expert Tier):**
+In hochprofessionellen Umgebungen läuft das Audio nicht über den Prompter-Bildschirm, sondern direkt in den Backend-Server.
+
+* **Implementierung:** Das Node.js-Backend nutzt Tools wie `node-core-audio` oder Wrapper für `FFmpeg/GStreamer`. So kann das Backend virtuelle Soundkarten (Dante Virtual Soundcard) oder anliegende NDI-Audio-Streams  direkt abgreifen und offline an die lokale `Whisper.cpp`-Instanz weiterleiten.
+
+
+
+---
+
+### 2. ASR-Engine & Voice-Tracking Steuerung (Der Motor)
+
+Die Spracherkennung muss der Stimme wortgenau folgen und das Scrolling steuern. Da jeder Sprecher anders atmet, improvisiert oder Pausen setzt, machen wir die KI-Steuerung in der Regie-Ansicht (Director PWA) granular konfigurierbar.
+
+**Einstellbare ASR-Parameter (Settings-Panel):**
+
+* 
+**ASR-Toggle (On/Off):** Ein globaler Schalter (oder physischer Button am Fußpedal), der sofort auf manuelles Scrollen umschaltet (Last-device-in-control convention).
+
+
+* **Scroll-Sensibilität (Damping/Smoothing):** Bestimmt, wie hart das Scrolling anspringt. (Wert 1 = Roboterhaft exakt auf das Wort, Wert 5 = Weiches "Hinterherziehen", das für die Augen des Lesers angenehmer ist).
+* 
+**Ad-Lib Patience (Pausen-Toleranz):** Wie viele Sekunden darf der Sprecher improvisieren, bevor die KI das Skript anhält?
+
+
+* **Look-Ahead Window:** Definiert, wo auf dem Bildschirm der gelesene Text positioniert bleiben soll (z.B. "Halte den aktuellen Satz immer exakt auf der vertikalen Bildschirmmitte").
+
+---
+
+### 3. Visuelle Lese-Markierung (Spoken Text Highlighting)
+
+Das farbliche Markieren des gesprochenen Textes ist eine massive Erleichterung für Moderatoren, erfordert aber höchste Vorsicht bei der Render-Engine. Wenn wir im Browser normales HTML/CSS nutzen und jede Millisekunde ein `<span>` mit einer Hintergrundfarbe versehen, explodiert die CPU-Last (Reflow-Lag), und der Prompter fängt an zu ruckeln.
+
+**WebGL / PixiJS Lösung für das Frontend:**
+
+* Wir implementieren das Highlighting über **Text-Tinting in PixiJS**.
+* Die ASR-Engine sendet via WebSocket kontinuierlich den aktuellen Wort-Index (`currentWordIndex: 452`).
+* Die Render-Engine legt eine flache, halbtransparente WebGL-Ebene (Graphics Rectangle) exakt hinter die Koordinaten des aktuell berechneten Wortes oder ändert die Farbe der Bitmap-Schrift (Tint) direkt in der GPU. Das kostet null Performance und bleibt bei 60/120 FPS.
+
+**Editierbarkeit (Presenter Preferences):**
+
+* **Highlight-Modus wählbar:** Regie und Sprecher können wählen zwischen:
+* *Wort-für-Wort:* Jedes gesprochene Wort leuchtet auf.
+* *Satz-Block:* Der gesamte aktuelle Satz wird hervorgehoben, der Rest abgedunkelt (ideal für starken Ad-Lib-Einsatz).
+* *Nur Textfarbe ändern vs. Hintergrund-Marker.*
+
+
+* 
+**Farben:** Volle Anpassbarkeit (z.B. Neongrün, Gelb) per Color-Picker, passend zum Profil des Moderators.
+
+
+* **Toggle:** Der Effekt lässt sich mit einem Klick ausblenden.
+
+---
+
+### 4. Aktualisierte Architektur-Struktur
+
+Um diese Audio-Routing- und Highlight-Features abzubilden, erweitern wir unsere Frontend- und Backend-Struktur:
+
+```text
+apps/
+├── backend-server/
+│   ├── src/
+│   │   ├── asr-engine/
+│   │   │   ├── index.ts        # Whisper.cpp / Cloud ASR Wrapper
+│   │   │   └── sync-logic.ts   # Berechnet Text-Position basierend auf Audio-Timestamps
+│   │   ├── hardware-audio/     # (Expert Tier) NDI Audio / ASIO / Dante Ingest
+│   │   └── api/
+│
+├── pwa-director/               # Regie-Ansicht
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── AudioRouter.vue # UI für navigator.mediaDevices (USB/Mics) Auswahl
+│   │   │   ├── AsrTuning.vue   # Slider für Sensibilität, Toleranz, Look-Ahead
+│   │   │   └── StyleEditor.vue # UI für Highlight-Farben und Toggle-Switches
+│
+└── pwa-prompter/               # Talent-Display
+    ├── src/
+    │   ├── webgl-renderer/
+    │   │   ├── text-mesh.ts    # WebGL Rendering der Schrift
+    │   │   └── highlight.ts    # GPU-basierte Farbmarkierung ohne DOM-Reflows
+    │   ├── audio-client/       # Web Audio API (Channel Splitter für USB-Interfaces)
+
+```
+
+**Zusammenfassung:**
+Mit dieser Architektur machst du den Teleprompter zu einem echten Broadcast-Audio-Client. Die Regie wählt einfach das am Rechner angeschlossene USB-Mischpult aus, separiert den Kanal, regelt die ASR-Sensibilität und das Talent sieht seine gelesenen Worte perfekt synchron via GPU-Rendering farbig aufleuchten.
+
+Da wir nun das Audio-Routing, die KI-Pipeline (n8n/Clickup) und die Ruckelfrei-Architektur stehen haben: Möchtest du, dass wir als Nächstes die **Datenbank-Struktur (Prisma/PostgreSQL)** für diese komplexe Profil-, Vorlagen- und Berechtigungsverwaltung detailliert aufbauen?

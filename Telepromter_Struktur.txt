@@ -1,0 +1,141 @@
+Struktur
+
+Hier ist die vollständige, detaillierte Monorepo-Ordnerstruktur für das Projekt. Diese Struktur ist ideal für Tools wie **Turborepo** oder **Nx** in Kombination mit `pnpm workspaces`. Sie trennt die komplexen Domänen (KI-Pipeline, Datenbank, Rendering) strikt voneinander ab, was sowohl für menschliche Entwicklerteams als auch für KI-Coding-Agenten (wie GitHub Copilot) essenziell ist, um den Kontext nicht zu verlieren.
+
+Diese Struktur bildet exakt das zuvor definierte Lastenheft (SRS) ab.
+
+---
+
+### 📂 Projekt-Architektur: `teleprompter-os`
+
+```text
+teleprompter-os/
+├── .husky/                       # Git Hooks (Pre-commit checks)
+├── .github/                      # CI/CD Workflows (GitHub Actions)
+│   └── workflows/
+│       ├── build-test.yml        # Automatisierte Tests für Ingest-Pipeline & WebGL
+│       └── deploy-staging.yml    # Docker-Builds & Cloud-Deployments
+├── docker/                       # Dockerfiles & Compose für lokales Setup & Expert-Tier On-Premise
+│   ├── docker-compose.yml        # Fährt Backend, PostgreSQL, Redis und Whisper.cpp hoch
+│   └── whisper-server/           # Lokaler ASR-Server (C++ Container)
+├── package.json                  # Root-Abhängigkeiten (Turborepo, TypeScript, ESLint)
+├── turbo.json                    # Monorepo Build-Pipelines & Caching-Strategien
+└── README.md                     # Entwickler-Onboarding & Architektur-Dokumentation
+
+# ============================================================================
+# 📦 PACKAGES (Gemeinsam genutzte Bibliotheken & Module)
+# ============================================================================
+├── packages/
+│   │
+│   ├── shared-types/             # "Single Source of Truth" für Typisierungen
+│   │   ├── src/
+│   │   │   ├── ingest.ts         # Zod-Schemas für ClickUp/n8n Payloads
+│   │   │   ├── profiles.ts       # Interfaces für Studio-, Presenter- & Show-Profile
+│   │   │   ├── rundown.ts        # Slots und Vorlagenfächer
+│   │   │   └── websocket.ts      # Strikte Typisierung der Echtzeit-Events
+│   │   └── package.json
+│   │
+│   ├── database/                 # ORM & Datenzugriffsschicht
+│   │   ├── prisma/
+│   │   │   ├── schema.prisma     # Relationales Datenmodell (PostgreSQL)
+│   │   │   ├── migrations/       # Versionskontrolle der DB
+│   │   │   └── seed.ts           # Testdaten (z. B. "Studio A", "Default News Profile")
+│   │   ├── src/
+│   │   │   └── client.ts         # Exportierter, typisierter Prisma-Client
+│   │   └── package.json
+│   │
+│   ├── pipeline-ai/              # Isolierte KI-Aufbereitungs-Logik
+│   │   ├── src/
+│   │   │   ├── llm-client.ts     # Wrapper für OpenAI/Anthropic & lokale vLLM APIs
+│   │   │   ├── prompts.ts        # Die exakten System-Prompts für das Text-Sanitizing
+│   │   │   └── tag-parser.ts     # Extrahiert generierte <cloak> oder <sot> Tags
+│   │   └── package.json
+│   │
+│   └── hardware-discovery/       # IP-Netzwerk-Werkzeuge (Professional Tier)
+│       ├── src/
+│       │   ├── mdns.ts           # Bonjour/mDNS für PoE-Pedale & Auto-Discovery
+│       │   └── mos-parser.ts     # TCP-Socket Parser für legacy Avid/ENPS (MOS v2.8.5)
+│       └── package.json
+
+# ============================================================================
+# 🚀 APPS (Die ausführbaren Kernanwendungen)
+# ============================================================================
+├── apps/
+│   │
+│   # ------------------------------------------------------------------------
+│   # 1. BACKEND-SERVER (Der IP-Knotenpunkt & Ingest-Dispatcher)
+│   # ------------------------------------------------------------------------
+│   ├── backend-server/
+│   │   ├── src/
+│   │   │   ├── api/
+│   │   │   │   ├── routes.ts         # REST Endpunkte (/api/v1/ingest/script)
+│   │   │   │   └── clickup-webhook.ts# Direkte Verarbeitung von Drittsystem-Pushes
+│   │   │   │
+│   │   │   ├── websocket/
+│   │   │   │   ├── hub.ts            # Socket.io Instanz (Client-Verbindungen)
+│   │   │   │   └── failover.ts       # "Hitless Protection" A/B-Mirroring Heartbeats
+│   │   │   │
+│   │   │   ├── asr-engine/
+│   │   │   │   ├── audio-ingest.ts   # Empfängt Audio-Chunks von Clients oder OS (Dante)
+│   │   │   │   ├── stt-cloud.ts      # Basic Tier: Google Cloud Speech API
+│   │   │   │   ├── stt-local.ts      # Expert Tier: Whisper.cpp Anbindung
+│   │   │   │   └── sync-logic.ts     # Berechnet Wort-Offsets für das Scrolling
+│   │   │   │
+│   │   │   ├── video-io/             # Expert Tier Features
+│   │   │   │   ├── ndi-transmitter.ts# NDI SDK Integration (C++ Node Wrapper)
+│   │   │   │   └── captions-708.ts   # CEA-708 Metadaten-Encoder für Hardware-Inserter
+│   │   │   │
+│   │   │   └── server.ts             # Fastify/Node.js Entrypoint
+│   │   ├── .env                      # DB Strings, API Keys (lokal)
+│   │   └── package.json
+│   │
+│   # ------------------------------------------------------------------------
+│   # 2. PWA-DIRECTOR (Regie-Oberfläche & Pipeline-Monitoring)
+│   # ------------------------------------------------------------------------
+│   ├── pwa-director/
+│   │   ├── public/               # PWA Manifest, Icons, Service Workers
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── DeviceManager.vue # Auto-Discovery UI für Controller
+│   │   │   │   ├── AudioRouter.vue   # Web Audio API (USB-Interfaces auswählen)
+│   │   │   │   └── AsrTuning.vue     # Slider für Sensibilität, Toleranz, Look-Ahead
+│   │   │   ├── views/
+│   │   │   │   ├── Rundown.vue       # Live-Ansicht der Vorlagenfächer (Slots)
+│   │   │   │   └── Settings.vue      # Profil-Konfigurationen (Presenter Preferences)
+│   │   │   ├── store/
+│   │   │   │   └── active-show.ts    # Pinia/Zustand State für laufende Sendungen
+│   │   │   └── App.vue
+│   │   ├── vite.config.ts        # Bundler (Vite)
+│   │   └── package.json
+│   │
+│   # ------------------------------------------------------------------------
+│   # 3. PWA-PROMPTER (Thin Client für den Moderator)
+│   # ------------------------------------------------------------------------
+│   └── pwa-prompter/
+│       ├── public/               # PWA Manifest (Offline Support)
+│       ├── src/
+│       │   ├── webgl-renderer/
+│       │   │   ├── engine.ts         # PixiJS Canvas Setup (Ruckelfreies Render-Loop)
+│       │   │   ├── text-mesh.ts      # Bitmap-Font Rendering & GPU-Mirroring (Image-Flip)
+│       │   │   └── highlight.ts      # GPU Text-Tinting für gesprochene Worte (ASR Sync)
+│       │   │
+│       │   ├── audio-client/
+│       │   │   ├── ingest.ts         # navigator.mediaDevices (Microphone/USB-Interface)
+│       │   │   └── streamer.ts       # Sendet WebRTC/AudioChunks an asr-engine im Backend
+│       │   │
+│       │   ├── sync-client/
+│       │   │   └── socket.ts         # Lauscht auf Text-Deltas (Hot-Updates) & Scroll-Ticks
+│       │   │
+│       │   └── Main.ts           # Initiiert WebGL und Fullscreen-Lock
+│       ├── vite.config.ts        # Bundler für ultra-schnelle Auslieferung
+│       └── package.json
+
+```
+
+---
+
+### Warum diese Struktur perfekt für dein Vorhaben ist:
+
+1. **Sicherheit bei "Hot-Updates" (Live-Text-Editing):** Die Kernlogik für das Ruckelfreie Rendering (`pwa-prompter/src/webgl-renderer`) ist komplett isoliert von der UI der Redaktion (`pwa-director`). Wenn ein n8n-Webhook einen neuen Text in die Datenbank schiebt, verarbeitet das `backend-server` dies in Millisekunden und schickt nur ein winziges Payload via WebSocket an den Prompter, der es in der GPU rendert.
+2. **Skalierbarkeit nach Tiers (Basic, Pro, Expert):** Braucht ein Basic-User kein `video-io` (NDI/ST2110), läuft das Backend ohne diese Module. Bei einem Tier-1 Broadcaster werden diese Module aktiviert.
+3. **Plug-and-Play für die KI:** Das `pipeline-ai` Package sitzt zwischen Ingest und Datenbank. Man kann später problemlos von OpenAI auf eine komplett lokale Open-Source KI wechseln, ohne den Code im Backend oder Frontend anfassen zu müssen.

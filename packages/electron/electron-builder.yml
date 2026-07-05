@@ -1,0 +1,90 @@
+appId: com.saarwood.teleprompter
+productName: Saarwood Teleprompter
+copyright: "Copyright © 2024–2026 Saarwood"
+
+directories:
+  buildResources: build
+  output: dist-app
+
+# Files to include in the asar archive
+files:
+  - dist/**/*
+  - package.json
+
+# Bundle backend and frontend build artifacts alongside the app
+extraResources:
+  - from: ../backend/dist
+    to: backend
+    filter:
+      - "**/*"
+      - "!**/*.test.js"
+  - from: ../backend/node_modules
+    to: node_modules
+    filter:
+      - "**/*"
+  - from: ../frontend/dist
+    to: frontend
+    filter:
+      - "**/*"
+
+# ─── macOS ─────────────────────────────────────────────────────────────────────
+mac:
+  category: public.app-category.utilities
+  icon: build/icon.icns
+  # Universal binary — runs natively on both Intel (x64) and Apple Silicon (arm64)
+  target:
+    - target: dmg
+      arch:
+        - universal
+    - target: zip
+      arch:
+        - universal
+  # Code signing — set APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID env vars
+  # to enable notarization. Without these, the app runs unsigned (developer / local use).
+  # entitlements: build/entitlements.mac.plist
+  # entitlementsInherit: build/entitlements.mac.plist
+  hardenedRuntime: true
+  gatekeeperAssess: false
+
+dmg:
+  title: "${productName} ${version}"
+  iconSize: 96
+  window:
+    width: 660
+    height: 400
+
+# ─── Windows ───────────────────────────────────────────────────────────────────
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeader: build/installer-header.bmp
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+# ─── Linux ─────────────────────────────────────────────────────────────────────
+linux:
+  icon: build/icon.png
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  category: Utility
+
+# ─── Auto-update (optional future feature) ─────────────────────────────────────
+# publish:
+#   provider: github
+#   owner: saarnews
+#   repo: saarwood_telepromter

@@ -1,0 +1,22 @@
+{
+  "name": "@saarwood/electron",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "description": "Saarwood Teleprompter — Electron desktop wrapper (macOS / Windows)",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests for electron package\"",
+    "dist:mac": "npm run build && electron-builder --mac --universal",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:all": "npm run build && electron-builder --mac --win --linux",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.7.2"
+  }
+}

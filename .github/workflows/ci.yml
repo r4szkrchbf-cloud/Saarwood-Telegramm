@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  ci:
+    name: Type-check · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Type-check ──────────────────────────────────────────────────────────
+      - name: Type-check frontend
+        run: npx tsc --noEmit
+        working-directory: packages/frontend
+
+      - name: Type-check backend
+        run: npx tsc --noEmit
+        working-directory: packages/backend
+
+      # ── Lint ────────────────────────────────────────────────────────────────
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: packages/frontend
+
+      - name: Lint backend
+        run: npm run lint
+        working-directory: packages/backend
+
+      # ── Tests ───────────────────────────────────────────────────────────────
+      - name: Test frontend
+        run: npm test
+        working-directory: packages/frontend
+
+      - name: Test backend
+        run: npm test
+        working-directory: packages/backend
+
+      # ── Build ────────────────────────────────────────────────────────────────
+      - name: Build frontend
+        run: npm run build
+        working-directory: packages/frontend
+
+      - name: Build backend
+        run: npm run build
+        working-directory: packages/backend
