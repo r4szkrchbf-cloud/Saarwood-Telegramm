@@ -21,6 +21,24 @@ Wichtig: Support-Features duerfen den Prompter-Output nicht beeinflussen.
 - Reverse Proxy (Nginx oder Caddy) auf 443/TLS
 - Eine oeffentliche Domain, gleiches Origin fuer Frontend, API und WS
 
+### 2.1a Mehrserver-Topologie (zentrale Website getrennt)
+
+Beruecksichtigt ist auch ein Setup mit getrennten Servern:
+
+1. Hauptwebsite-Server (Marketing/Produktseite):
+- `www.example.com`
+- App-Portfolio, Downloads, Formulare, Dokumentation
+
+2. App-Server Teleprompter:
+- `apps.example.com` oder `teleprompter.example.com`
+- Teleprompter-Frontend, API, WebSocket
+
+3. Weitere App-Server:
+- z. B. `newsdesk.example.com`, `automation.example.com`
+- Jede App kann unabhaengig skaliert und aktualisiert werden
+
+Die Hauptwebsite verlinkt zentral auf alle App-Unterseiten. Damit bleibt die Plattform zentral sichtbar, aber technisch entkoppelt.
+
 ### 2.2 Routing
 
 - `/` -> Hauptseite (App-Portfolio, Produktseiten)
@@ -28,6 +46,12 @@ Wichtig: Support-Features duerfen den Prompter-Output nicht beeinflussen.
 - `/apps/teleprompter/api/*` -> Teleprompter-API
 - `/apps/teleprompter/ws` -> Teleprompter-WebSocket
 - Weitere Apps analog unter `/apps/<app-name>/...`
+
+Alternative mit Subdomains (empfohlen bei wachsendem Verkehr):
+
+- `www.example.com` -> zentrale Hauptseite
+- `teleprompter.example.com` -> Teleprompter-App
+- `app2.example.com` -> weitere App
 
 ### 2.3 Dokumente und Tester-Formular auf Website
 
@@ -83,6 +107,29 @@ Lizenz-/Admin-Variablen (bereits vorhanden):
 4. Log/Audit mindestens fuer Lizenz-Admin-Endpunkte und Ticket-IDs.
 5. CORS auf die produktive Domain begrenzen.
 
+## 5a. Baukasten-Architektur fuer mehrere Apps (wichtig)
+
+Zielbild: Apps sind einzeln deploybar, aber untereinander erweiterbar und datenfaehig.
+
+Technische Leitlinien:
+
+1. API-first je App:
+- Jede App bietet klar versionierte Endpunkte (`/api/v1/...`).
+
+2. Gemeinsame Vertrauensschicht:
+- Service-zu-Service Auth mit API-Key oder JWT (spaeter OAuth2).
+
+3. Event-getriebene Erweiterbarkeit:
+- Kernereignisse als Webhooks/Event-Feeds (z. B. `ticket.created`, `script.updated`).
+
+4. Gemeinsame IDs:
+- Ticket-/Objekt-IDs eindeutig und serviceuebergreifend nutzbar.
+
+5. Vertrag statt Direktkopplung:
+- Austausch nur ueber dokumentierte API-/Event-Vertraege, keine direkten DB-Zugriffe zwischen Apps.
+
+Ergebnis: Jede App bleibt autonom, aber das Gesamtsystem funktioniert wie ein Baukastensystem.
+
 ## 6. Go-Live-Checkliste Hostinger (MVP)
 
 1. VPS, Domain und TLS aktiv.
@@ -104,6 +151,11 @@ Lizenz-/Admin-Variablen (bereits vorhanden):
   2. Build Frontend + Backend
   3. Prozess-Neustart per pm2 oder systemd
 - Optional spaeter: automatisierter Deploy-Job ueber CI.
+
+Fuer Mehrserver-Betrieb:
+
+- Update pro App-Server separat (kein globaler Full-Stop notwendig).
+- Hauptwebsite kann unveraendert online bleiben, waehrend einzelne Apps aktualisiert werden.
 
 ## 8. Prioritaetsprotokoll
 

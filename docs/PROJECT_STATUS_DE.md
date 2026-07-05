@@ -28,6 +28,7 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 - Projektanweisung protokolliert: rechtliche Hinweise zu Saarwood und Softwareentwicklungsfirma werden erst am Schluss eingepflegt; priorisiert werden aktuell MVP- und Public-Beta-Funktionalitaet.
 - Hostinger-Konzept fuer Public Beta + Support erstellt (`docs/HOSTINGER_PUBLIC_BETA_SUPPORT_CONCEPT_DE.md`), inkl. Trennung Support-UI vs. Prompter-Output.
 - Erweiterte Hostinger-Anforderung dokumentiert: zentrale Hauptseite fuer mehrere Apps plus App-Unterseiten (`/apps/<name>/...`) und Teleprompter-Dokumente/Formular direkt verlinkbar aus App und Website.
+- Mehrserver-/Baukasten-Prinzip dokumentiert: Hauptwebsite kann getrennt vom Teleprompter-App-Server laufen; App-uebergreifender Datenaustausch erfolgt API-/Event-basiert statt direkter DB-Kopplung.
 
 ## 2. Aktueller technischer Ist-Stand
 

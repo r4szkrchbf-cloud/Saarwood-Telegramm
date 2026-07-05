@@ -202,6 +202,19 @@ Support-Zugang direkt in der App (Kontakt, Chat, Ticketformular), ohne Einfluss 
 - [ ] Ticket-ID ist zentral fortlaufend und supportfaehig (z. B. `SWD-YYYY-XXXXXX`)
 - [ ] Output-Only-View (`?view=prompter&output=1`) bleibt frei von Support-UI
 
+### TICKET-026 · Plattform-Baukasten fuer mehrere Apps (API + Events)
+
+**Prioritaet:** P1
+**Beschreibung:**
+Die Plattform soll aus mehreren Apps bestehen, die zentral auf der Hauptwebsite beworben werden, aber technisch als entkoppelte Services laufen und Daten standardisiert austauschen.
+
+**Akzeptanzkriterien:**
+- [ ] API-Vertrag fuer app-uebergreifende Calls dokumentiert (`/api/v1/...`)
+- [ ] Event-Vertrag fuer Kernereignisse dokumentiert (z. B. `ticket.created`, `script.updated`)
+- [ ] Service-zu-Service-Auth-Standard festgelegt (API-Key/JWT)
+- [ ] Keine direkte DB-Kopplung zwischen Apps (nur API/Event)
+- [ ] Rollout-Schema fuer getrennte App-Server (www + app-subdomains/-paths) dokumentiert
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
@@ -477,3 +490,4 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-023  | Admin-/Support-Lizenzprozess             | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-024  | Public MVP Rollout Internet + Offline    | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-025  | In-App Supportkontakt + Chat + Tickets   | 3     | P0        | Alle         | 🔲 Offen     |
+| TICKET-026  | Plattform-Baukasten API + Events         | 3     | P1        | Alle         | 🔲 Offen     |
