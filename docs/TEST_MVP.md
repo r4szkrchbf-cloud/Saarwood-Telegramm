@@ -970,3 +970,31 @@ Offene Funktionswunsche final abdecken: Richtung per Pfeiltasten, Basic-Tier ohn
 | 16 | 2026-07-05 12:30:37 | Vollflaeche Hochkant + Runtime-Stabilisierung | PASS | GRUEN |
 | 17 | 2026-07-05 12:40:24 | Speed-UI umgestellt und Dev-Watcher stabilisiert | PASS | GRUEN |
 | 18 | 2026-07-05 12:51:34 | Direction-Hotkeys + Tier-Gating + Fullscreen-Hochkant | PASS | GRUEN |
+| 19 | 2026-07-05 12:56:00 | Professional-Tier + Start/Pause Live-Retest | PASS | GRUEN |
+
+---
+
+## Runde 19 - 2026-07-05 12:56:00 UTC (Professional + Transport-Retest)
+
+### Ziel
+
+Nach Runde 18 die noch offenen Live-Nachweise fuer Professional-Tier und Start/Pause-Verhalten unter laufender Session abschliessen.
+
+### Durchgefuehrte Testpunkte
+
+1. Tier-Umschaltung auf Professional:
+	- Cue Marker sichtbar und bedienbar
+	- Voice Tracking nicht als Checkbox sichtbar
+	- Stattdessen Infohinweis "Voice tracking is available in Expert tier."
+	- Ergebnis: PASS
+
+2. Transport-Retest Start/Pause:
+	- Play gestartet (Button wechselt auf Pause)
+	- Pause geklickt (Button zurueck auf Play, Status zeigt "PAUSED")
+	- Kein Haengen beobachtet
+	- Ergebnis: PASS
+
+### Ergebnis Runde 19
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
