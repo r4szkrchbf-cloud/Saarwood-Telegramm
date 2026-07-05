@@ -201,6 +201,43 @@ Kontext: P0-Fix fuer Frontend-Testharness und finaler Voll-Gate-Lauf fuer MVP-LA
 
 ---
 
+## Eintrag 2026-07-05 00:57 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Erster Live-Test direkt im Browser, inklusive sichtbarer Bedienung und Runtime-Diagnose.
+
+### Ausgangsproblem
+- Frontend konnte starten, fiel aber im Browser in einen React-Loop:
+  - `Maximum update depth exceeded`
+  - `getSnapshot should be cached`
+- Parallel trat beim Dev-Start temporaer ein Abhaengigkeitsproblem auf:
+  - `@tiptap/core/dist/index.js.map` mit `Unterminated string literal`.
+
+### Durchgefuehrte Schritte
+1. Paketintegritaet wiederhergestellt (`@tiptap/core` neu installiert/ersetzt).
+2. Store-Subscriptions stabilisiert:
+   - `SettingsPanel`: Ganz-Store-Subscription entfernt, auf Einzel-Selectoren umgestellt.
+   - `useHotkeyManager`: Objekt-Selector entfernt, auf Einzel-Selectoren umgestellt.
+3. Browser neu geladen und Live-Bedientest durchgefuehrt:
+   - Verbindung verbunden
+   - Speed angepasst
+   - Rotation und Mirror getestet
+   - Skript-Titel gesetzt und Segment hinzugefuegt
+4. Frontend-Testlauf nach Fix erneut ausgefuehrt (PASS).
+
+### Ergebnis
+- Runtime-Loop behoben, App wieder bedienbar.
+- Erster sichtbarer Live-Smoke-Test erfolgreich.
+- Frontend-Tests weiterhin gruen (25/25).
+
+### Offene Punkte
+- Nicht-blockierende Tiptap-Warnung bleibt: `Duplicate extension names: ['underline']`.
+
+### Lessons Learned
+- In Zustand v5 verursachen Ganz-Store- oder Objekt-Selectoren leicht Re-Render-Loops.
+- Fuer stabile Runtime in React 18 besser selektiv und granular subscriben.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)

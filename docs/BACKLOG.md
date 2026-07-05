@@ -42,6 +42,32 @@ Bestehende Doku wich vom aktuellen Teststatus ab. Es braucht einen kleinen Gover
 - [ ] Neue Statusberichte werden datiert unter `docs/` abgelegt
 - [ ] Jeder Build-/Testlauf wird mit Datum/Uhrzeit und Ergebnis dokumentiert
 
+### TICKET-016 · Frontend-Bundlegroesse optimieren (Vite Warning > 500 kB)
+
+**Prioritaet:** P1  
+**Beschreibung:**  
+Der Frontend-Build ist erfolgreich, meldet aber eine bekannte Performance-Warnung: ein Haupt-Chunk liegt ueber dem Vite-Standardgrenzwert von 500 kB (minifiziert).  
+Wichtig: Das ist **kein Laufzeitfehler** und **kein MVP-Blocker**. Die App ist betriebsbereit.  
+Trotzdem ist das Thema relevant fuer Ladezeit und Reaktionsverhalten auf schwaecheren Clients, besonders bei laengeren Feldtests mit echten Nutzern.
+
+**Warum P1 (und nicht P0):**
+- Funktionale Stabilitaet und Test-Gates sind bereits gruen.
+- Kein Einfluss auf Go/No-Go des MVP-LAN-Tests.
+- Performance-Verbesserung hat hohen Nutzen, aber nicht die gleiche Dringlichkeit wie Betriebsfaehigkeit.
+
+**Technische Zielrichtung:**
+- Code-Splitting fuer nicht-kritische UI-Bereiche einführen (`dynamic import()`),
+- optional `manualChunks` in Vite/Rollup definieren,
+- grosse Abhaengigkeiten und eager Imports reduzieren,
+- Messung je Schritt dokumentieren.
+
+**Akzeptanzkriterien:**
+- [ ] Build bleibt gruen (`npm run build --workspace=packages/frontend`)
+- [ ] Warnung zur Chunk-Groesse ist entfernt oder nachvollziehbar reduziert
+- [ ] Mindestens ein wirksamer Split ist umgesetzt (lazy geladenes Feature oder manueller Chunk)
+- [ ] Vorher/Nachher-Messung dokumentiert (Chunk-Groesse minifiziert + gzip)
+- [ ] Keine Regression in Frontend-Tests (`npm run test --workspace=packages/frontend`)
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
@@ -311,3 +337,4 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-011  | Redundanz-Sync implementieren            | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
 | TICKET-012  | Betriebsdokumentation ergänzen           | 3     | Niedrig   | Alle         | 🔲 Offen     |
 | TICKET-013  | CEA-708 Caption Export                   | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
+| TICKET-016  | Frontend-Bundlegroesse optimieren        | 2     | P1        | Alle         | 🔲 Offen     |

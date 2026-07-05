@@ -25,13 +25,11 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  ]            → Rotate +90°
  */
 export function useHotkeyManager(): void {
-  const { play, pause, stop, setSpeed, setDisplay } = usePrompterStore((s) => ({
-    play: s.play,
-    pause: s.pause,
-    stop: s.stop,
-    setSpeed: s.setSpeed,
-    setDisplay: s.setDisplay,
-  }));
+  const play = usePrompterStore((s) => s.play);
+  const pause = usePrompterStore((s) => s.pause);
+  const stop = usePrompterStore((s) => s.stop);
+  const setSpeed = usePrompterStore((s) => s.setSpeed);
+  const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   useEffect(() => {
     // ── Transport ──────────────────────────────────────────────────────────

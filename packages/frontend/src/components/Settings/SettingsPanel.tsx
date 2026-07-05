@@ -11,19 +11,17 @@ import './SettingsPanel.css';
  * All changes are persisted to localStorage via Zustand's persist middleware.
  */
 export function SettingsPanel() {
-  const {
-    display,
-    profiles,
-    activeProfileId,
-    tier,
-    setDisplay,
-    speechEnabled,
-    setSpeechEnabled,
-    saveProfile,
-    deleteProfile,
-    applyProfile,
-    setTier,
-  } = usePrompterStore();
+  const display = usePrompterStore((s) => s.display);
+  const profiles = usePrompterStore((s) => s.profiles);
+  const activeProfileId = usePrompterStore((s) => s.activeProfileId);
+  const tier = usePrompterStore((s) => s.tier);
+  const setDisplay = usePrompterStore((s) => s.setDisplay);
+  const speechEnabled = usePrompterStore((s) => s.speechEnabled);
+  const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
+  const saveProfile = usePrompterStore((s) => s.saveProfile);
+  const deleteProfile = usePrompterStore((s) => s.deleteProfile);
+  const applyProfile = usePrompterStore((s) => s.applyProfile);
+  const setTier = usePrompterStore((s) => s.setTier);
 
   const fontSizeId = useId();
   const fontFamilyId = useId();

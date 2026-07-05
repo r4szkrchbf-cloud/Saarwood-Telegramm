@@ -235,3 +235,59 @@ Gesamtergebnis: Alle Gates gruen, nur bekannte Build-Warnung zur Bundle-Groesse.
 | 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
 | 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
 | 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+
+---
+
+## Runde 4 — 2026-07-05 00:57 UTC (Erster Live-Smoke-Test im Browser)
+
+### Ziel
+
+Ersten realen Bedien-Test direkt in der laufenden Browser-Instanz durchfuehren und gleichzeitig technische Stabilitaet verifizieren.
+
+### Beobachteter Startzustand
+
+- Frontend startete, aber Runtime blockierte durch React-Fehler:
+	- `Maximum update depth exceeded`
+	- Hinweis: `The result of getSnapshot should be cached...`
+- Zusaetzlich war bei erstem Start eine defekte Source-Map in `@tiptap/core` sichtbar (`Unterminated string literal` in `index.js.map`).
+
+### Durchgefuehrte Behebungen waehrend des Tests
+
+1. Abhaengigkeit repariert:
+- `@tiptap/core` neu installiert/ersetzt, damit Vite wieder stabil startet.
+
+2. Runtime-Loop behoben:
+- `SettingsPanel` von Ganz-Store-Subscription auf stabile Einzel-Selectoren umgestellt.
+- `useHotkeyManager` von Objekt-Selector auf stabile Einzel-Selectoren umgestellt.
+
+### Live-Bedientest (im Browser sichtbar durchgefuehrt)
+
+- Verbindung: Status wechselte auf `Remote control connected`.
+- Steuerung:
+	- Play/Stop ausgefuehrt
+	- Speed von 80 auf 85 erhoeht
+	- Rotation auf 90° gesetzt
+	- H-Mirror aktiviert
+- Editor:
+	- Titel gesetzt: `LAN Pilot Test Runde 1`
+	- Neues Segment hinzugefuegt
+
+### Validierung nach Fix
+
+- Frontend-Tests erneut ausgefuehrt: PASS (25/25)
+
+### Ergebnis Runde 4
+
+- Ergebnis: PASS (mit bekannten nicht-blockierenden Warnungen)
+- Bewertung: Erster Live-Smoke-Test erfolgreich durchgefuehrt.
+- Offene Warnungen:
+	- Tiptap meldet weiterhin `Duplicate extension names: ['underline']` (kein Blocker, aber bereinigen).
+
+## Runden-Uebersicht (aktuell)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |

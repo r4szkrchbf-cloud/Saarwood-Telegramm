@@ -83,3 +83,10 @@ Damit ist der MVP fuer den echten LAN-Langzeittest betriebsbereit.
 1. Pilot-Langzeittest mit echten Usern starten.
 2. Beobachtung und Incident-Logging durchgaengig fuehren.
 3. Nach Testfenster Abschlussbericht und P1-Backlog-Ableitung erstellen.
+
+## 8. Live-Test Delta (heute)
+
+- Erster browsergestuetzter Live-Smoke-Test wurde durchgefuehrt.
+- Initialer Runtime-Blocker (`Maximum update depth exceeded`) wurde waehrend des Tests behoben.
+- Bedien-Test erfolgreich: Steuerung, Speed, Rotation, Mirror und Segment-Workflow funktionierten.
+- Aktuelle Restwarnung: Tiptap meldet doppelte `underline`-Extension (kein Blocker, als P1/P2-Bereinigung geeignet).

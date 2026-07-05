@@ -7,6 +7,7 @@ _Stand: 2026-07-05 02:45 UTC (Code- und Doku-Abgleich nach P0-Testharness-Fix)_
 Das Projekt ist als Monorepo vollstaendig lauffaehig wiederhergestellt (Frontend, Backend, Electron, Docs).
 Build und Tests sind fuer Frontend und Backend gruen.
 Der MVP ist damit betriebsbereit fuer den echten LAN-Langzeittest mit echten Nutzern.
+Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
 
 ## 2. Aktueller technischer Ist-Stand
 
@@ -50,6 +51,10 @@ Der MVP ist damit betriebsbereit fuer den echten LAN-Langzeittest mit echten Nut
 
 2. NDI produktiv noch nicht verifiziert
 - Risiko nur fuer Broadcast-Integrationsphase; fuer MVP-LAN nicht blockierend.
+
+3. UI-Editor Warnung (Tiptap Duplicate Extension)
+- Risiko: moegliche Inkonsistenzen in Editor-Funktionen bei spaeteren Erweiterungen.
+- Status: aktuell beobachtet, fuer MVP-LAN nicht blockierend.
 
 ## 6. Naechste Schritte (Prioritaet)
 
