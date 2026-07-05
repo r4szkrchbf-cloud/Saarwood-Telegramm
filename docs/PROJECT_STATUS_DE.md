@@ -34,16 +34,19 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
 ## 4. MVP-Readiness fuer realen Langzeittest
 
 ### Technisch ausreichend fuer Start
-- Frontend + Backend bauen erfolgreich
-- Runtime-Kernpfade sind vorhanden
-- Repo und Dokumentation sind wieder auf einem konsolidierten Stand
-
-### P0 vor produktiver Testwelle
+ Die App ist damit betriebsbereit fuer den echten LAN-Langzeittest mit echten Nutzern.
+ Wir befinden uns weiterhin in der Testphase; der naechste Schritt ist die oeffentliche MVP-Variante auf einem VPS.
+ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt.
 1. Frontend-Testharness stabilisieren (erledigt)
 2. Smoke-Test-Skript fuer LAN-Lauf dokumentieren (Start, Browser-Checks, WS-Verbindung)
 3. Akzeptanzkriterien fuer Langzeittest festziehen (Dauer, Nutzeranzahl, Erfolgsmetriken, Abbruchkriterien)
 
 ## 5. Relevante Risiken
+
+### Oeffentlicher MVP-Pfad
+1. Hostinger VPS als Public-Hosting-Variante festlegen
+2. Frontend/Backend-Deployment fuer oeffentlichen Zugriff vorbereiten
+3. WebSocket-URL und Betriebsdoku fuer externe Nutzer anpassen
 
 1. Bundle-Groesse
 - Risiko: langsameres Initial-Load auf schwachen Clients.

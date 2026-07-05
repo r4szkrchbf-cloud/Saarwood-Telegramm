@@ -90,3 +90,10 @@ Damit ist der MVP fuer den echten LAN-Langzeittest betriebsbereit.
 - Initialer Runtime-Blocker (`Maximum update depth exceeded`) wurde waehrend des Tests behoben.
 - Bedien-Test erfolgreich: Steuerung, Speed, Rotation, Mirror und Segment-Workflow funktionierten.
 - Aktuelle Restwarnung: Tiptap meldet doppelte `underline`-Extension (kein Blocker, als P1/P2-Bereinigung geeignet).
+
+## 9. Public MVP Pfad
+
+- Wir sind weiterhin in der Testphase und noch nicht im oeffentlichen Pilotbetrieb.
+- Fuer die oeffentliche MVP-Variante ist ein eigener VPS die passende Loesung.
+- Hostinger VPS ist der bevorzugte Zielpfad, weil dort ein Node/Express-Backend mit WebSockets dauerhaft betrieben werden kann.
+- WordPress oder klassisches Shared Hosting sind fuer diesen Stack nicht geeignet.

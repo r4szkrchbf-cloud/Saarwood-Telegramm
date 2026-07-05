@@ -68,6 +68,32 @@ Trotzdem ist das Thema relevant fuer Ladezeit und Reaktionsverhalten auf schwaec
 - [ ] Vorher/Nachher-Messung dokumentiert (Chunk-Groesse minifiziert + gzip)
 - [ ] Keine Regression in Frontend-Tests (`npm run test --workspace=packages/frontend`)
 
+### TICKET-017 · Hostinger VPS als oeffentliche MVP-Variante vorbereiten
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+Wir sind aktuell noch in der Testphase und wollen die MVP-Version danach als oeffentliche Web-App fuer echte Nutzer bereitstellen.  
+WordPress oder klassisches Shared Hosting sind fuer unseren Node/Express/WebSocket-Stack nicht passend. Die naechste realistische Public-Hosting-Variante ist ein eigener VPS, konkret Hostinger VPS, weil dort ein dauerhafter Node-Server mit WebSocket-Unterstuetzung betrieben werden kann.
+
+**Warum diese Aufgabe wichtig ist:**
+- Die App ist bereits lokal testbar und die naechsten Schritte sollen von Test zu realem Pilotbetrieb fuehren.
+- Ein VPS erlaubt uns Frontend, Backend und WebSocket-Sync unter einer kontrollierten Infrastruktur zu betreiben.
+- Damit koennen wir die MVP-Version fuer externe Nutzer oeffentlich erreichbar machen.
+
+**Technische Zielrichtung:**
+- Node/Express-Backend dauerhaft auf einem VPS betreiben
+- WebSocket-Verbindung stabil unter einer oeffentlichen Domain bereitstellen
+- Frontend und Backend mit Reverse Proxy oder aehnlicher Infrastruktur verbinden
+- Deployment-Dokumentation fuer den öffentlichen Pilotbetrieb erstellen
+
+**Akzeptanzkriterien:**
+- [ ] Hostinger VPS-Plan ausgewaehlt und dokumentiert
+- [ ] Public MVP-Architektur festgelegt (Domain, Frontend, Backend, WebSocket)
+- [ ] `VITE_WS_URL` oder vergleichbare Konfiguration fuer externe Backend-URL umgesetzt
+- [ ] Test-Deployment auf VPS erfolgreich
+- [ ] Betriebsdoku fuer oeffentliche Nutzung erstellt
+- [ ] Pilotbetrieb fuer echte Nutzer moeglich
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
@@ -338,3 +364,4 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-012  | Betriebsdokumentation ergänzen           | 3     | Niedrig   | Alle         | 🔲 Offen     |
 | TICKET-013  | CEA-708 Caption Export                   | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
 | TICKET-016  | Frontend-Bundlegroesse optimieren        | 2     | P1        | Alle         | 🔲 Offen     |
+| TICKET-017  | Hostinger VPS public MVP vorbereiten     | 3     | P0        | Alle         | 🔲 Offen     |
