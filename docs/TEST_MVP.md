@@ -707,3 +707,50 @@ Space-Hotkey in unterschiedlichen Fokuskontexten verifizieren.
 | 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
 | 12 | 2026-07-05 12:14:54 | Rotation 180/270 plus Fit-Nachweis | n/a | GRUEN |
 | 13 | 2026-07-05 12:15:48 | Space-Hotkey in Normal-/Input-Fokus geprueft | n/a | GRUEN |
+
+---
+
+## Runde 14 - 2026-07-05 12:16:39 UTC (Direction + Slider unter Last)
+
+### Ziel
+
+Verhalten von Direction- und Slider-Steuerung im laufenden Scroll (Play-Betrieb) pruefen.
+
+### Durchgefuehrte Testpunkte
+
+1. Direction Toggle waehrend Play:
+	- Richtung von down auf up gewechselt
+	- Ergebnis: PASS
+
+2. Slider ArrowRight waehrend Play:
+	- Speed von 200 auf 201
+	- Ergebnis: PASS
+
+3. Slider ArrowLeft waehrend Play:
+	- Speed von 201 auf 200
+	- Ergebnis: PASS
+
+### Ergebnis Runde 14
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+- Testlauf kann mit weiterem 3er-Block fortgesetzt werden
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
+| 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+| 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
+| 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
+| 12 | 2026-07-05 12:14:54 | Rotation 180/270 plus Fit-Nachweis | n/a | GRUEN |
+| 13 | 2026-07-05 12:15:48 | Space-Hotkey in Normal-/Input-Fokus geprueft | n/a | GRUEN |
+| 14 | 2026-07-05 12:16:39 | Direction- und Slider-Test unter Play-Betrieb | n/a | GRUEN |
