@@ -101,6 +101,9 @@ Lizenz-Endpunkte (Phase A):
 - `GET /api/license/status` (Header optional: `x-license-token` oder `Authorization: Bearer ...`)
 - `POST /api/license/activate` mit JSON-Body `{ "token": "..." }`
 
+Interne Support-Kommandos (Phase B) sind dokumentiert in:
+- `docs/SUPPORT_LICENSE_RUNBOOK_DE.md`
+
 ---
 
 ## Desktop-App (Electron)
