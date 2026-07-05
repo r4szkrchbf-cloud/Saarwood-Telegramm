@@ -48,6 +48,17 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [calibrationInfo, setCalibrationInfo] = useState('');
   const [calibrationRecommendation, setCalibrationRecommendation] = useState<number | null>(null);
   const [scriptIoInfo, setScriptIoInfo] = useState('');
+  const [supportInfo, setSupportInfo] = useState({
+    contactEmail: 'support@saarwood.local',
+    chatUrl: '' as string | null,
+    chatLabel: 'Support Chat',
+  });
+  const [supportStatus, setSupportStatus] = useState('');
+  const [supportSending, setSupportSending] = useState(false);
+  const [ticketName, setTicketName] = useState('');
+  const [ticketEmail, setTicketEmail] = useState('');
+  const [ticketSubject, setTicketSubject] = useState('');
+  const [ticketMessage, setTicketMessage] = useState('');
   const [activePage, setActivePage] = useState<'settings' | 'about'>('settings');
   const importInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -65,6 +76,35 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         if (!active) return;
         setAudioInputs([]);
       });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadSupportInfo = async () => {
+      try {
+        const response = await fetch('/api/support/info');
+        if (!response.ok) return;
+        const payload = await response.json() as {
+          contactEmail?: string;
+          chatUrl?: string | null;
+          chatLabel?: string;
+        };
+        if (!active) return;
+        setSupportInfo({
+          contactEmail: payload.contactEmail || 'support@saarwood.local',
+          chatUrl: payload.chatUrl || null,
+          chatLabel: payload.chatLabel || 'Support Chat',
+        });
+      } catch {
+        // Keep defaults when support service info is unavailable.
+      }
+    };
+
+    loadSupportInfo();
     return () => {
       active = false;
     };
@@ -314,6 +354,47 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       setIsCalibrating(false);
     }
   }, [tier, isCalibrating, speechEnabled, setSpeechEnabled, setSpeechSensitivity, CALIBRATION_PHRASE]);
+
+  const handleCreateSupportTicket = useCallback(async () => {
+    if (supportSending) return;
+
+    if (!ticketName.trim() || !ticketEmail.trim() || !ticketSubject.trim() || !ticketMessage.trim()) {
+      setSupportStatus('Bitte alle Ticket-Felder ausfuellen.');
+      return;
+    }
+
+    setSupportSending(true);
+    setSupportStatus('Support-Ticket wird gesendet ...');
+
+    try {
+      const response = await fetch('/api/support/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: ticketName.trim(),
+          email: ticketEmail.trim(),
+          subject: ticketSubject.trim(),
+          message: ticketMessage.trim(),
+          appVersion: '1.0.0-beta.1',
+          context: 'split',
+        }),
+      });
+
+      if (!response.ok) {
+        setSupportStatus('Ticket konnte nicht erstellt werden.');
+        return;
+      }
+
+      const payload = await response.json() as { id?: string };
+      setSupportStatus(`Ticket erstellt: ${payload.id ?? 'ok'}`);
+      setTicketSubject('');
+      setTicketMessage('');
+    } catch {
+      setSupportStatus('Ticket konnte nicht gesendet werden (Netzwerkfehler).');
+    } finally {
+      setSupportSending(false);
+    }
+  }, [supportSending, ticketName, ticketEmail, ticketSubject, ticketMessage]);
 
   return (
     <div className="settings-panel" role="complementary" aria-label="Display settings">
@@ -708,6 +789,92 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </ul>
         </fieldset>
       )}
+
+      <fieldset className="settings-group">
+        <legend>Support</legend>
+
+        <div className="settings-row support-row">
+          <span className="support-label">Kontakt</span>
+          <a href={`mailto:${supportInfo.contactEmail}`} className="support-link">
+            {supportInfo.contactEmail}
+          </a>
+        </div>
+
+        <div className="settings-row support-row">
+          <span className="support-label">Direkt-Chat</span>
+          {supportInfo.chatUrl ? (
+            <button
+              type="button"
+              className="btn-small"
+              onClick={() => window.open(supportInfo.chatUrl as string, '_blank', 'noopener,noreferrer')}
+            >
+              {supportInfo.chatLabel}
+            </button>
+          ) : (
+            <span className="settings-value support-muted">Chat aktuell nicht konfiguriert</span>
+          )}
+        </div>
+
+        <div className="settings-row support-form-row">
+          <label htmlFor="support-ticket-name">Name</label>
+          <input
+            id="support-ticket-name"
+            type="text"
+            value={ticketName}
+            onChange={(e) => setTicketName(e.target.value)}
+            className="support-input"
+            placeholder="Ihr Name"
+          />
+        </div>
+
+        <div className="settings-row support-form-row">
+          <label htmlFor="support-ticket-email">E-Mail</label>
+          <input
+            id="support-ticket-email"
+            type="email"
+            value={ticketEmail}
+            onChange={(e) => setTicketEmail(e.target.value)}
+            className="support-input"
+            placeholder="name@domain.tld"
+          />
+        </div>
+
+        <div className="settings-row support-form-row">
+          <label htmlFor="support-ticket-subject">Betreff</label>
+          <input
+            id="support-ticket-subject"
+            type="text"
+            value={ticketSubject}
+            onChange={(e) => setTicketSubject(e.target.value)}
+            className="support-input"
+            placeholder="Kurzer Betreff"
+          />
+        </div>
+
+        <div className="settings-row support-form-row support-message-row">
+          <label htmlFor="support-ticket-message">Beschreibung</label>
+          <textarea
+            id="support-ticket-message"
+            value={ticketMessage}
+            onChange={(e) => setTicketMessage(e.target.value)}
+            className="support-textarea"
+            placeholder="Was ist passiert?"
+            rows={4}
+          />
+        </div>
+
+        <div className="settings-row support-row">
+          <button
+            type="button"
+            className="btn-small"
+            onClick={handleCreateSupportTicket}
+            disabled={supportSending}
+          >
+            {supportSending ? 'Sende Ticket ...' : 'Support-Ticket erstellen'}
+          </button>
+          {supportStatus && <span className="support-status">{supportStatus}</span>}
+        </div>
+      </fieldset>
         </>
       )}
 

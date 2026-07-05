@@ -188,6 +188,19 @@ Bestehende Strategie fuer oeffentlichen Internet-Betrieb und Offline-Nutzung in 
 - [ ] Electron-Offline-Betrieb als offizieller Fallback dokumentiert
 - [ ] Abnahme-Checkliste fuer Go-Live (Health, Lizenzstatus, WS, Rollback) erstellt
 
+### TICKET-025 · In-App Supportkontakt, Chat und Tickets (operator-only)
+
+**Prioritaet:** P0
+**Beschreibung:**
+Support-Zugang direkt in der App (Kontakt, Chat, Ticketformular), ohne Einfluss auf Prompter-Output oder Laufzeit-Performance.
+
+**Akzeptanzkriterien:**
+- [ ] Support-Bereich im Settings-Panel vorhanden
+- [ ] Kontakt-E-Mail und Chat-Link konfigurierbar via Backend-Env
+- [ ] Ticket-Erstellung via API-Endpunkt erfolgreich
+- [ ] Ticket wird serverseitig gespeichert und optional per Webhook weitergeleitet
+- [ ] Output-Only-View (`?view=prompter&output=1`) bleibt frei von Support-UI
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
@@ -462,3 +475,4 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-022  | Lizenz-Kill-Switch Beta V1               | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-023  | Admin-/Support-Lizenzprozess             | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-024  | Public MVP Rollout Internet + Offline    | 3     | P0        | Alle         | 🔲 Offen     |
+| TICKET-025  | In-App Supportkontakt + Chat + Tickets   | 3     | P0        | Alle         | 🔲 Offen     |

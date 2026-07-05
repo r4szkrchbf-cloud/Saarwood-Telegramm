@@ -5,6 +5,7 @@ import type { ControlServer } from '../websocket/ControlServer';
 import type { MosHandler } from '../mos/MosHandler';
 import type { NdiAdapter } from '../ndi/NdiAdapter';
 import type { LicenseService } from '../license/LicenseService';
+import type { SupportService } from '../support/SupportService';
 
 /**
  * REST API routes
@@ -38,6 +39,7 @@ export function createRouter(
   mosHandler: MosHandler,
   ndiAdapter: NdiAdapter,
   licenseService: LicenseService,
+  supportService: SupportService,
 ): Router {
   const router = Router();
   const adminApiKey = process.env.ADMIN_API_KEY ?? '';
@@ -63,6 +65,15 @@ export function createRouter(
     channels: z.array(z.string().min(1)).default(['web', 'electron', 'pwa']),
     features: z.array(z.string().min(1)).default([]),
     licenseId: z.string().min(1).optional(),
+  });
+
+  const supportTicketSchema = z.object({
+    name: z.string().min(2).max(120),
+    email: z.string().email().max(200),
+    subject: z.string().min(3).max(200),
+    message: z.string().min(10).max(8000),
+    appVersion: z.string().max(64).default('unknown'),
+    context: z.enum(['editor', 'split', 'prompter', 'unknown']).default('unknown'),
   });
 
   const getTokenFromRequest = (req: Request): string | null => {
@@ -222,6 +233,33 @@ export function createRouter(
     } catch (err) {
       const message = err instanceof Error ? err.message : 'license-create-failed';
       res.status(500).json({ ok: false, error: message });
+    }
+  });
+
+  // ─── Support contact/chat/ticket API ───────────────────────────────────
+  router.get('/support/info', (_req, res) => {
+    res.json({ ok: true, ...supportService.getInfo() });
+  });
+
+  router.post('/support/tickets', async (req, res) => {
+    const parsed = supportTicketSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({
+        ok: false,
+        error: 'validation-failed',
+        issues: parsed.error.issues.map((i) => ({
+          path: i.path.join('.'),
+          message: i.message,
+        })),
+      });
+      return;
+    }
+
+    try {
+      const result = await supportService.createTicket(parsed.data);
+      res.status(201).json({ ok: true, ...result });
+    } catch {
+      res.status(500).json({ ok: false, error: 'support-ticket-create-failed' });
     }
   });
 

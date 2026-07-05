@@ -88,6 +88,11 @@ Umgebungsvariablen für das Backend:
 | `LICENSE_PRIVATE_KEY_PEM` | _(leer)_ | Ed25519 Private Key (PKCS8 PEM) fuer serverseitiges Admin-Token-Minting |
 | `LICENSE_REVOCATION_FILE` | `packages/backend/config/license-revocations.json` | Revocation-Liste fuer gesperrte Lizenzen/Generationen |
 | `ADMIN_API_KEY` | _(leer)_ | Aktiviert geschuetzte Admin-Lizenz-Endpunkte unter `/api/admin/license/*` |
+| `SUPPORT_CONTACT_EMAIL` | `support@saarwood.local` | Sichtbarer Kontakt im Settings-Supportbereich |
+| `SUPPORT_CHAT_URL` | _(leer)_ | Externer Direkt-Chat-Link (z. B. Crisp, Tawk, Slack-Bridge) |
+| `SUPPORT_CHAT_LABEL` | `Support Chat` | Label des Chat-Buttons im UI |
+| `SUPPORT_TICKET_FILE` | `packages/backend/data/support-tickets.ndjson` | Lokale Ablage fuer Supporttickets |
+| `SUPPORT_TICKET_WEBHOOK_URL` | _(leer)_ | Optionaler Webhook fuer Ticket-Weiterleitung (z. B. Helpdesk) |
 
 Beispiel mit allen Features:
 ```bash
@@ -113,6 +118,10 @@ Phase-C Admin-API (nur mit `ADMIN_API_KEY`):
 - `POST /api/admin/license/revoke-generation` mit `{ "generation": "beta-v1" }`
 - `POST /api/admin/license/unrevoke-generation` mit `{ "generation": "beta-v1" }`
 - `POST /api/admin/license/create` (mintet signierte Lizenz serverseitig)
+
+Support-API:
+- `GET /api/support/info`
+- `POST /api/support/tickets`
 
 ---
 

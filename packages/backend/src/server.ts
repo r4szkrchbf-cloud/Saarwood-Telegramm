@@ -7,6 +7,7 @@ import { MosHandler } from './mos/MosHandler';
 import { createNdiAdapter } from './ndi/NdiAdapter';
 import { createRouter } from './routes/api';
 import { LicenseService } from './license/LicenseService';
+import { SupportService } from './support/SupportService';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 
@@ -72,6 +73,7 @@ if (ENABLE_NDI) {
 
 const mosHandler = new MosHandler(MOS_PORT);
 const licenseService = new LicenseService();
+const supportService = new SupportService();
 
 if (ENABLE_MOS && APP_TIER !== 'basic') {
   mosHandler
@@ -92,7 +94,7 @@ if (ENABLE_MOS && APP_TIER !== 'basic') {
 
 // ─── REST API ─────────────────────────────────────────────────────────────────
 
-app.use('/api', createRouter(controlServer, mosHandler, ndiAdapter, licenseService));
+app.use('/api', createRouter(controlServer, mosHandler, ndiAdapter, licenseService, supportService));
 
 // ─── 404 fallback (SPA) ───────────────────────────────────────────────────────
 
@@ -134,4 +136,4 @@ process.on('SIGINT', () => {
   });
 });
 
-export { httpServer, controlServer, mosHandler, ndiAdapter, licenseService };
+export { httpServer, controlServer, mosHandler, ndiAdapter, licenseService, supportService };
