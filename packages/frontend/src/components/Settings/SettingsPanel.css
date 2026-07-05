@@ -40,6 +40,53 @@
   background: var(--hover);
 }
 
+.settings-page-switch {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+}
+
+.settings-page-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.settings-page-btn.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.settings-short-about {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.75rem;
+  background: var(--surface);
+}
+
+.settings-short-about h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.settings-short-about p {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.settings-short-about p:last-child {
+  margin-bottom: 0;
+}
+
 /* ─── Groups ──────────────────────────────────────────────────────────────── */
 
 .settings-group {

@@ -48,6 +48,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [calibrationInfo, setCalibrationInfo] = useState('');
   const [calibrationRecommendation, setCalibrationRecommendation] = useState<number | null>(null);
   const [scriptIoInfo, setScriptIoInfo] = useState('');
+  const [activePage, setActivePage] = useState<'settings' | 'about'>('settings');
   const importInputRef = useRef<HTMLInputElement | null>(null);
 
   const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
@@ -328,6 +329,30 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           Close
         </button>
       </div>
+
+      <div className="settings-page-switch" role="tablist" aria-label="Settings pages">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activePage === 'settings'}
+          className={['settings-page-btn', activePage === 'settings' ? 'active' : ''].join(' ')}
+          onClick={() => setActivePage('settings')}
+        >
+          Einstellungen
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activePage === 'about'}
+          className={['settings-page-btn', activePage === 'about' ? 'active' : ''].join(' ')}
+          onClick={() => setActivePage('about')}
+        >
+          Kurzbeschreibung
+        </button>
+      </div>
+
+      {activePage === 'settings' && (
+        <>
 
       {/* ─── Tier selector ─────────────────────────────────────────────── */}
       <fieldset className="settings-group">
@@ -682,6 +707,17 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             ))}
           </ul>
         </fieldset>
+      )}
+        </>
+      )}
+
+      {activePage === 'about' && (
+        <section className="settings-short-about" aria-label="Kurze App-Beschreibung">
+          <h3>Kurzbeschreibung</h3>
+          <p>SAARwooD Teleprompter Beta V1 ist eine Teleprompter-App fuer Editor, Split und Prompter-Ausgabe.</p>
+          <p>Sie bietet manuelle Steuerung, Cue-Marker, Spiegelung, Rotation und WebSocket-Sync.</p>
+          <p>Voice Tracking ist in dieser Beta weiterhin eingeschraenkt.</p>
+        </section>
       )}
     </div>
   );
