@@ -264,6 +264,41 @@ Kontext: Live-Vorfuehrung des Prompters von A bis Z im Browser.
 
 ---
 
+## Eintrag 2026-07-05 13:20 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Transparente Repo-Konsolidierung auf dem iMac, Verzeichnis-Aufraeumen, finaler Commit und Push nach GitHub.
+
+### Ausgangsproblem
+- Es existierten parallel mehrere Projektordner (`saarwood_telepromter_local`, `Saarwood-Telegramm-sync`, `saarwood_telepromter_from_cache`).
+- Dadurch bestand Risiko fuer Drift (uneinheitlicher Stand, doppelte Bearbeitung, unklare Quelle des finalen Codes).
+- Push war initial blockiert durch SSH-Auth-Fehler (`Permission denied (publickey)`).
+
+### Durchgefuehrte Schritte
+- Alle relevanten Desktop-Verzeichnisse gescannt und gegeneinander verglichen (Struktur, Git-Zustand, Dateidiffs).
+- Veralteten Cache-Ordner geloescht: `saarwood_telepromter_from_cache`.
+- Projektinhalte vereinheitlicht und auf einen Hauptordner festgelegt: `saarwood_telepromter_local`.
+- Duplikat-Ordner geloescht: `Saarwood-Telegramm-sync`.
+- Offene Doku-Aenderungen committed (`c34109a`).
+- SSH-Zugang repariert: korrekten Schluessel identifiziert und GitHub-Auth verifiziert.
+- Push nach GitHub erfolgreich durchgefuehrt.
+- Remote wieder auf Standardformat `git@github.com:...` zurueckgestellt und final getestet.
+
+### Ergebnis
+- Es gibt nur noch einen aktiven Teleprompter-Projektordner auf dem Desktop.
+- Lokaler und Remote-Stand sind synchron (`main` == `origin/main`).
+- Der Verlauf der Konsolidierung ist dokumentiert in:
+  - `docs/STATUSBERICHT_REPO_SYNC_DE_2026-07-05.md`
+
+### Offene Punkte
+- Keine offenen Git-Sync- oder Verzeichnis-Konsolidierungsprobleme.
+- Fachlich bleibt ASR/Voice-Tracking weiterhin separater Test-/Stabilisierungspunkt.
+
+### Lessons Learned
+- Bei mehrfachen Arbeitskopien zuerst immer den kanonischen Git-Stand bestimmen, dann auf einen Hauptordner reduzieren.
+- Vor dem Push Auth-Handshake gezielt pruefen (`ssh -T git@github.com`), um Iterationen zu sparen.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)
