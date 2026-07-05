@@ -147,6 +147,7 @@ export function ControlPanel() {
   const handleDirectionToggle = useCallback(() => {
     const dir = direction === 'down' ? 'up' : 'down';
     setDirection(dir);
+    wsService.send('SET_DIRECTION', { direction: dir });
     notifyManualControl();
   }, [direction, setDirection, notifyManualControl]);
 

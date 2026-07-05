@@ -27,6 +27,7 @@ export class ControlServer {
     isPlaying: false,
     speed: 80,
     position: 0,
+    direction: 'down' as 'down' | 'up',
   };
 
   constructor(httpServer: Server) {
@@ -93,6 +94,13 @@ export class ControlServer {
       case 'SET_SPEED': {
         const p = msg.payload as { speed?: number } | undefined;
         if (typeof p?.speed === 'number') this.state.speed = p.speed;
+        break;
+      }
+      case 'SET_DIRECTION': {
+        const p = msg.payload as { direction?: 'down' | 'up' } | undefined;
+        if (p?.direction === 'down' || p?.direction === 'up') {
+          this.state.direction = p.direction;
+        }
         break;
       }
       case 'SET_POSITION': {

@@ -66,6 +66,7 @@ export type WsMessageType =
   | 'PAUSE'
   | 'STOP'
   | 'SET_SPEED'
+  | 'SET_DIRECTION'
   | 'SET_POSITION'
   | 'SCRIPT_UPDATE'
   | 'SETTINGS_UPDATE'

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { hotkeyManager } from '../services/HotkeyManager';
+import { wsService } from '../services/WebSocketService';
 import { usePrompterStore } from '../store/prompterStore';
 
 const ROTATION_STEPS = [0, 90, 180, 270] as const;
@@ -44,30 +45,44 @@ export function useHotkeyManager(): void {
     });
 
     hotkeyManager.register('+', 'Speed +5', () => {
-      setSpeed(usePrompterStore.getState().scroll.speed + 5);
+      const nextSpeed = Math.min(400, usePrompterStore.getState().scroll.speed + 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
     hotkeyManager.register('=', 'Speed +5', () => {
-      setSpeed(usePrompterStore.getState().scroll.speed + 5);
+      const nextSpeed = Math.min(400, usePrompterStore.getState().scroll.speed + 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
     hotkeyManager.register('NumpadAdd', 'Speed +5', () => {
-      setSpeed(usePrompterStore.getState().scroll.speed + 5);
+      const nextSpeed = Math.min(400, usePrompterStore.getState().scroll.speed + 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
 
     hotkeyManager.register('-', 'Speed −5', () => {
-      setSpeed(Math.max(0, usePrompterStore.getState().scroll.speed - 5));
+      const nextSpeed = Math.max(0, usePrompterStore.getState().scroll.speed - 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
     hotkeyManager.register('_', 'Speed −5', () => {
-      setSpeed(Math.max(0, usePrompterStore.getState().scroll.speed - 5));
+      const nextSpeed = Math.max(0, usePrompterStore.getState().scroll.speed - 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
     hotkeyManager.register('NumpadSubtract', 'Speed −5', () => {
-      setSpeed(Math.max(0, usePrompterStore.getState().scroll.speed - 5));
+      const nextSpeed = Math.max(0, usePrompterStore.getState().scroll.speed - 5);
+      setSpeed(nextSpeed);
+      wsService.send('SET_SPEED', { speed: nextSpeed });
     });
 
     hotkeyManager.register('ArrowUp', 'Set direction up', () => {
       setDirection('up');
+      wsService.send('SET_DIRECTION', { direction: 'up' });
     });
     hotkeyManager.register('ArrowDown', 'Set direction down', () => {
       setDirection('down');
+      wsService.send('SET_DIRECTION', { direction: 'down' });
     });
 
     hotkeyManager.register('r', 'Reset (Stop)', () => stop());

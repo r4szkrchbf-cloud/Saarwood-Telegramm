@@ -185,12 +185,24 @@ export function App() {
         if (typeof p?.position === 'number') usePrompterStore.getState().setPosition(p.position);
       },
     );
+    const unsubDirection = wsService.on(
+      'SET_DIRECTION',
+      (msg) => {
+        const p = msg.payload as { direction?: 'down' | 'up' } | undefined;
+        if (p?.direction === 'down' || p?.direction === 'up') {
+          usePrompterStore.getState().setDirection(p.direction);
+        }
+      },
+    );
     const unsubSync = wsService.on(
       'SYNC_STATE',
       (msg) => {
         const p = msg.payload as Partial<ScrollState> | undefined;
         if (typeof p?.speed === 'number') usePrompterStore.getState().setSpeed(p.speed);
         if (typeof p?.position === 'number') usePrompterStore.getState().setPosition(p.position);
+        if (p?.direction === 'down' || p?.direction === 'up') {
+          usePrompterStore.getState().setDirection(p.direction);
+        }
       },
     );
     const unsubMos = wsService.on('MOS_UPDATE', (msg) => {
@@ -233,6 +245,7 @@ export function App() {
       unsubStop();
       unsubSpeed();
       unsubPosition();
+      unsubDirection();
       unsubSync();
       unsubMos();
       unsubScriptUpdate();
