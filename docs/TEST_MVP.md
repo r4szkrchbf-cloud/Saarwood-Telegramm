@@ -613,3 +613,49 @@ Naechsten 3-Punkte-Block in den Anzeige-Kontrollen pruefen (Mirror und Rotation)
 | 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
 | 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
 | 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
+
+---
+
+## Runde 12 - 2026-07-05 12:14:54 UTC (Rotation-Block Folgepruefung)
+
+### Ziel
+
+Naechsten 3-Punkte-Block fuer Rotation und Bildschirmanpassung pruefen.
+
+### Durchgefuehrte Testpunkte
+
+1. Rotation 90 -> 180:
+	- Anzeige wechselt auf 180 Grad
+	- Ergebnis: PASS
+
+2. Rotation 180 -> 270:
+	- Anzeige wechselt auf 270 Grad
+	- Ergebnis: PASS
+
+3. Fit-Verhalten bei Quarter-Turn validiert:
+	- Technischer Nachweis ueber Computed Transform vorhanden
+	- 270-Transform: matrix(0, -0.697387, 0.697387, 0, 0, 0)
+	- Ergebnis: PASS
+
+### Ergebnis Runde 12
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+- Naechster 3er-Block: Space-Toggle in verschiedenen View-Modi/Fokuszustaenden
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
+| 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+| 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
+| 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
+| 12 | 2026-07-05 12:14:54 | Rotation 180/270 plus Fit-Nachweis | n/a | GRUEN |
