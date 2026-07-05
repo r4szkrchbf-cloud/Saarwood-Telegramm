@@ -551,3 +551,65 @@ Naechsten 3-Punkte-Block in den Anzeige-Kontrollen pruefen (Mirror und Rotation)
 | 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
 | 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
 | 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
+
+---
+
+## Runde 11 - 2026-07-05 12:13:16 UTC (Fehlerbehebung Eingabe + Rotation-Fit)
+
+### Gemeldete Probleme
+
+1. Speed-Slider springt bei Tastatursteuerung.
+2. Falsche Pfeiltastenbelegung fuer Speed-Hotkeys (war hoch/runter statt links/rechts).
+3. Space-Verhalten im Pausebetrieb nicht sauber (unerwuenschte Nebenaktion/Reset-Eindruck).
+4. Bei 90-Grad-Rotation passt sich der Text nicht sauber an den Ausgabebildschirm an.
+
+### Umgesetzte technische Fixes
+
+1. Hotkeys korrigiert:
+	- Speed +5 auf ArrowRight
+	- Speed -5 auf ArrowLeft
+
+2. Slider-Tastatur stabilisiert:
+	- ArrowLeft/ArrowRight am Slider erzwingen gezielte +/-1 Schritte
+	- ArrowUp/ArrowDown am Slider werden blockiert, um Spruenge zu vermeiden
+	- Speed-Updates zentral geklammert (0..400) und konsistent gesendet
+
+3. Space-Handling robust gemacht:
+	- Space-Repeat blockiert (nur ein Toggle pro physischem Tastendruck)
+	- keyup fuer registrierte Hotkeys ebenfalls abgefangen, damit keine zweite Default-Aktion aus Fokus-Elementen ausgeloest wird
+
+4. Rotation-Fit verbessert:
+	- Bei 90/270 Grad wird ein Fit-Scale auf Basis der Viewport-Geometrie berechnet
+	- Rotation + Spiegelung werden kombiniert, ohne den Content aus dem Viewport laufen zu lassen
+
+### Validierung
+
+1. Frontend Tests: PASS (25/25)
+2. Frontend Build: PASS (bekannte Chunk-Warnung bleibt)
+3. Manuelle Checks im Browser:
+	- ArrowUp auf Slider: keine Aenderung
+	- ArrowRight/ArrowLeft auf Slider: sauberer 1er-Schritt
+	- Space im Pausebetrieb: toggelt Play/Pause ohne Reset-Ausloesung
+	- 90-Grad-Ansicht: Transform mit Fit-Scale aktiv
+
+### Ergebnis Runde 11
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+- Offener Beobachtungspunkt bleibt separat: Tiptap-Warnung zu Duplicate underline extension (nicht blockierend)
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
+| 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+| 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
+| 11 | 2026-07-05 12:13:16 | Bugfix-Checkpoint: Slider/Hotkeys/Space/Rotation-Fit | PASS | GRUEN |
