@@ -20,7 +20,8 @@
     "electron:dist:all": "npm run electron:build && npm run dist:all --workspace=packages/electron"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "fs-extra": "^11.3.6"
   },
   "engines": {
     "node": ">=20.0.0",
