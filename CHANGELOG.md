@@ -79,6 +79,9 @@ All MVP features are fully unlocked for Beta testing.
 - Explicit `Deutschen 4-Segment-Testtext laden` action in `Settings` for immediate speaker-script setup.
 - New docs: `docs/SAARwooD_BESCHREIBUNG_BETA_V1_DE.md` and `docs/SAARwooD_NUTZERHANDBUCH_BETA_V1_DE.md`.
 - Segment workflow actions in `Settings`: `Importieren`, `Exportieren`, `Drucken`.
+- Dedicated output-only view route `?view=prompter&output=1` (no header, no control panel, no settings drawer, no hotkeys).
+- New control action `Prompter Fenster` to open a separate browser output window.
+- Electron desktop bridge + operator action `Monitor 2 Vollbild` to open prompter output on a second display in fullscreen.
 
 ### Changed
 - Voice tracking execution is now transport-bound: ASR runs only while playback is active and is hard-muted during pause.
@@ -88,6 +91,8 @@ All MVP features are fully unlocked for Beta testing.
 - App header now shows a Beta warning that Voice Tracking is not included for current Beta operation.
 - Voice tracking controls are now restricted to `expert` tier (Settings, quick controls, hotkeys, runtime activation).
 - Top header row is now forced black and remains black across theme modes.
+- Browser restart flow is now non-disruptive for prompter output: no `STOP`/`PAUSE` broadcast is sent during local app reload.
+- `Prompter NeuStart` in controls uses a local two-step confirmation button (no blocking browser confirm popup in output workflows).
 
 ### Fixed
 - `packages/electron`: added no-op `"test"` script so `npm test --workspaces` no longer fails with *"Missing script: test"*

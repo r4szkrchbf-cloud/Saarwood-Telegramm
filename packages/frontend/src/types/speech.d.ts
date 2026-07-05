@@ -124,3 +124,12 @@ declare const SpeechGrammarList: {
   prototype: SpeechGrammarList;
   new (): SpeechGrammarList;
 };
+
+interface SaarwoodDesktopApi {
+  isDesktopApp: boolean;
+  openPrompterOnSecondMonitor: () => Promise<{ ok: boolean; reason?: string }>;
+}
+
+interface Window {
+  saarwoodDesktop?: SaarwoodDesktopApi;
+}

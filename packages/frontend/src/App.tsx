@@ -133,8 +133,26 @@ function ensureUniqueSegmentIds(input: Script): Script {
 }
 
 export function App() {
-  const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const initialFlags = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return { outputOnly: false, initialView: 'split' as ViewMode };
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const outputOnly = params.get('output') === '1';
+    const initialViewParam = params.get('view');
+    const initialView: ViewMode =
+      initialViewParam === 'editor' || initialViewParam === 'prompter' || initialViewParam === 'split'
+        ? initialViewParam
+        : 'split';
+
+    return { outputOnly, initialView: outputOnly ? 'prompter' : initialView };
+  }, []);
+
+  const [viewMode, setViewMode] = useState<ViewMode>(initialFlags.initialView);
   const [showSettings, setShowSettings] = useState(false);
+  const isOutputOnly = initialFlags.outputOnly;
+  const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
 
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
@@ -196,7 +214,7 @@ export function App() {
   const reorderSegment = usePrompterStore((s) => s.reorderSegment);
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
-  useHotkeyManager();
+  useHotkeyManager(!isOutputOnly);
 
   // ─── WS sync loop-prevention refs ─────────────────────────────────────
   // Tracks the lastModified of the most-recently applied remote script, so we
@@ -400,12 +418,30 @@ export function App() {
     'app',
     display.darkMode ? 'dark-mode' : 'light-mode',
     `view-${viewMode}`,
+    isOutputOnly ? 'output-only' : '',
   ].join(' ');
+
+  const handleOpenOutputWindow = () => {
+    if (typeof window === 'undefined') return;
+    const url = `${window.location.origin}${window.location.pathname}?view=prompter&output=1`;
+    window.open(url, 'saarwood-prompter-output', 'noopener,width=1400,height=900');
+  };
+
+  const handleOpenSecondMonitorOutput = async () => {
+    if (typeof window === 'undefined') return;
+    if (!window.saarwoodDesktop?.openPrompterOnSecondMonitor) {
+      handleOpenOutputWindow();
+      return;
+    }
+
+    await window.saarwoodDesktop.openPrompterOnSecondMonitor();
+  };
 
   return (
     <div className={rootClass}>
       {/* ─── Top bar ────────────────────────────────────────────────── */}
-      <header className="app-header">
+      {!isOutputOnly && (
+        <header className="app-header">
         <div className="app-logo" aria-label="Saarwood Teleprompter Beta V1">
           <span className="logo-icon" aria-hidden="true">📺</span>
           <span className="logo-text" aria-label="SAARwooD Teleprompter">
@@ -417,6 +453,9 @@ export function App() {
           <span className="beta-badge" aria-label="Beta Version 1">BETA V1</span>
           <span className="beta-warning" aria-label="Voice Tracking in Beta-Version nicht enthalten">
             Voice Tracking in Beta-Version nicht enthalten
+          </span>
+          <span className="restart-hint" aria-label="Taste N fuer Prompter NeuStart">
+            Taste N: Prompter NeuStart
           </span>
         </div>
 
@@ -444,10 +483,18 @@ export function App() {
         >
           ⚙
         </button>
-      </header>
+        </header>
+      )}
 
       {/* ─── Control bar ─────────────────────────────────────────────── */}
-      <ControlPanel viewMode={viewMode} />
+      {!isOutputOnly && (
+        <ControlPanel
+          viewMode={viewMode}
+          onOpenOutputWindow={handleOpenOutputWindow}
+          onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
+          isDesktopApp={isDesktopApp}
+        />
+      )}
 
       {/* ─── Main workspace ──────────────────────────────────────────── */}
       <main className="app-workspace">
@@ -505,7 +552,7 @@ export function App() {
       </main>
 
       {/* ─── Settings drawer ─────────────────────────────────────────── */}
-      {showSettings && (
+      {showSettings && !isOutputOnly && (
         <aside className="settings-drawer" aria-label="Settings">
           <SettingsPanel onClose={() => setShowSettings(false)} />
         </aside>

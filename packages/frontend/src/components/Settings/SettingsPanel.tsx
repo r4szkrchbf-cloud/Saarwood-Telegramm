@@ -716,7 +716,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           <h3>Kurzbeschreibung</h3>
           <p>SAARwooD Teleprompter Beta V1 ist eine Teleprompter-App fuer Editor, Split und Prompter-Ausgabe.</p>
           <p>Sie bietet manuelle Steuerung, Cue-Marker, Spiegelung, Rotation und WebSocket-Sync.</p>
-          <p>Voice Tracking ist in dieser Beta weiterhin eingeschraenkt.</p>
+          <p>Desktop-Betrieb: Mit Monitor 2 Vollbild kann die Prompter-Ausgabe direkt auf den zweiten Bildschirm gelegt werden.</p>
+          <ul className="settings-short-about-hotkeys" aria-label="Tastaturbelegungen">
+            <li>Leertaste: Play/Pause</li>
+            <li>R: Text auf Anfang (Reset/Stop), Escape: Stop</li>
+            <li>N: Prompter NeuStart (mit Bestaetigung)</li>
+            <li>+ / = / Numpad+: Geschwindigkeit +5</li>
+            <li>- / _ / Numpad-: Geschwindigkeit -5</li>
+            <li>Pfeil hoch / runter: Richtung hoch / runter</li>
+            <li>H: Spiegelung horizontal</li>
+            <li>[ / ]: Rotation -90 / +90</li>
+            <li>F: Vollbild umschalten</li>
+            <li>V: Voice ON (nur Expert), M: Voice OFF (nur Expert)</li>
+          </ul>
+          <p>Voice Tracking ist in dieser Beta Version nicht enthalten.</p>
         </section>
       )}
     </div>

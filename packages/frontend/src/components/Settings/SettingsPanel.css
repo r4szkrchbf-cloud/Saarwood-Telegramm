@@ -87,6 +87,16 @@
   margin-bottom: 0;
 }
 
+.settings-short-about-hotkeys {
+  margin: 0 0 0.5rem;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
 /* ─── Groups ──────────────────────────────────────────────────────────────── */
 
 .settings-group {

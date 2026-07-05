@@ -11,6 +11,14 @@
   position: relative;
 }
 
+.app.output-only {
+  grid-template-rows: 1fr;
+}
+
+.app.output-only .app-workspace {
+  grid-row: 1;
+}
+
 /* ─── Header ──────────────────────────────────────────────────────────────── */
 
 .app-header {
@@ -73,6 +81,19 @@
   border-radius: 3px;
   background: #5a1f1f;
   color: #ffe1e1;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.restart-hint {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background: #132018;
+  color: #bff6cd;
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -247,4 +268,5 @@
 
   .logo-text { display: none; }
   .beta-warning { display: none; }
+  .restart-hint { display: none; }
 }

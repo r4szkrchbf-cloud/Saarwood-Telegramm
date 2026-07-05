@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, Menu, dialog } from 'electron';
+import { app, BrowserWindow, shell, Menu, dialog, ipcMain, screen } from 'electron';
 import { ChildProcess, spawn } from 'child_process';
 import http from 'http';
 import path from 'path';
@@ -11,6 +11,9 @@ const FRONTEND_URL = `http://localhost:${BACKEND_PORT}`;
 
 let backendProcess: ChildProcess | null = null;
 let mainWindow: BrowserWindow | null = null;
+let outputWindow: BrowserWindow | null = null;
+
+const OUTPUT_QUERY = '/?view=prompter&output=1';
 
 // ─── Resolve paths ─────────────────────────────────────────────────────────────
 
@@ -37,6 +40,13 @@ function resolveFrontendDist(): string {
     return path.join(process.resourcesPath, 'frontend');
   }
   return path.resolve(__dirname, '../../frontend/dist');
+}
+
+function resolvePreloadPath(): string {
+  if (app.isPackaged) {
+    return path.join(__dirname, 'preload.js');
+  }
+  return path.resolve(__dirname, 'preload.js');
 }
 
 // ─── Backend lifecycle ─────────────────────────────────────────────────────────
@@ -169,6 +179,14 @@ function buildMenu(): void {
     {
       label: 'Window',
       submenu: [
+        {
+          label: 'Prompter auf Monitor 2 (Vollbild)',
+          accelerator: 'CmdOrCtrl+Shift+2',
+          click: () => {
+            void openPrompterOnSecondMonitor();
+          },
+        },
+        { type: 'separator' },
         { role: 'minimize' },
         { role: 'zoom' },
         { type: 'separator' },
@@ -198,6 +216,58 @@ function buildMenu(): void {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+async function openPrompterOnSecondMonitor(): Promise<{ ok: boolean; reason?: string }> {
+  const displays = screen.getAllDisplays();
+  if (displays.length < 2) {
+    return { ok: false, reason: 'second-monitor-missing' };
+  }
+
+  const primaryBounds = screen.getPrimaryDisplay().bounds;
+  const target = displays.find((d) => {
+    const b = d.bounds;
+    return b.x !== primaryBounds.x
+      || b.y !== primaryBounds.y
+      || b.width !== primaryBounds.width
+      || b.height !== primaryBounds.height;
+  }) ?? displays[1];
+
+  if (outputWindow && !outputWindow.isDestroyed()) {
+    outputWindow.setBounds(target.bounds);
+    outputWindow.setFullScreen(true);
+    outputWindow.show();
+    outputWindow.focus();
+    return { ok: true };
+  }
+
+  outputWindow = new BrowserWindow({
+    x: target.bounds.x,
+    y: target.bounds.y,
+    width: target.bounds.width,
+    height: target.bounds.height,
+    title: 'Saarwood Prompter Output',
+    backgroundColor: '#000000',
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+      preload: resolvePreloadPath(),
+    },
+  });
+
+  outputWindow.removeMenu();
+  outputWindow.setFullScreen(true);
+  outputWindow.loadURL(`${FRONTEND_URL}${OUTPUT_QUERY}`).catch((err) => {
+    dialog.showErrorBox('Prompter Output Error', `Could not open output window: ${err.message}`);
+  });
+
+  outputWindow.on('closed', () => {
+    outputWindow = null;
+  });
+
+  return { ok: true };
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1440,
@@ -210,6 +280,7 @@ function createWindow(): void {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
+      preload: resolvePreloadPath(),
     },
   });
 
@@ -231,6 +302,18 @@ function createWindow(): void {
 // ─── App lifecycle ─────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  ipcMain.handle('desktop:open-prompter-monitor-2', async () => {
+    const result = await openPrompterOnSecondMonitor();
+    if (!result.ok && result.reason === 'second-monitor-missing') {
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Kein zweiter Monitor',
+        message: 'Es wurde kein zweiter Monitor erkannt. Bitte zweiten Bildschirm verbinden.',
+      }).catch(() => undefined);
+    }
+    return result;
+  });
+
   buildMenu();
   try {
     await startBackend();
@@ -256,5 +339,6 @@ app.on('activate', () => {
 });
 
 app.on('before-quit', () => {
+  ipcMain.removeHandler('desktop:open-prompter-monitor-2');
   stopBackend();
 });

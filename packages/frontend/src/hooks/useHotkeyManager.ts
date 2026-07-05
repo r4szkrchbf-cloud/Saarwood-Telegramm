@@ -27,7 +27,7 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  [            → Rotate −90°
  *  ]            → Rotate +90°
  */
-export function useHotkeyManager(): void {
+export function useHotkeyManager(enabled = true): void {
   const play = usePrompterStore((s) => s.play);
   const pause = usePrompterStore((s) => s.pause);
   const stop = usePrompterStore((s) => s.stop);
@@ -37,6 +37,11 @@ export function useHotkeyManager(): void {
   const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   useEffect(() => {
+    if (!enabled) {
+      hotkeyManager.disable();
+      return;
+    }
+
     // ── Transport ──────────────────────────────────────────────────────────
     hotkeyManager.register(' ', 'Play / Pause', () => {
       const { scroll } = usePrompterStore.getState();
@@ -122,6 +127,15 @@ export function useHotkeyManager(): void {
       wsService.send('STOP');
     });
 
+    const triggerRestart = () => {
+      const confirmed = window.confirm('Prompter NeuStart wirklich ausfuehren?');
+      if (!confirmed) return;
+      window.location.reload();
+    };
+
+    hotkeyManager.register('n', 'Prompter NeuStart', triggerRestart);
+    hotkeyManager.register('N', 'Prompter NeuStart', triggerRestart);
+
     // ── Mirror ─────────────────────────────────────────────────────────────
     hotkeyManager.register('h', 'Mirror horizontal', () => {
       const { display } = usePrompterStore.getState();
@@ -165,5 +179,5 @@ export function useHotkeyManager(): void {
     return () => {
       hotkeyManager.disable();
     };
-  }, [play, pause, stop, setSpeed, setDirection, setSpeechEnabled, setDisplay]);
+  }, [enabled, play, pause, stop, setSpeed, setDirection, setSpeechEnabled, setDisplay]);
 }

@@ -24,9 +24,17 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  */
 interface ControlPanelProps {
   viewMode: ViewMode;
+  onOpenOutputWindow?: () => void;
+  onOpenSecondMonitorOutput?: () => void;
+  isDesktopApp?: boolean;
 }
 
-export function ControlPanel({ viewMode }: ControlPanelProps) {
+export function ControlPanel({
+  viewMode,
+  onOpenOutputWindow,
+  onOpenSecondMonitorOutput,
+  isDesktopApp = false,
+}: ControlPanelProps) {
   const isPlaying = usePrompterStore((s) => s.scroll.isPlaying);
   const speed = usePrompterStore((s) => s.scroll.speed);
   const direction = usePrompterStore((s) => s.scroll.direction);
@@ -43,6 +51,13 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
   const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
   const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
+  const [restartPending, setRestartPending] = useState(false);
+
+  useEffect(() => {
+    if (!restartPending) return;
+    const timer = window.setTimeout(() => setRestartPending(false), 5000);
+    return () => window.clearTimeout(timer);
+  }, [restartPending]);
   useEffect(() => {
     setSpeedInput(String(Math.round(speed)));
   }, [speed]);
@@ -92,16 +107,18 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
   }, [stop, notifyManualControl]);
 
   const handleRestart = useCallback(() => {
-    usePrompterStore.getState().setPosition(0);
-    wsService.send('SET_POSITION', { position: 0 });
-    stop();
-    wsService.send('STOP');
+    if (!restartPending) {
+      setRestartPending(true);
+      return;
+    }
+
+    setRestartPending(false);
     if (typeof window !== 'undefined') {
       window.location.reload();
       return;
     }
     notifyManualControl();
-  }, [stop, notifyManualControl]);
+  }, [restartPending, notifyManualControl]);
 
   const handleSpeedNudge = useCallback(
     (delta: number) => {
@@ -167,10 +184,34 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
             type="button"
             className="btn btn--restart"
             onClick={handleRestart}
-            aria-label="Prompter NeuStart"
-            title="Prompter NeuStart"
+            aria-label={restartPending ? 'Prompter NeuStart bestaetigen' : 'Prompter NeuStart'}
+            title={restartPending ? 'Nochmals klicken zum Bestaetigen' : 'Prompter NeuStart'}
           >
-            Prompter NeuStart
+            {restartPending ? 'NeuStart bestaetigen' : 'Prompter NeuStart'}
+          </button>
+        )}
+
+        {viewMode !== 'prompter' && onOpenOutputWindow && (
+          <button
+            type="button"
+            className="btn"
+            onClick={onOpenOutputWindow}
+            aria-label="Prompter Fenster oeffnen"
+            title="Prompter Fenster oeffnen"
+          >
+            Prompter Fenster
+          </button>
+        )}
+
+        {viewMode !== 'prompter' && isDesktopApp && onOpenSecondMonitorOutput && (
+          <button
+            type="button"
+            className="btn"
+            onClick={onOpenSecondMonitorOutput}
+            aria-label="Monitor 2 Vollbild"
+            title="Prompter auf Monitor 2 im Vollbild"
+          >
+            Monitor 2 Vollbild
           </button>
         )}
 

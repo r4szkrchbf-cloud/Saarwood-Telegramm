@@ -6,9 +6,11 @@ Der <span style="color:#ff3b30;font-weight:800;">SAAR</span><span style="color:#
 
 Die Anwendung kombiniert:
 - Editor und Prompter-Ausgabe in einer Oberfläche
+- Getrennte Prompter-Ausgabe als eigenes Output-Fenster (`?view=prompter&output=1`)
 - Fernsteuerung via WebSocket
 - Laufende Anpassung von Geschwindigkeit, Richtung, Spiegelung und Rotation
 - Profile und Anzeigeeinstellungen fuer verschiedene Sprecher
+- Electron-Operatorfunktion fuer `Monitor 2 Vollbild` (Studio-Betrieb)
 
 ## Ziel der Beta V1
 
@@ -29,6 +31,7 @@ Grund ist ein noch nicht stabiler Lauf im realen Betrieb. Bis zur finalen Stabil
 - Spiegelung und Rotation
 - WebSocket-Sync
 - PWA-Betrieb auf Desktop und mobilen Geraeten
+- Desktop-Operator-Workflow: Prompter-Ausgabe auf zweiten Monitor im Vollbild starten
 
 ## Zielgruppe
 

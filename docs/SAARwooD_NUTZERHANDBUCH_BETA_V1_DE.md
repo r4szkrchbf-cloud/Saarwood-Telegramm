@@ -5,6 +5,8 @@
 1. Anwendung im Browser oeffnen.
 2. Ansicht waehlen: Editor, Split oder Prompter.
 3. Bei Bedarf Settings ueber das Zahnrad oeffnen.
+4. Optional: `Prompter Fenster` fuer getrennte Ausgabe oeffnen (`?view=prompter&output=1`).
+5. In der Electron-App: `Monitor 2 Vollbild` nutzen, um den Prompter direkt auf den zweiten Bildschirm zu legen.
 
 ## 2. Script bearbeiten
 
@@ -24,11 +26,14 @@ Wichtige Buttons:
 
 - Leertaste: Play/Pause
 - r oder R: Text auf Anfang (Reset/Stop)
+- n oder N: Prompter NeuStart (mit Bestaetigung)
 - Escape: Stop
-- + / -: Geschwindigkeit
+- + oder = oder NumpadAdd: Geschwindigkeit +5
+- - oder _ oder NumpadSubtract: Geschwindigkeit -5
 - Pfeil hoch / runter: Richtung
 - h / H: Spiegelung horizontal
 - [ / ]: Rotation
+- f / F: Vollbild umschalten
 - v / V: Voice ON
 - m / M: Voice OFF
 

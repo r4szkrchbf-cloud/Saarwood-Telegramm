@@ -21,6 +21,9 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 - Voice-Empfindlichkeit (`0-100%`) ergaenzt und als Reaktionsschwelle angebunden.
 - Kalibrierungs-Assistent in Settings ergaenzt (Testsatz, Erkennungsauswertung, automatische Empfehlung).
 - Deutscher 4-Segment-Testsprechertext als Default/Loader verfuegbar, inkl. Legacy-Englisch-Migration.
+- Getrennte Prompter-Ausgabe als Output-Ansicht eingefuehrt (`?view=prompter&output=1`) ohne Header/Controls/Settings/Hotkeys.
+- Electron-Operatorfunktion `Monitor 2 Vollbild` ergaenzt: Prompter-Ausgabe laesst sich direkt auf den zweiten Bildschirm im Vollbild starten.
+- Browser-Neustart entkoppelt: kein `STOP`/`PAUSE`-Broadcast waehrend lokalem Reload, damit laufende Prompter-Ausgaben nicht unterbrochen werden.
 
 ## 2. Aktueller technischer Ist-Stand
 
