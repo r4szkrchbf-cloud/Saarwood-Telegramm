@@ -25,6 +25,7 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 - Electron-Operatorfunktion `Monitor 2 Vollbild` ergaenzt: Prompter-Ausgabe laesst sich direkt auf den zweiten Bildschirm im Vollbild starten.
 - Browser-Neustart entkoppelt: kein `STOP`/`PAUSE`-Broadcast waehrend lokalem Reload, damit laufende Prompter-Ausgaben nicht unterbrochen werden.
 - Lizenz-/Rollout-Plan vorbereitet (`docs/LICENSING_AND_RELEASE_PLAN_DE.md`): signierte Lizenzschluessel, Revocation/Kill-Switch, Support-Runbook und Public+Offline-Rolloutphasen.
+- Projektanweisung protokolliert: rechtliche Hinweise zu Saarwood und Softwareentwicklungsfirma werden erst am Schluss eingepflegt; priorisiert werden aktuell MVP- und Public-Beta-Funktionalitaet.
 
 ## 2. Aktueller technischer Ist-Stand
 

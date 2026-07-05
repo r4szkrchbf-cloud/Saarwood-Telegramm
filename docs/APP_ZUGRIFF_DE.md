@@ -85,7 +85,9 @@ Umgebungsvariablen für das Backend:
 | `ENABLE_NDI` | `false` | NDI-Abstraktionsschicht aktivieren |
 | `LICENSE_MODE` | `disabled` | Lizenzmodus: `disabled` / `monitor` / `enforce` |
 | `LICENSE_PUBLIC_KEY_PEM` | _(leer)_ | Ed25519 Public Key (PEM) zur Token-Pruefung |
+| `LICENSE_PRIVATE_KEY_PEM` | _(leer)_ | Ed25519 Private Key (PKCS8 PEM) fuer serverseitiges Admin-Token-Minting |
 | `LICENSE_REVOCATION_FILE` | `packages/backend/config/license-revocations.json` | Revocation-Liste fuer gesperrte Lizenzen/Generationen |
+| `ADMIN_API_KEY` | _(leer)_ | Aktiviert geschuetzte Admin-Lizenz-Endpunkte unter `/api/admin/license/*` |
 
 Beispiel mit allen Features:
 ```bash
@@ -103,6 +105,14 @@ Lizenz-Endpunkte (Phase A):
 
 Interne Support-Kommandos (Phase B) sind dokumentiert in:
 - `docs/SUPPORT_LICENSE_RUNBOOK_DE.md`
+
+Phase-C Admin-API (nur mit `ADMIN_API_KEY`):
+- `GET /api/admin/license/revocations`
+- `POST /api/admin/license/revoke-license` mit `{ "licenseId": "..." }`
+- `POST /api/admin/license/unrevoke-license` mit `{ "licenseId": "..." }`
+- `POST /api/admin/license/revoke-generation` mit `{ "generation": "beta-v1" }`
+- `POST /api/admin/license/unrevoke-generation` mit `{ "generation": "beta-v1" }`
+- `POST /api/admin/license/create` (mintet signierte Lizenz serverseitig)
 
 ---
 

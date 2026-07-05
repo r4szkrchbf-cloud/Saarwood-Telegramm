@@ -40,9 +40,29 @@ export function createRouter(
   licenseService: LicenseService,
 ): Router {
   const router = Router();
+  const adminApiKey = process.env.ADMIN_API_KEY ?? '';
 
   const activateSchema = z.object({
     token: z.string().min(10),
+  });
+
+  const revokeLicenseSchema = z.object({
+    licenseId: z.string().min(1),
+  });
+
+  const revokeGenerationSchema = z.object({
+    generation: z.string().min(1),
+  });
+
+  const createLicenseSchema = z.object({
+    customer: z.string().min(1),
+    tier: z.enum(['basic', 'professional', 'expert']).default('expert'),
+    days: z.number().int().min(1).max(3650).default(30),
+    offlineGraceDays: z.number().int().min(0).max(3650).default(14),
+    generation: z.string().min(1).default('beta-v1'),
+    channels: z.array(z.string().min(1)).default(['web', 'electron', 'pwa']),
+    features: z.array(z.string().min(1)).default([]),
+    licenseId: z.string().min(1).optional(),
   });
 
   const getTokenFromRequest = (req: Request): string | null => {
@@ -56,6 +76,34 @@ export function createRouter(
     }
 
     return null;
+  };
+
+  const hasAdminAccess = (req: Request): boolean => {
+    if (!adminApiKey) return false;
+
+    const fromHeader = req.headers['x-admin-api-key'];
+    if (typeof fromHeader === 'string' && fromHeader === adminApiKey) return true;
+
+    const authHeader = req.headers['authorization'];
+    if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+      return authHeader.slice(7).trim() === adminApiKey;
+    }
+
+    return false;
+  };
+
+  const enforceAdminAccess = (req: Request, res: Response): boolean => {
+    if (!adminApiKey) {
+      res.status(503).json({ ok: false, error: 'admin-api-disabled' });
+      return false;
+    }
+
+    if (!hasAdminAccess(req)) {
+      res.status(401).json({ ok: false, error: 'admin-unauthorized' });
+      return false;
+    }
+
+    return true;
   };
 
   // ─── Health check ────────────────────────────────────────────────────────
@@ -108,6 +156,73 @@ export function createRouter(
     const result = await licenseService.validateToken(parsed.data.token);
     const ok = result.status === 'active';
     res.status(ok ? 200 : 403).json({ ok, ...result });
+  });
+
+  // ─── Admin license API (Phase C) ───────────────────────────────────────
+  router.get('/admin/license/revocations', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    res.json({ ok: true, ...licenseService.getRevocations() });
+  });
+
+  router.post('/admin/license/revoke-license', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const parsed = revokeLicenseSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+    const state = licenseService.revokeLicense(parsed.data.licenseId);
+    res.json({ ok: true, ...state });
+  });
+
+  router.post('/admin/license/unrevoke-license', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const parsed = revokeLicenseSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+    const state = licenseService.unrevokeLicense(parsed.data.licenseId);
+    res.json({ ok: true, ...state });
+  });
+
+  router.post('/admin/license/revoke-generation', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const parsed = revokeGenerationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+    const state = licenseService.revokeGeneration(parsed.data.generation);
+    res.json({ ok: true, ...state });
+  });
+
+  router.post('/admin/license/unrevoke-generation', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const parsed = revokeGenerationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+    const state = licenseService.unrevokeGeneration(parsed.data.generation);
+    res.json({ ok: true, ...state });
+  });
+
+  router.post('/admin/license/create', async (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const parsed = createLicenseSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+
+    try {
+      const created = await licenseService.createSignedLicense(parsed.data);
+      res.json({ ok: true, ...created });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'license-create-failed';
+      res.status(500).json({ ok: false, error: message });
+    }
   });
 
   // ─── Content Ingest (n8n / ClickUp webhook target) ───────────────────────

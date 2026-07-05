@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { jwtVerify, importSPKI } from 'jose';
+import { jwtVerify, importSPKI, importPKCS8, SignJWT } from 'jose';
 
 export type LicenseMode = 'disabled' | 'monitor' | 'enforce';
 export type LicenseStatus = 'active' | 'expired' | 'revoked' | 'invalid' | 'missing';
@@ -22,6 +22,22 @@ interface RevocationState {
   revokedGenerations: string[];
 }
 
+export interface CreateLicenseInput {
+  customer: string;
+  tier: 'basic' | 'professional' | 'expert';
+  days: number;
+  offlineGraceDays: number;
+  generation: string;
+  channels: string[];
+  features: string[];
+  licenseId?: string;
+}
+
+export interface CreatedLicense {
+  token: string;
+  claims: LicenseClaims;
+}
+
 export interface LicenseValidationResult {
   mode: LicenseMode;
   status: LicenseStatus;
@@ -35,6 +51,8 @@ export class LicenseService {
 
   private readonly publicKeyPem: string | null;
 
+  private readonly privateKeyPem: string | null;
+
   private readonly revocationFilePath: string;
 
   constructor() {
@@ -46,12 +64,17 @@ export class LicenseService {
     }
 
     this.publicKeyPem = process.env.LICENSE_PUBLIC_KEY_PEM ?? null;
+    this.privateKeyPem = process.env.LICENSE_PRIVATE_KEY_PEM ?? null;
     this.revocationFilePath = process.env.LICENSE_REVOCATION_FILE
       ?? path.resolve(__dirname, '../../config/license-revocations.json');
   }
 
   getMode(): LicenseMode {
     return this.mode;
+  }
+
+  canSignTokens(): boolean {
+    return Boolean(this.privateKeyPem);
   }
 
   async validateToken(token: string | null | undefined): Promise<LicenseValidationResult> {
@@ -137,5 +160,101 @@ export class LicenseService {
     } catch {
       return { revokedLicenses: [], revokedGenerations: [] };
     }
+  }
+
+  getRevocations(): RevocationState {
+    return this.readRevocations();
+  }
+
+  revokeLicense(licenseId: string): RevocationState {
+    const state = this.readRevocations();
+    if (!state.revokedLicenses.includes(licenseId)) {
+      state.revokedLicenses.push(licenseId);
+    }
+    this.writeRevocations(state);
+    return this.readRevocations();
+  }
+
+  unrevokeLicense(licenseId: string): RevocationState {
+    const state = this.readRevocations();
+    state.revokedLicenses = state.revokedLicenses.filter((id) => id !== licenseId);
+    this.writeRevocations(state);
+    return this.readRevocations();
+  }
+
+  revokeGeneration(generation: string): RevocationState {
+    const state = this.readRevocations();
+    if (!state.revokedGenerations.includes(generation)) {
+      state.revokedGenerations.push(generation);
+    }
+    this.writeRevocations(state);
+    return this.readRevocations();
+  }
+
+  unrevokeGeneration(generation: string): RevocationState {
+    const state = this.readRevocations();
+    state.revokedGenerations = state.revokedGenerations.filter((id) => id !== generation);
+    this.writeRevocations(state);
+    return this.readRevocations();
+  }
+
+  async createSignedLicense(input: CreateLicenseInput): Promise<CreatedLicense> {
+    if (!this.privateKeyPem) {
+      throw new Error('license-private-key-missing');
+    }
+
+    const privateKey = await importPKCS8(this.privateKeyPem, 'EdDSA');
+    const now = Math.floor(Date.now() / 1000);
+    const expiresAt = now + Math.max(1, Math.floor(input.days)) * 24 * 60 * 60;
+    const graceOfflineUntil = expiresAt + Math.max(0, Math.floor(input.offlineGraceDays)) * 24 * 60 * 60;
+    const licenseId = input.licenseId ?? `lic-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    const claims: LicenseClaims = {
+      lic_id: licenseId,
+      customer: input.customer,
+      tier: input.tier,
+      issued_at: now,
+      expires_at: expiresAt,
+      grace_offline_until: graceOfflineUntil,
+      channels: input.channels,
+      features: input.features,
+      beta_generation: input.generation,
+    };
+
+    const tokenPayload = {
+      lic_id: claims.lic_id,
+      customer: claims.customer,
+      tier: claims.tier,
+      issued_at: claims.issued_at,
+      expires_at: claims.expires_at,
+      grace_offline_until: claims.grace_offline_until,
+      channels: claims.channels,
+      features: claims.features,
+      beta_generation: claims.beta_generation,
+    };
+
+    const token = await new SignJWT(tokenPayload)
+      .setProtectedHeader({ alg: 'EdDSA', typ: 'JWT' })
+      .setIssuedAt(now)
+      .setExpirationTime(expiresAt)
+      .sign(privateKey);
+
+    return { token, claims };
+  }
+
+  private writeRevocations(state: RevocationState): void {
+    fs.mkdirSync(path.dirname(this.revocationFilePath), { recursive: true });
+    fs.writeFileSync(
+      this.revocationFilePath,
+      `${JSON.stringify(
+        {
+          revokedLicenses: Array.from(new Set(state.revokedLicenses)).sort(),
+          revokedGenerations: Array.from(new Set(state.revokedGenerations)).sort(),
+        },
+        null,
+        2,
+      )}\n`,
+      'utf-8',
+    );
   }
 }

@@ -104,3 +104,54 @@ npm run license:admin --workspace @saarwood/backend -- create \
 3. Ablaufdatum im Ticket hinterlegen.
 4. Bei Sperrung: Grund dokumentieren (Missbrauch, Ablauf, Ersatzlizenz).
 5. Nach Sperrung einmal `list-revocations` pruefen.
+
+## 9. Phase C - Remote Admin API (ohne Server-SSH)
+
+Voraussetzung: Backend laeuft mit gesetztem `ADMIN_API_KEY`.
+
+```bash
+export BASE_URL="https://beta.example.com"
+export ADMIN_API_KEY="<dein-admin-key>"
+```
+
+Revocations anzeigen:
+
+```bash
+curl -sS "$BASE_URL/api/admin/license/revocations" \
+  -H "x-admin-api-key: $ADMIN_API_KEY"
+```
+
+Lizenz sperren:
+
+```bash
+curl -sS -X POST "$BASE_URL/api/admin/license/revoke-license" \
+  -H "x-admin-api-key: $ADMIN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"licenseId":"lic-123456"}'
+```
+
+Generation sperren:
+
+```bash
+curl -sS -X POST "$BASE_URL/api/admin/license/revoke-generation" \
+  -H "x-admin-api-key: $ADMIN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"generation":"beta-v1"}'
+```
+
+Serverseitig signierte Lizenz erzeugen:
+
+```bash
+curl -sS -X POST "$BASE_URL/api/admin/license/create" \
+  -H "x-admin-api-key: $ADMIN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer": "Pilotkunde Redaktion A",
+    "tier": "expert",
+    "days": 30,
+    "offlineGraceDays": 14,
+    "generation": "beta-v1",
+    "channels": ["web", "electron", "pwa"],
+    "features": []
+  }'
+```
