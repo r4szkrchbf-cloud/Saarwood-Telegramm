@@ -1,4 +1,4 @@
-import { useCallback, useId } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
 import { speechService } from '../../services/SpeechRecognitionService';
 import type { PresenterProfile } from '../../types';
@@ -22,10 +22,16 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const setDisplay = usePrompterStore((s) => s.setDisplay);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
   const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
+  const speechInputDeviceId = usePrompterStore((s) => s.speechInputDeviceId);
+  const setSpeechInputDeviceId = usePrompterStore((s) => s.setSpeechInputDeviceId);
+  const speechSensitivity = usePrompterStore((s) => s.speechSensitivity);
+  const setSpeechSensitivity = usePrompterStore((s) => s.setSpeechSensitivity);
   const saveProfile = usePrompterStore((s) => s.saveProfile);
   const deleteProfile = usePrompterStore((s) => s.deleteProfile);
   const applyProfile = usePrompterStore((s) => s.applyProfile);
   const setTier = usePrompterStore((s) => s.setTier);
+  const script = usePrompterStore((s) => s.script);
+  const setScript = usePrompterStore((s) => s.setScript);
 
   const fontSizeId = useId();
   const fontFamilyId = useId();
@@ -34,7 +40,32 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const bgColorId = useId();
   const textAlignId = useId();
   const cuePositionId = useId();
+  const speechInputId = useId();
+  const speechSensitivityId = useId();
   const profileNameId = useId();
+  const [audioInputs, setAudioInputs] = useState<MediaDeviceInfo[]>([]);
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const [calibrationInfo, setCalibrationInfo] = useState('');
+  const [calibrationRecommendation, setCalibrationRecommendation] = useState<number | null>(null);
+
+  const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
+
+  useEffect(() => {
+    let active = true;
+    speechService
+      .listInputDevices()
+      .then((devices) => {
+        if (!active) return;
+        setAudioInputs(devices);
+      })
+      .catch(() => {
+        if (!active) return;
+        setAudioInputs([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSaveProfile = useCallback(() => {
     const nameInput = document.getElementById(profileNameId) as HTMLInputElement | null;
@@ -48,6 +79,116 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     saveProfile(profile);
     if (nameInput) nameInput.value = '';
   }, [display, saveProfile, profileNameId]);
+
+  const handleLoadGermanTestScript = useCallback(() => {
+    setScript({
+      ...script,
+      lastModified: Date.now(),
+      segments: [
+        {
+          id: `seg-${Date.now()}-1`,
+          html: '<p>Guten Abend und herzlich willkommen zu unserer Sendung. In den naechsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verstaendlich zusammen.</p>',
+          direction: 'ltr',
+          isCloaked: false,
+          isDirectorsNote: false,
+        },
+        {
+          id: `seg-${Date.now()}-2`,
+          html: '<p>Im ersten Themenblock geht es um die Verkehrslage im Saarland. Der Berufsverkehr bleibt auf den Hauptachsen dicht, auf der A sechs kommt es weiterhin zu zoegerlichem Vorankommen.</p>',
+          direction: 'ltr',
+          isCloaked: false,
+          isDirectorsNote: false,
+        },
+        {
+          id: `seg-${Date.now()}-3`,
+          html: '<p>Danach schauen wir auf das Wetter: In der Nacht bleibt es weitgehend trocken, lokal kann sich Nebel bilden. Morgen starten wir freundlich, spaeter ziehen Wolken auf.</p>',
+          direction: 'ltr',
+          isCloaked: false,
+          isDirectorsNote: false,
+        },
+        {
+          id: `seg-${Date.now()}-4`,
+          html: '<p>Zum Abschluss noch der Sport: Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins. Das Team zeigt eine stabile Defensive und bleibt damit auf Playoff-Kurs.</p>',
+          direction: 'ltr',
+          isCloaked: false,
+          isDirectorsNote: false,
+        },
+      ],
+    });
+  }, [script, setScript]);
+
+  const handleRunCalibration = useCallback(async () => {
+    if (!speechService.isSupported || isCalibrating) return;
+
+    const normalize = (text: string) =>
+      text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const phraseWords = new Set(normalize(CALIBRATION_PHRASE).split(' ').filter(Boolean));
+    const computeWordMatch = (spoken: string) => {
+      const words = normalize(spoken).split(' ').filter(Boolean);
+      if (words.length === 0 || phraseWords.size === 0) return 0;
+      let hits = 0;
+      words.forEach((word) => {
+        if (phraseWords.has(word)) hits += 1;
+      });
+      return Math.min(1, hits / phraseWords.size);
+    };
+
+    setIsCalibrating(true);
+    setCalibrationRecommendation(null);
+    setCalibrationInfo('Kalibrierung laeuft: Bitte den Testsatz klar und normal laut sprechen ...');
+
+    const previouslyEnabled = speechEnabled;
+
+    try {
+      // Stop runtime voice tracking while calibrating to avoid interference.
+      setSpeechEnabled(false);
+      speechService.stop();
+      speechService.setLanguage('de-DE');
+      speechService.start();
+
+      const confidences: number[] = [];
+      const matches: number[] = [];
+      let lastTranscript = '';
+
+      const unsub = speechService.onTranscript(({ transcript, isFinal, confidence }) => {
+        if (!isFinal) return;
+        lastTranscript = transcript;
+        confidences.push(confidence > 0 ? confidence : 0.5);
+        matches.push(computeWordMatch(transcript));
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 7000));
+      unsub();
+      speechService.stop();
+
+      if (confidences.length === 0) {
+        setCalibrationInfo('Keine stabile Erkennung erhalten. Bitte Mikrofon pruefen und erneut kalibrieren.');
+        return;
+      }
+
+      const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+      const avgMatch = matches.reduce((a, b) => a + b, 0) / matches.length;
+      const qualityScore = avgConfidence * 0.6 + avgMatch * 0.4;
+      const recommended = Math.max(20, Math.min(90, Math.round(80 - qualityScore * 50)));
+
+      setSpeechSensitivity(recommended);
+      setCalibrationRecommendation(recommended);
+      setCalibrationInfo(
+        `Erkannt: "${lastTranscript || '---'}" | Trefferqualitaet: ${Math.round(qualityScore * 100)}% | Empfohlene Empfindlichkeit gesetzt auf ${recommended}%`,
+      );
+    } catch {
+      speechService.stop();
+      setCalibrationInfo('Kalibrierung fehlgeschlagen. Bitte Browser-Mikrofonberechtigung pruefen.');
+    } finally {
+      setSpeechEnabled(previouslyEnabled);
+      setIsCalibrating(false);
+    }
+  }, [isCalibrating, speechEnabled, setSpeechEnabled, setSpeechSensitivity, CALIBRATION_PHRASE]);
 
   return (
     <div className="settings-panel" role="complementary" aria-label="Display settings">
@@ -216,7 +357,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {tier === 'expert' && speechService.isSupported && (
+        {speechService.isSupported && (
           <div className="settings-row">
             <label>
               <input
@@ -229,22 +370,116 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {tier === 'expert' && !speechService.isSupported && (
+        {speechService.isSupported && (
+          <div className="settings-row">
+            <label htmlFor={speechInputId}>Microphone source</label>
+            <select
+              id={speechInputId}
+              value={speechInputDeviceId ?? ''}
+              onChange={(e) => {
+                const deviceId = e.target.value || null;
+                setSpeechInputDeviceId(deviceId);
+                speechService.setInputDeviceId(deviceId);
+              }}
+            >
+              <option value="">System default</option>
+              {audioInputs.map((device, idx) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || `Microphone ${idx + 1}`}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {speechService.isSupported && (
+          <div className="settings-row">
+            <label htmlFor={speechSensitivityId}>Voice-Empfindlichkeit</label>
+            <input
+              id={speechSensitivityId}
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={speechSensitivity}
+              onChange={(e) => setSpeechSensitivity(Number(e.target.value))}
+            />
+            <input
+              type="number"
+              min={0}
+              max={100}
+              step={1}
+              className="voice-sensitivity-number"
+              value={speechSensitivity}
+              onChange={(e) => setSpeechSensitivity(Number(e.target.value))}
+              aria-label="Voice-Empfindlichkeit in Prozent"
+            />
+            <span className="settings-value">{speechSensitivity}%</span>
+          </div>
+        )}
+
+        {speechService.isSupported && (
+          <div className="voice-status-legend" aria-label="Voice status legend">
+            <div className="voice-status-legend-title">Voice-Status Legende</div>
+            <ul className="voice-status-legend-list">
+              <li><strong>Voice: AUS</strong> - Voice-Tracking ist deaktiviert.</li>
+              <li><strong>Voice: Gemutet (Pause)</strong> - Bei Pause ist Voice-Tracking stumm und reagiert nicht auf Sprache.</li>
+              <li><strong>Voice: Startet</strong> - Mikrofon/Erkennung wird initialisiert.</li>
+              <li><strong>Voice: Hoert zu</strong> - Sprache wird aktiv erkannt.</li>
+              <li><strong>Voice: Wartet</strong> - Dienst startet nach Unterbrechung neu.</li>
+              <li><strong>Voice: Keine Sprache</strong> - Es wurde aktuell nichts Verwertbares erkannt.</li>
+              <li><strong>Voice: Fehler</strong> - Konkreter Grund steht in Klammern (z. B. Mikrofonzugriff verweigert).</li>
+              <li><strong>Empfindlichkeit 0-100%</strong> - Hoeherer Wert reagiert strenger und reduziert ungenaue Treffer.</li>
+            </ul>
+          </div>
+        )}
+
+        {speechService.isSupported && (
+          <div className="voice-calibration" aria-label="Voice calibration assistant">
+            <div className="voice-calibration-title">Kalibrierungs-Assistent</div>
+            <p className="voice-calibration-phrase">
+              Testsatz: "{CALIBRATION_PHRASE}"
+            </p>
+            <div className="voice-calibration-actions">
+              <button
+                type="button"
+                className="btn-small"
+                onClick={handleRunCalibration}
+                disabled={isCalibrating}
+              >
+                {isCalibrating ? 'Kalibriere ...' : 'Kalibrierung starten'}
+              </button>
+              {calibrationRecommendation !== null && (
+                <span className="voice-calibration-rec">
+                  Empfehlung aktiv: {calibrationRecommendation}%
+                </span>
+              )}
+            </div>
+            {calibrationInfo && (
+              <p className="voice-calibration-info">{calibrationInfo}</p>
+            )}
+          </div>
+        )}
+
+        {!speechService.isSupported && (
           <div className="settings-row">
             <span className="settings-value">
               Voice tracking is not available in this browser because the Web Speech API is not supported.
             </span>
           </div>
         )}
-
-        {tier !== 'expert' && (
-          <div className="settings-row">
-            <span className="settings-value">Voice tracking is available in Expert tier.</span>
-          </div>
-        )}
       </fieldset>
 
       {/* ─── Presenter Profiles (Professional+) ──────────────────────── */}
+      <fieldset className="settings-group">
+        <legend>Testtext</legend>
+        <div className="settings-row">
+          <button type="button" className="btn-small" onClick={handleLoadGermanTestScript}>
+            Deutschen 4-Segment-Testtext laden
+          </button>
+        </div>
+      </fieldset>
+
       {tier !== 'basic' && (
         <fieldset className="settings-group">
           <legend>Presenter Profiles</legend>

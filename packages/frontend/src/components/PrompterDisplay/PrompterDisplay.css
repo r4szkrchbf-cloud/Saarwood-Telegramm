@@ -62,6 +62,44 @@
   text-shadow: 0 0 10px rgba(255, 59, 48, 0.85);
 }
 
+.prompter-voice-status {
+  position: absolute;
+  top: 2.25rem;
+  left: 0.9rem;
+  z-index: 22;
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  padding: 0.32rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.56);
+  color: #d5d8dc;
+  backdrop-filter: blur(4px);
+}
+
+.prompter-voice-status.status-listening {
+  color: #7bed9f;
+  border-color: rgba(123, 237, 159, 0.5);
+}
+
+.prompter-voice-status.status-starting,
+.prompter-voice-status.status-waiting {
+  color: #ffe082;
+  border-color: rgba(255, 224, 130, 0.5);
+}
+
+.prompter-voice-status.status-no-speech {
+  color: #ffb86b;
+  border-color: rgba(255, 184, 107, 0.45);
+}
+
+.prompter-voice-status.status-error {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.55);
+}
+
 /* ─── Scrollable Content ──────────────────────────────────────────────────── */
 
 .prompter-content {

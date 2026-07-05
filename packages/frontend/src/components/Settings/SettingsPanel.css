@@ -88,12 +88,95 @@
   font-size: 0.85rem;
 }
 
+.voice-sensitivity-number {
+  width: 72px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  padding: 0.2rem 0.35rem;
+  font-size: 0.82rem;
+}
+
 .settings-value {
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
   min-width: 40px;
   text-align: right;
   color: var(--text);
+}
+
+.voice-status-legend {
+  margin-top: 0.55rem;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  padding: 0.55rem 0.65rem;
+  background: color-mix(in oklab, var(--surface) 85%, transparent);
+}
+
+.voice-status-legend-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.voice-status-legend-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.voice-status-legend-list strong {
+  color: var(--text);
+}
+
+.voice-calibration {
+  margin-top: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.55rem 0.65rem;
+  background: color-mix(in oklab, var(--surface) 90%, transparent);
+}
+
+.voice-calibration-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.voice-calibration-phrase {
+  margin: 0.42rem 0;
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.voice-calibration-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.voice-calibration-rec {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.voice-calibration-info {
+  margin: 0.5rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--text-muted);
 }
 
 /* ─── Tier Selector ───────────────────────────────────────────────────────── */

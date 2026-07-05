@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, CSSProperties } from 'react';
+import { useRef, useEffect, useMemo, useCallback, useState, CSSProperties } from 'react';
 import DOMPurify from 'dompurify';
 import { usePrompterStore } from '../../store/prompterStore';
 import { useScrollEngine } from '../../hooks/useScrollEngine';
@@ -42,15 +42,18 @@ export function PrompterDisplay() {
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
-  const tier = usePrompterStore((s) => s.tier);
+  const speechInputDeviceId = usePrompterStore((s) => s.speechInputDeviceId);
+  const speechSensitivity = usePrompterStore((s) => s.speechSensitivity);
   const wsConnected = usePrompterStore((s) => s.wsConnected);
   const pause = usePrompterStore((s) => s.pause);
+  const storeSetPosition = usePrompterStore((s) => s.setPosition);
 
   const boundaryPauseGuardRef = useRef(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
   const { setPosition } = useScrollEngine({
     speed,
@@ -76,6 +79,22 @@ export function PrompterDisplay() {
       boundaryPauseGuardRef.current = false;
     }
   }, [isPlaying]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateHeight = () => {
+      setViewportHeight(container.clientHeight);
+    };
+
+    updateHeight();
+    if (typeof ResizeObserver === 'undefined') return;
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   // Sync store position changes (from remote control / WS) to DOM
   useEffect(() => {
@@ -109,12 +128,52 @@ export function PrompterDisplay() {
     return sample.length / width;
   }, [fontFamily, fontSize]);
 
-  useSpeechTracking({
-    enabled: tier === 'expert' && speechEnabled,
+  const applySpeechPosition = useCallback((nextPosition: number) => {
+    const bounded = Math.max(0, nextPosition);
+    setPosition(bounded);
+    storeSetPosition(bounded);
+    wsService.send('SET_POSITION', { position: bounded });
+  }, [setPosition, storeSetPosition]);
+
+  const {
+    status: voiceStatus,
+    statusDetail: voiceStatusDetail,
+  } = useSpeechTracking({
+    enabled: speechEnabled && isPlaying,
     scriptText: plainText,
     charsPerPixel,
-    onScrollPositionEstimate: setPosition,
+    onScrollPositionEstimate: applySpeechPosition,
+    inputDeviceId: speechInputDeviceId,
+    sensitivityPercent: speechSensitivity,
   });
+
+  const voiceStatusLabel = useMemo(() => {
+    if (!speechEnabled) return 'Voice: AUS';
+    if (!isPlaying) return 'Voice: Gemutet (Pause)';
+
+    switch (voiceStatus) {
+      case 'starting':
+        return 'Voice: Startet';
+      case 'listening':
+        return 'Voice: Hoert zu';
+      case 'waiting':
+        return 'Voice: Wartet';
+      case 'no-speech':
+        return voiceStatusDetail
+          ? `Voice: Keine Sprache (${voiceStatusDetail})`
+          : 'Voice: Keine Sprache';
+      case 'error':
+        return voiceStatusDetail
+          ? `Voice: Fehler (${voiceStatusDetail})`
+          : 'Voice: Fehler';
+      default:
+        return 'Voice: Bereit';
+    }
+  }, [speechEnabled, isPlaying, voiceStatus, voiceStatusDetail]);
+
+  const voiceStatusTitle = voiceStatusDetail
+    ? `${voiceStatusLabel} - ${voiceStatusDetail}`
+    : voiceStatusLabel;
 
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
@@ -145,18 +204,31 @@ export function PrompterDisplay() {
     transform: mirrorTransform,
   };
 
+  const initialTopOffset = useMemo(() => {
+    if (viewportHeight <= 0) return 0;
+
+    if (cueMarkerEnabled) {
+      const cueY = viewportHeight * (cueMarkerPosition / 100);
+      const threeLines = fontSize * lineHeight * 3;
+      return Math.max(0, cueY + threeLines);
+    }
+
+    return viewportHeight * 0.5;
+  }, [viewportHeight, cueMarkerEnabled, cueMarkerPosition, fontSize, lineHeight]);
+
   const contentStyle: CSSProperties = {
     fontSize: `${fontSize}px`,
     fontFamily,
     color: textColor,
     lineHeight,
     textAlign,
+    paddingTop: `${Math.round(initialTopOffset)}px`,
     willChange: 'transform',
   };
 
   // ─── Cue marker position ──────────────────────────────────────────────────
 
-  const cueMarkerStyle: CSSProperties = (tier !== 'basic' && cueMarkerEnabled)
+  const cueMarkerStyle: CSSProperties = cueMarkerEnabled
     ? {
         top: `${cueMarkerPosition}%`,
         display: 'block',
@@ -192,6 +264,17 @@ export function PrompterDisplay() {
               🎤
             </div>
           )}
+
+          <div
+            className={[
+              'prompter-voice-status',
+              `status-${speechEnabled ? voiceStatus : 'idle'}`,
+            ].join(' ')}
+            aria-live="polite"
+            title={voiceStatusTitle}
+          >
+            {voiceStatusLabel}
+          </div>
 
           {/* Cue marker overlay */}
           <div

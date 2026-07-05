@@ -124,6 +124,10 @@ interface PrompterStore {
   resetDisplay: () => void;
   speechEnabled: boolean;
   setSpeechEnabled: (enabled: boolean) => void;
+  speechInputDeviceId: string | null;
+  setSpeechInputDeviceId: (deviceId: string | null) => void;
+  speechSensitivity: number;
+  setSpeechSensitivity: (value: number) => void;
 
   // Script
   script: Script;
@@ -191,6 +195,11 @@ export const usePrompterStore = create<PrompterStore>()(
       resetDisplay: () => set({ display: DEFAULT_DISPLAY_SETTINGS }),
       speechEnabled: false,
       setSpeechEnabled: (speechEnabled) => set({ speechEnabled }),
+      speechInputDeviceId: null,
+      setSpeechInputDeviceId: (speechInputDeviceId) => set({ speechInputDeviceId }),
+      speechSensitivity: 55,
+      setSpeechSensitivity: (speechSensitivity) =>
+        set({ speechSensitivity: Math.max(0, Math.min(100, Math.round(speechSensitivity))) }),
 
       // Script
       script: DEFAULT_SCRIPT,
@@ -299,6 +308,8 @@ export const usePrompterStore = create<PrompterStore>()(
         tier: state.tier,
         display: state.display,
         speechEnabled: state.speechEnabled,
+        speechInputDeviceId: state.speechInputDeviceId,
+        speechSensitivity: state.speechSensitivity,
         profiles: state.profiles,
         activeProfileId: state.activeProfileId,
         script: state.script,

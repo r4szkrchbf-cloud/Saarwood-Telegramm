@@ -95,12 +95,12 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
     wsService.send('SET_POSITION', { position: 0 });
     stop();
     wsService.send('STOP');
-    setTimeout(() => {
-      play();
-      wsService.send('PLAY');
-    }, 80);
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+      return;
+    }
     notifyManualControl();
-  }, [play, stop, notifyManualControl]);
+  }, [stop, notifyManualControl]);
 
   const handleSpeedNudge = useCallback(
     (delta: number) => {

@@ -11,6 +11,45 @@ import './App.css';
 
 type ViewMode = 'editor' | 'prompter' | 'split';
 
+const GERMAN_TEST_SEGMENTS: ScriptSegment[] = [
+  {
+    id: 'seg-1',
+    html: '<p>Guten Abend und herzlich willkommen zu unserer Sendung. In den naechsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verstaendlich zusammen.</p>',
+    direction: 'ltr',
+    isCloaked: false,
+    isDirectorsNote: false,
+  },
+  {
+    id: 'seg-2',
+    html: '<p>Im ersten Themenblock geht es um die Verkehrslage im Saarland. Der Berufsverkehr bleibt auf den Hauptachsen dicht, auf der A sechs kommt es weiterhin zu zoegerlichem Vorankommen.</p>',
+    direction: 'ltr',
+    isCloaked: false,
+    isDirectorsNote: false,
+  },
+  {
+    id: 'seg-3',
+    html: '<p>Danach schauen wir auf das Wetter: In der Nacht bleibt es weitgehend trocken, lokal kann sich Nebel bilden. Morgen starten wir freundlich, spaeter ziehen Wolken auf.</p>',
+    direction: 'ltr',
+    isCloaked: false,
+    isDirectorsNote: false,
+  },
+  {
+    id: 'seg-4',
+    html: '<p>Zum Abschluss noch der Sport: Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins. Das Team zeigt eine stabile Defensive und bleibt damit auf Playoff-Kurs.</p>',
+    direction: 'ltr',
+    isCloaked: false,
+    isDirectorsNote: false,
+  },
+];
+
+function isLegacyEnglishDemoScript(script: Script): boolean {
+  if (script.segments.length !== 2) return false;
+  const first = script.segments[0]?.html ?? '';
+  const second = script.segments[1]?.html ?? '';
+  return first.includes('Welcome to <strong>Saarwood Teleprompter</strong>')
+    && second.includes('Edit this text in the script editor on the left');
+}
+
 function escapeHtml(text: string): string {
   return text
     .replaceAll('&', '&amp;')
@@ -267,6 +306,16 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('restart')) return;
+    params.delete('restart');
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash}`;
+    window.history.replaceState(null, '', nextUrl);
+  }, []);
+
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 
   useEffect(() => {
@@ -335,26 +384,11 @@ export function App() {
     if (!hydrated || demoSeededRef.current) return;
 
     const current = usePrompterStore.getState().script;
-    if (current.segments.length === 0) {
+    if (current.segments.length === 0 || isLegacyEnglishDemoScript(current)) {
       setScript({
         ...current,
         lastModified: Date.now(),
-        segments: [
-          {
-            id: 'seg-1',
-            html: '<p>Welcome to <strong>Saarwood Teleprompter</strong> — professional broadcast quality, built for the modern newsroom.</p>',
-            direction: 'ltr',
-            isCloaked: false,
-            isDirectorsNote: false,
-          },
-          {
-            id: 'seg-2',
-            html: '<p>Edit this text in the script editor on the left. Your changes appear in the teleprompter view in real time.</p>',
-            direction: 'ltr',
-            isCloaked: false,
-            isDirectorsNote: false,
-          },
-        ],
+        segments: GERMAN_TEST_SEGMENTS,
       });
     }
 
