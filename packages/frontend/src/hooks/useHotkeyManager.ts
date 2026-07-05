@@ -38,9 +38,12 @@ export function useHotkeyManager(): void {
     hotkeyManager.register(' ', 'Play / Pause', () => {
       const { scroll } = usePrompterStore.getState();
       if (scroll.isPlaying) {
+        wsService.send('SET_POSITION', { position: scroll.position });
         pause();
+        wsService.send('PAUSE');
       } else {
         play();
+        wsService.send('PLAY');
       }
     });
 
@@ -85,10 +88,19 @@ export function useHotkeyManager(): void {
       wsService.send('SET_DIRECTION', { direction: 'down' });
     });
 
-    hotkeyManager.register('r', 'Reset (Stop)', () => stop());
-    hotkeyManager.register('R', 'Reset (Stop)', () => stop());
+    hotkeyManager.register('r', 'Reset (Stop)', () => {
+      stop();
+      wsService.send('STOP');
+    });
+    hotkeyManager.register('R', 'Reset (Stop)', () => {
+      stop();
+      wsService.send('STOP');
+    });
 
-    hotkeyManager.register('Escape', 'Stop', () => stop());
+    hotkeyManager.register('Escape', 'Stop', () => {
+      stop();
+      wsService.send('STOP');
+    });
 
     // ── Mirror ─────────────────────────────────────────────────────────────
     hotkeyManager.register('m', 'Mirror horizontal', () => {

@@ -80,6 +80,8 @@ export function ControlPanel() {
   }, [play, notifyManualControl]);
 
   const handlePause = useCallback(() => {
+    const currentPosition = usePrompterStore.getState().scroll.position;
+    wsService.send('SET_POSITION', { position: currentPosition });
     pause();
     wsService.send('PAUSE');
     notifyManualControl();
@@ -90,6 +92,8 @@ export function ControlPanel() {
       // First press always behaves like an immediate stop (no reset), so
       // operators can halt motion instantly. A second press confirms reset.
       if (isPlaying) {
+        const currentPosition = usePrompterStore.getState().scroll.position;
+        wsService.send('SET_POSITION', { position: currentPosition });
         pause();
         wsService.send('PAUSE');
         notifyManualControl();

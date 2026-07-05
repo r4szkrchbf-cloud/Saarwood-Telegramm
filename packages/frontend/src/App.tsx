@@ -141,6 +141,8 @@ export function App() {
   const scriptTitle = usePrompterStore((s) => s.script.title);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const scriptLastModified = usePrompterStore((s) => s.script.lastModified);
+  const scrollPosition = usePrompterStore((s) => s.scroll.position);
+  const isPlaying = usePrompterStore((s) => s.scroll.isPlaying);
   const script = useMemo<Script>(() => ({
     id: scriptId,
     title: scriptTitle,
@@ -163,6 +165,9 @@ export function App() {
   const lastSyncedScriptModified = useRef(script.lastModified);
   // Tracks the JSON of the most-recently applied remote display settings.
   const lastSyncedDisplayJson = useRef(JSON.stringify(display));
+  // Tracks last position pushed to backend to avoid flooding SET_POSITION.
+  const lastSyncedPosition = useRef(scrollPosition);
+  const positionSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // React StrictMode mounts effects twice in dev; guard demo seeding.
   const demoSeededRef = useRef(false);
 
@@ -199,7 +204,14 @@ export function App() {
       (msg) => {
         const p = msg.payload as Partial<ScrollState> | undefined;
         if (typeof p?.speed === 'number') usePrompterStore.getState().setSpeed(p.speed);
-        if (typeof p?.position === 'number') usePrompterStore.getState().setPosition(p.position);
+        if (typeof p?.position === 'number') {
+          const state = usePrompterStore.getState().scroll;
+          // Position is now synchronized via SET_POSITION events. Avoid
+          // heartbeat SYNC_STATE clobbering a valid local paused position.
+          if (!state.isPlaying && state.position === 0) {
+            usePrompterStore.getState().setPosition(p.position);
+          }
+        }
         if (p?.direction === 'down' || p?.direction === 'up') {
           usePrompterStore.getState().setDirection(p.direction);
         }
@@ -278,6 +290,37 @@ export function App() {
     }, 500);
     return () => clearTimeout(timer);
   }, [display]);
+
+  // ─── Broadcast position changes to backend (throttled while playing) ─────
+
+  useEffect(() => {
+    return () => {
+      if (positionSyncTimer.current) {
+        clearTimeout(positionSyncTimer.current);
+        positionSyncTimer.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (Math.abs(scrollPosition - lastSyncedPosition.current) < 1) return;
+    if (positionSyncTimer.current) return;
+
+    positionSyncTimer.current = setTimeout(() => {
+      positionSyncTimer.current = null;
+      const latest = usePrompterStore.getState().scroll.position;
+      wsService.send('SET_POSITION', { position: latest });
+      lastSyncedPosition.current = latest;
+    }, 120);
+  }, [scrollPosition, isPlaying]);
+
+  useEffect(() => {
+    if (isPlaying) return;
+    if (Math.abs(scrollPosition - lastSyncedPosition.current) < 1) return;
+    wsService.send('SET_POSITION', { position: scrollPosition });
+    lastSyncedPosition.current = scrollPosition;
+  }, [scrollPosition, isPlaying]);
 
   // ─── Demo script initialisation ───────────────────────────────────────
 
