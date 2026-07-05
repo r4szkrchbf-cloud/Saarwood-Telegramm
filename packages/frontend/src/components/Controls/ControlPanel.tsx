@@ -81,6 +81,14 @@ export function ControlPanel() {
 
   const handleStop = useCallback(() => {
     if (!confirmingReset) {
+      // First press always behaves like an immediate stop (no reset), so
+      // operators can halt motion instantly. A second press confirms reset.
+      if (isPlaying) {
+        pause();
+        wsService.send('PAUSE');
+        notifyManualControl();
+      }
+
       setConfirmingReset(true);
       if (resetConfirmTimerRef.current) clearTimeout(resetConfirmTimerRef.current);
       resetConfirmTimerRef.current = setTimeout(() => {
@@ -98,7 +106,7 @@ export function ControlPanel() {
     stop();
     wsService.send('STOP');
     notifyManualControl();
-  }, [confirmingReset, stop, notifyManualControl]);
+  }, [confirmingReset, isPlaying, pause, stop, notifyManualControl]);
 
   const handleSpeedChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,10 +166,10 @@ export function ControlPanel() {
           type="button"
           className={['btn', 'btn--stop', confirmingReset ? 'active' : ''].join(' ')}
           onClick={handleStop}
-          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Reset to beginning'}
-          title={confirmingReset ? 'Click again to confirm reset' : 'Reset to beginning'}
+          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Stop and arm reset'}
+          title={confirmingReset ? 'Click again to confirm reset' : 'Stop now, click again within 2s to reset'}
         >
-          {confirmingReset ? 'Confirm reset' : 'Reset'}
+          {confirmingReset ? 'Confirm reset' : 'Stop'}
         </button>
 
         {isPlaying ? (

@@ -6,6 +6,7 @@ import { useSpeechTracking } from '../../hooks/useSpeechTracking';
 import './PrompterDisplay.css';
 
 const DEFAULT_CHARS_PER_PIXEL = 0.1;
+const DIN_A4_RATIO = 210 / 297;
 
 /**
  * PrompterDisplay
@@ -42,9 +43,10 @@ export function PrompterDisplay() {
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
 
+  const stageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
   const { setPosition } = useScrollEngine({
     speed,
@@ -94,13 +96,14 @@ export function PrompterDisplay() {
     onScrollPositionEstimate: setPosition,
   });
 
-  // Keep viewport dimensions so rotated layouts can be scaled to fit.
+  // Keep outer stage dimensions so rotated layouts can be framed in
+  // portrait mode (DIN A4-like) for tablet/phone portrait usage.
   useEffect(() => {
-    const el = containerRef.current;
+    const el = stageRef.current;
     if (!el) return;
 
     const updateSize = () => {
-      setViewportSize({ width: el.clientWidth, height: el.clientHeight });
+      setStageSize({ width: el.clientWidth, height: el.clientHeight });
     };
 
     updateSize();
@@ -118,9 +121,11 @@ export function PrompterDisplay() {
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
   const mirrorTransform = useMemo<string>(() => {
+    const width = stageSize.width;
+    const height = stageSize.height;
+
+    // In quarter-turn modes, fit the rotated content to the framed viewport.
     const isQuarterTurn = rotation === 90 || rotation === 270;
-    const width = viewportSize.width;
-    const height = viewportSize.height;
     const fitScale = isQuarterTurn && width > 0 && height > 0
       ? Math.min(width / height, height / width)
       : 1;
@@ -134,12 +139,42 @@ export function PrompterDisplay() {
     if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
     if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
     return parts.length > 0 ? parts.join(' ') : 'none';
-  }, [mirrorHorizontal, mirrorVertical, rotation, viewportSize.width, viewportSize.height]);
+  }, [mirrorHorizontal, mirrorVertical, rotation, stageSize.width, stageSize.height]);
+
+  const viewportFrameStyle = useMemo<CSSProperties>(() => {
+    const isPortraitMode = rotation === 90 || rotation === 270;
+    if (!isPortraitMode) {
+      return { width: '100%', height: '100%' };
+    }
+
+    const width = stageSize.width;
+    const height = stageSize.height;
+    if (width <= 0 || height <= 0) {
+      return { width: '100%', height: '100%' };
+    }
+
+    // Center an A4-like portrait frame within the available prompter pane.
+    let frameWidth = width;
+    let frameHeight = width / DIN_A4_RATIO;
+    if (frameHeight > height) {
+      frameHeight = height;
+      frameWidth = height * DIN_A4_RATIO;
+    }
+
+    return {
+      width: `${frameWidth}px`,
+      height: `${frameHeight}px`,
+    };
+  }, [rotation, stageSize.width, stageSize.height]);
 
   // ─── Viewport styles ──────────────────────────────────────────────────────
 
   const viewportStyle: CSSProperties = {
     backgroundColor,
+    ...viewportFrameStyle,
+  };
+
+  const transformLayerStyle: CSSProperties = {
     transform: mirrorTransform,
   };
 
@@ -162,59 +197,63 @@ export function PrompterDisplay() {
     : { display: 'none' };
 
   return (
-    <div
-      id="prompter-viewport"
-      className="prompter-viewport"
-      ref={containerRef}
-      style={viewportStyle}
-      aria-label="Teleprompter output"
-      aria-live="polite"
-    >
-      {/* Cue marker overlay */}
+    <div className="prompter-stage" ref={stageRef}>
       <div
-        className="cue-marker"
-        style={cueMarkerStyle}
-        aria-hidden="true"
-      />
-
-      {/* Scrollable content — translated via CSS transform */}
-      <div
-        id="prompter-content"
-        className="prompter-content"
-        ref={contentRef}
-        style={contentStyle}
+        id="prompter-viewport"
+        className="prompter-viewport"
+        ref={containerRef}
+        style={viewportStyle}
+        aria-label="Teleprompter output"
+        aria-live="polite"
       >
-        {scriptSegments.map((segment, idx) => {
-          if (segment.isCloaked) return null;
+        <div className="prompter-transform-layer" style={transformLayerStyle}>
+          {/* Cue marker overlay */}
+          <div
+            className="cue-marker"
+            style={cueMarkerStyle}
+            aria-hidden="true"
+          />
 
-          return (
-            <div
-              key={`${segment.id}-${idx}`}
-              className="prompter-segment"
-              dir={segment.direction}
-              data-segment-id={segment.id}
-              data-directors-note={segment.isDirectorsNote || undefined}
-            >
-              {/* Render HTML from Tiptap editor — sanitized via DOMPurify */}
-              <div
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(segment.html) }}
-              />
+          {/* Scrollable content — translated via CSS transform */}
+          <div
+            id="prompter-content"
+            className="prompter-content"
+            ref={contentRef}
+            style={contentStyle}
+          >
+            {scriptSegments.map((segment, idx) => {
+              if (segment.isCloaked) return null;
+
+              return (
+                <div
+                  key={`${segment.id}-${idx}`}
+                  className="prompter-segment"
+                  dir={segment.direction}
+                  data-segment-id={segment.id}
+                  data-directors-note={segment.isDirectorsNote || undefined}
+                >
+                  {/* Render HTML from Tiptap editor — sanitized via DOMPurify */}
+                  <div
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(segment.html) }}
+                  />
+                </div>
+              );
+            })}
+
+            {/* Bottom padding so last line can reach the cue marker */}
+            <div className="prompter-end-pad" aria-hidden="true" />
+          </div>
+
+          {/* Speed / position overlay (shown when paused) */}
+          {!isPlaying && (
+            <div className="prompter-status-overlay" aria-live="polite">
+              {position === 0
+                ? 'READY'
+                : `PAUSED — ${Math.round(speed)} px/s`}
             </div>
-          );
-        })}
-
-        {/* Bottom padding so last line can reach the cue marker */}
-        <div className="prompter-end-pad" aria-hidden="true" />
-      </div>
-
-      {/* Speed / position overlay (shown when paused) */}
-      {!isPlaying && (
-        <div className="prompter-status-overlay" aria-live="polite">
-          {position === 0
-            ? 'READY'
-            : `PAUSED — ${Math.round(speed)} px/s`}
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
