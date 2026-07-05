@@ -508,3 +508,46 @@ Restliche Kernpunkte von Bedingung 3.2 validieren (Slider-Verhalten und Richtung
 | 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
 | 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
 | 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+
+---
+
+## Runde 10 - 2026-07-05 11:55:52 UTC (Anzeige-Kontrollen - Checkpoint)
+
+### Ziel
+
+Naechsten 3-Punkte-Block in den Anzeige-Kontrollen pruefen (Mirror und Rotation) und unmittelbar dokumentieren.
+
+### Durchgefuehrte Testpunkte
+
+1. H-Mirror Toggle:
+	- Button schaltet auf pressed
+	- Ergebnis: PASS
+
+2. V-Mirror Toggle:
+	- Button schaltet auf pressed
+	- Ergebnis: PASS
+
+3. Rotation +90:
+	- Anzeige wechselt von 0 auf 90 Grad
+	- Ergebnis: PASS
+
+### Ergebnis Runde 10
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+- Testlauf kann mit den naechsten 3 Punkten fortgesetzt werden
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
+| 9 | 2026-07-05 11:55 | Bedingung 3.2 Checkpoint 2: Slider + Richtung Rueckwechsel | n/a | GRUEN |
+| 10 | 2026-07-05 11:55:52 | Anzeige-Kontrollen: Mirror + Rotation +90 | n/a | GRUEN |
