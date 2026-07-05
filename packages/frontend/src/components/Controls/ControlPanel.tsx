@@ -33,8 +33,13 @@ export function ControlPanel() {
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
+  const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
   const [confirmingReset, setConfirmingReset] = useState(false);
   const resetConfirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setSpeedInput(String(Math.round(speed)));
+  }, [speed]);
 
   useEffect(() => {
     return () => {
@@ -108,13 +113,6 @@ export function ControlPanel() {
     notifyManualControl();
   }, [confirmingReset, isPlaying, pause, stop, notifyManualControl]);
 
-  const handleSpeedChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      applySpeed(Number(e.target.value));
-    },
-    [applySpeed],
-  );
-
   const handleSpeedNudge = useCallback(
     (delta: number) => {
       const currentSpeed = usePrompterStore.getState().scroll.speed;
@@ -123,26 +121,28 @@ export function ControlPanel() {
     [applySpeed],
   );
 
-  const handleSpeedSliderKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const currentSpeed = usePrompterStore.getState().scroll.speed;
+  const handleSpeedInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    setSpeedInput(raw);
+    if (raw.trim() === '') return;
 
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      applySpeed(currentSpeed - 1);
-      return;
-    }
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      applySpeed(currentSpeed + 1);
-      return;
-    }
-
-    // Prevent vertical arrow keys from changing speed to avoid accidental
-    // jumps during keyboard-based testing.
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-    }
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed)) return;
+    applySpeed(parsed);
   }, [applySpeed]);
+
+  const handleSpeedInputBlur = useCallback(() => {
+    if (speedInput.trim() === '') {
+      setSpeedInput(String(Math.round(usePrompterStore.getState().scroll.speed)));
+      return;
+    }
+    const parsed = Number(speedInput);
+    if (!Number.isFinite(parsed)) {
+      setSpeedInput(String(Math.round(usePrompterStore.getState().scroll.speed)));
+      return;
+    }
+    applySpeed(parsed);
+  }, [speedInput, applySpeed]);
 
   const handleDirectionToggle = useCallback(() => {
     const dir = direction === 'down' ? 'up' : 'down';
@@ -216,22 +216,24 @@ export function ControlPanel() {
           −
         </button>
 
-        <label className="speed-label" htmlFor="speed-slider">
+        <label className="speed-label" htmlFor="speed-input">
           Speed
           <span className="speed-value">{Math.round(speed)}</span>
           <span className="speed-unit">px/s</span>
         </label>
 
         <input
-          id="speed-slider"
-          type="range"
+          id="speed-input"
+          type="number"
           min={0}
           max={400}
           step={1}
-          value={speed}
-          onChange={handleSpeedChange}
-          onKeyDown={handleSpeedSliderKeyDown}
-          className="speed-slider"
+          inputMode="numeric"
+          value={speedInput}
+          onChange={handleSpeedInputChange}
+          onBlur={handleSpeedInputBlur}
+          className="speed-input"
+          aria-label="Speed input"
           aria-valuenow={speed}
           aria-valuemin={0}
           aria-valuemax={400}

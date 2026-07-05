@@ -96,9 +96,20 @@
   color: var(--text-muted);
 }
 
-.speed-slider {
-  flex: 1;
-  accent-color: var(--accent);
+.speed-input {
+  width: 7rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.speed-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .btn--nudge {
