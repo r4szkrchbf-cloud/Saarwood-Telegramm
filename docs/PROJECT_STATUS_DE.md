@@ -1,6 +1,6 @@
 # Projektstand Saarwood Teleprompter
 
-_Stand: 2026-07-05 02:45 UTC (Code- und Doku-Abgleich nach P0-Testharness-Fix)_
+_Stand: 2026-07-05 05:10 UTC (Voice-Tracking Stabilisierung, Kalibrierungs-Assistent und Testtext-Update)_
 
 ## 1. Kurzfazit
 
@@ -8,7 +8,19 @@ Das Projekt ist als Monorepo vollstaendig lauffaehig wiederhergestellt (Frontend
 Build und Tests sind fuer Frontend und Backend gruen.
 Der MVP ist fuer den LAN-Einsatz brauchbar, aber wir befinden uns weiterhin in der aktiven Testphase.
 Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfuehrung von A bis Z ebenfalls.
-ASR / Voice Tracking bleibt offen und verhindert noch den Abschluss der Testphase.
+ASR / Voice Tracking wurde in den Kernablaeufen stabilisiert (Play/Pause-Kopplung, sichtbare Laufzeitdiagnose, Sensitivity, Kalibrierung).
+Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser bedienbar.
+
+## 1.1 Delta-Update (neu)
+
+- Voice Tracking ist jetzt strikt an den Transport gekoppelt:
+	- `Play` aktiviert die Erkennung (wenn Voice aktiv ist)
+	- `Pause` muted die Erkennung hart, damit Sprechen keine Pause unterbricht
+- Deutscher Laufzeit-Status im Prompter-Output ergaenzt (`Voice: ...`) inklusive konkreter Fehlerursachen.
+- Mikrofonquelle waehlbar und persistiert.
+- Voice-Empfindlichkeit (`0-100%`) ergaenzt und als Reaktionsschwelle angebunden.
+- Kalibrierungs-Assistent in Settings ergaenzt (Testsatz, Erkennungsauswertung, automatische Empfehlung).
+- Deutscher 4-Segment-Testsprechertext als Default/Loader verfuegbar, inkl. Legacy-Englisch-Migration.
 
 ## 2. Aktueller technischer Ist-Stand
 
