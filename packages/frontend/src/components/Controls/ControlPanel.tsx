@@ -57,6 +57,7 @@ export function ControlPanel() {
   const applySpeed = useCallback((nextSpeed: number) => {
     const clamped = Math.max(0, Math.min(400, nextSpeed));
     setSpeed(clamped);
+    setSpeedInput(String(Math.round(clamped)));
     wsService.send('SET_SPEED', { speed: clamped });
     notifyManualControl();
   }, [setSpeed, notifyManualControl]);
