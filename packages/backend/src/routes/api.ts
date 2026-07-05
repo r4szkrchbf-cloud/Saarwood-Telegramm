@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import type { ControlServer } from '../websocket/ControlServer';
 import type { MosHandler } from '../mos/MosHandler';
 import type { NdiAdapter } from '../ndi/NdiAdapter';
+import type { LicenseService } from '../license/LicenseService';
 
 /**
  * REST API routes
@@ -36,8 +37,26 @@ export function createRouter(
   controlServer: ControlServer,
   mosHandler: MosHandler,
   ndiAdapter: NdiAdapter,
+  licenseService: LicenseService,
 ): Router {
   const router = Router();
+
+  const activateSchema = z.object({
+    token: z.string().min(10),
+  });
+
+  const getTokenFromRequest = (req: Request): string | null => {
+    const fromHeader = req.headers['x-license-token'];
+    if (typeof fromHeader === 'string' && fromHeader.trim()) return fromHeader.trim();
+
+    const authHeader = req.headers['authorization'];
+    if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.slice(7).trim();
+      if (token) return token;
+    }
+
+    return null;
+  };
 
   // ─── Health check ────────────────────────────────────────────────────────
   router.get('/health', (_req, res) => {
@@ -63,6 +82,32 @@ export function createRouter(
       version: '1.0.0',
       tier: process.env.APP_TIER ?? 'basic',
     });
+  });
+
+  // ─── License status / activation (Beta control) ─────────────────────────
+  router.get('/license/status', async (req, res) => {
+    const token = getTokenFromRequest(req);
+    const result = await licenseService.validateToken(token);
+    res.json(result);
+  });
+
+  router.post('/license/activate', async (req, res) => {
+    const parsed = activateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({
+        ok: false,
+        error: 'Validation failed',
+        issues: parsed.error.issues.map((i) => ({
+          path: i.path.join('.'),
+          message: i.message,
+        })),
+      });
+      return;
+    }
+
+    const result = await licenseService.validateToken(parsed.data.token);
+    const ok = result.status === 'active';
+    res.status(ok ? 200 : 403).json({ ok, ...result });
   });
 
   // ─── Content Ingest (n8n / ClickUp webhook target) ───────────────────────

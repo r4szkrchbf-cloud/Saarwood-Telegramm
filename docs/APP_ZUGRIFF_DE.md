@@ -83,11 +83,23 @@ Umgebungsvariablen für das Backend:
 | `NODE_ENV` | `development` | `production` für optimierte Ausgabe |
 | `ENABLE_MOS` | `false` | MOS-Protocol aktivieren |
 | `ENABLE_NDI` | `false` | NDI-Abstraktionsschicht aktivieren |
+| `LICENSE_MODE` | `disabled` | Lizenzmodus: `disabled` / `monitor` / `enforce` |
+| `LICENSE_PUBLIC_KEY_PEM` | _(leer)_ | Ed25519 Public Key (PEM) zur Token-Pruefung |
+| `LICENSE_REVOCATION_FILE` | `packages/backend/config/license-revocations.json` | Revocation-Liste fuer gesperrte Lizenzen/Generationen |
 
 Beispiel mit allen Features:
 ```bash
 APP_TIER=expert NODE_ENV=production node packages/backend/dist/server.js
 ```
+
+Beispiel mit aktivierter Lizenzpruefung (Public Beta):
+```bash
+LICENSE_MODE=enforce LICENSE_PUBLIC_KEY_PEM="-----BEGIN PUBLIC KEY-----..." NODE_ENV=production node packages/backend/dist/server.js
+```
+
+Lizenz-Endpunkte (Phase A):
+- `GET /api/license/status` (Header optional: `x-license-token` oder `Authorization: Bearer ...`)
+- `POST /api/license/activate` mit JSON-Body `{ "token": "..." }`
 
 ---
 

@@ -10,6 +10,15 @@ import type { DisplaySettings, MosRunningOrder, ScrollState, Script, ScriptSegme
 import './App.css';
 
 type ViewMode = 'editor' | 'prompter' | 'split';
+type LicenseMode = 'disabled' | 'monitor' | 'enforce';
+type LicenseStatus = 'active' | 'expired' | 'revoked' | 'invalid' | 'missing';
+
+interface LicenseState {
+  loading: boolean;
+  mode: LicenseMode;
+  status: LicenseStatus;
+  reason: string;
+}
 
 const GERMAN_TEST_SEGMENTS: ScriptSegment[] = [
   {
@@ -153,6 +162,15 @@ export function App() {
   const [showSettings, setShowSettings] = useState(false);
   const isOutputOnly = initialFlags.outputOnly;
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
+  const [licenseState, setLicenseState] = useState<LicenseState>({
+    loading: true,
+    mode: 'disabled',
+    status: 'active',
+    reason: '',
+  });
+  const [licenseInput, setLicenseInput] = useState('');
+  const [licenseMessage, setLicenseMessage] = useState('');
+  const [licenseSubmitting, setLicenseSubmitting] = useState(false);
 
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
@@ -212,6 +230,8 @@ export function App() {
   const addSegment = usePrompterStore((s) => s.addSegment);
   const removeSegment = usePrompterStore((s) => s.removeSegment);
   const reorderSegment = usePrompterStore((s) => s.reorderSegment);
+  const licenseToken = usePrompterStore((s) => s.licenseToken);
+  const setLicenseToken = usePrompterStore((s) => s.setLicenseToken);
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
   useHotkeyManager(!isOutputOnly);
@@ -334,6 +354,103 @@ export function App() {
     window.history.replaceState(null, '', nextUrl);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    const refreshLicenseStatus = async () => {
+      if (!hydrated) return;
+      setLicenseState((prev) => ({ ...prev, loading: true }));
+
+      try {
+        const headers: Record<string, string> = {};
+        if (licenseToken) {
+          headers['x-license-token'] = licenseToken;
+        }
+
+        const response = await fetch('/api/license/status', { headers });
+        if (!response.ok) {
+          throw new Error(`status-${response.status}`);
+        }
+
+        const payload = await response.json() as {
+          mode?: LicenseMode;
+          status?: LicenseStatus;
+          reason?: string;
+        };
+
+        if (!active) return;
+        setLicenseState({
+          loading: false,
+          mode: payload.mode ?? 'disabled',
+          status: payload.status ?? 'invalid',
+          reason: payload.reason ?? '',
+        });
+      } catch {
+        if (!active) return;
+        setLicenseState({
+          loading: false,
+          mode: 'enforce',
+          status: 'invalid',
+          reason: 'license-status-unreachable',
+        });
+      }
+    };
+
+    refreshLicenseStatus();
+    return () => {
+      active = false;
+    };
+  }, [hydrated, licenseToken]);
+
+  const activateLicense = async () => {
+    const token = licenseInput.trim();
+    if (!token) {
+      setLicenseMessage('Bitte einen Lizenzschluessel eingeben.');
+      return;
+    }
+
+    setLicenseSubmitting(true);
+    setLicenseMessage('Lizenz wird geprueft ...');
+
+    try {
+      const response = await fetch('/api/license/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const payload = await response.json() as {
+        ok?: boolean;
+        mode?: LicenseMode;
+        status?: LicenseStatus;
+        reason?: string;
+      };
+
+      if (payload.ok && payload.status === 'active') {
+        setLicenseToken(token);
+        setLicenseMessage('Lizenz aktiviert.');
+        setLicenseState({
+          loading: false,
+          mode: payload.mode ?? 'enforce',
+          status: 'active',
+          reason: '',
+        });
+      } else {
+        setLicenseMessage('Lizenz ungueltig oder deaktiviert.');
+        setLicenseState((prev) => ({
+          ...prev,
+          loading: false,
+          mode: payload.mode ?? prev.mode,
+          status: payload.status ?? 'invalid',
+          reason: payload.reason ?? 'activation-failed',
+        }));
+      }
+    } catch {
+      setLicenseMessage('Aktivierung fehlgeschlagen (Netzwerk/Server).');
+    } finally {
+      setLicenseSubmitting(false);
+    }
+  };
+
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 
   useEffect(() => {
@@ -437,8 +554,50 @@ export function App() {
     await window.saarwoodDesktop.openPrompterOnSecondMonitor();
   };
 
+  const licenseBlocked = !licenseState.loading
+    && licenseState.mode === 'enforce'
+    && licenseState.status !== 'active';
+
+  const licenseBannerVisible = !licenseState.loading && licenseState.mode !== 'disabled';
+
   return (
     <div className={rootClass}>
+      {licenseBlocked && (
+        <div className="license-gate" role="dialog" aria-label="Lizenzaktivierung erforderlich" aria-modal="true">
+          <div className="license-gate-card">
+            <h2>Beta-Lizenz erforderlich</h2>
+            <p>Diese Testversion ist nur mit gueltigem Lizenzschluessel nutzbar.</p>
+            <label htmlFor="license-key-input">Lizenzschluessel</label>
+            <textarea
+              id="license-key-input"
+              value={licenseInput}
+              onChange={(e) => setLicenseInput(e.target.value)}
+              placeholder="Token einfuegen ..."
+              rows={4}
+            />
+            <div className="license-gate-actions">
+              <button type="button" onClick={activateLicense} disabled={licenseSubmitting}>
+                {licenseSubmitting ? 'Pruefe ...' : 'Lizenz aktivieren'}
+              </button>
+              {licenseToken && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLicenseToken(null);
+                    setLicenseInput('');
+                    setLicenseMessage('Lokaler Lizenzschluessel entfernt.');
+                  }}
+                >
+                  Lokalen Schluessel loeschen
+                </button>
+              )}
+            </div>
+            {licenseMessage && <p className="license-gate-message">{licenseMessage}</p>}
+            {licenseState.reason && <p className="license-gate-reason">Status: {licenseState.reason}</p>}
+          </div>
+        </div>
+      )}
+
       {/* ─── Top bar ────────────────────────────────────────────────── */}
       {!isOutputOnly && (
         <header className="app-header">
@@ -457,6 +616,11 @@ export function App() {
           <span className="restart-hint" aria-label="Taste N fuer Prompter NeuStart">
             Taste N: Prompter NeuStart
           </span>
+          {licenseBannerVisible && (
+            <span className="license-hint" aria-label={`Lizenzstatus ${licenseState.status}`}>
+              Lizenz: {licenseState.status}
+            </span>
+          )}
         </div>
 
         {/* View mode switcher */}

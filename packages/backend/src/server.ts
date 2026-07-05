@@ -6,6 +6,7 @@ import { ControlServer } from './websocket/ControlServer';
 import { MosHandler } from './mos/MosHandler';
 import { createNdiAdapter } from './ndi/NdiAdapter';
 import { createRouter } from './routes/api';
+import { LicenseService } from './license/LicenseService';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 
@@ -70,6 +71,7 @@ if (ENABLE_NDI) {
 // ─── MOS handler (Professional / Expert tiers) ────────────────────────────────
 
 const mosHandler = new MosHandler(MOS_PORT);
+const licenseService = new LicenseService();
 
 if (ENABLE_MOS && APP_TIER !== 'basic') {
   mosHandler
@@ -90,7 +92,7 @@ if (ENABLE_MOS && APP_TIER !== 'basic') {
 
 // ─── REST API ─────────────────────────────────────────────────────────────────
 
-app.use('/api', createRouter(controlServer, mosHandler, ndiAdapter));
+app.use('/api', createRouter(controlServer, mosHandler, ndiAdapter, licenseService));
 
 // ─── 404 fallback (SPA) ───────────────────────────────────────────────────────
 
@@ -109,6 +111,7 @@ httpServer.listen(HTTP_PORT, () => {
   console.log(`[Server] Tier: ${APP_TIER}`);
   console.log(`[Server] MOS: ${ENABLE_MOS && APP_TIER !== 'basic' ? `TCP port ${MOS_PORT}` : 'disabled'}`);
   console.log(`[Server] NDI: ${ENABLE_NDI ? 'adapter loaded (stub if no native addon)' : 'disabled'}`);
+  console.log(`[Server] License mode: ${licenseService.getMode()}`);
 });
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────
@@ -131,4 +134,4 @@ process.on('SIGINT', () => {
   });
 });
 
-export { httpServer, controlServer, mosHandler, ndiAdapter };
+export { httpServer, controlServer, mosHandler, ndiAdapter, licenseService };

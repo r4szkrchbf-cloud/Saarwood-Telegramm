@@ -156,6 +156,10 @@ interface PrompterStore {
   // WebSocket connection status
   wsConnected: boolean;
   setWsConnected: (connected: boolean) => void;
+
+  // License token (Phase A)
+  licenseToken: string | null;
+  setLicenseToken: (token: string | null) => void;
 }
 
 // ─── Store implementation ─────────────────────────────────────────────────────
@@ -299,6 +303,10 @@ export const usePrompterStore = create<PrompterStore>()(
       // WebSocket
       wsConnected: false,
       setWsConnected: (wsConnected) => set({ wsConnected }),
+
+      // License
+      licenseToken: null,
+      setLicenseToken: (licenseToken) => set({ licenseToken }),
     }),
     {
       name: 'saarwood-teleprompter-state-v3',
@@ -310,6 +318,7 @@ export const usePrompterStore = create<PrompterStore>()(
         speechEnabled: state.speechEnabled,
         speechInputDeviceId: state.speechInputDeviceId,
         speechSensitivity: state.speechSensitivity,
+        licenseToken: state.licenseToken,
         profiles: state.profiles,
         activeProfileId: state.activeProfileId,
         script: state.script,
