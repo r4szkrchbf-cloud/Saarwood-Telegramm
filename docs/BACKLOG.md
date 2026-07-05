@@ -146,6 +146,48 @@ Voice Tracking ist im aktuellen Beta-Betrieb fuer den produktiven Ablauf nicht s
 - [ ] Neuer Stabilitaetsplan mit messbaren Kriterien (z. B. 30 Minuten fehlerfreier Lauf ohne Fehltrigger) dokumentiert
 - [ ] Erst nach erfolgreichen Stabilitaetstests wird der Hinweis wieder entfernt
 
+### TICKET-022 · Lizenz-Kill-Switch fuer Beta V1 (signierte Schluessel + Revocation)
+
+**Prioritaet:** P0
+**Beschreibung:**
+Ein kontrollierbarer Lizenzmechanismus wird eingefuehrt, damit Beta-Freigaben supportseitig deaktivierbar sind.
+Technische Zielarchitektur: signierte Lizenz-Tokens (Ed25519), lokale Pruefung im Client, serverseitige Revocation-Liste und optionaler Generation-Kill-Switch (`beta_generation`).
+
+**Akzeptanzkriterien:**
+- [ ] Lizenzdatenmodell definiert (`lic_id`, `tier`, `expires_at`, `grace_offline_until`, `beta_generation`)
+- [ ] Backend-Endpunkt `/api/license/status` implementiert
+- [ ] Revocation fuer einzelne `lic_id` und ganze `beta_generation` moeglich
+- [ ] Frontend zeigt klaren Lizenzstatus (aktiv/abgelaufen/gesperrt/offline-grace)
+- [ ] Offline-Gnadenfrist ist technisch umgesetzt und dokumentiert
+- [ ] Kein geheimer Privatschluessel im Frontend/Electron-Bundle enthalten
+
+### TICKET-023 · Admin-/Support-Workflow fuer Lizenzausgabe und Sperrung
+
+**Prioritaet:** P0
+**Beschreibung:**
+Interner Support-Prozess fuer Ausgabe, Sperrung und Ersetzung von Lizenzschluesseln aufsetzen.
+Minimalstart mit internem CLI oder Admin-Endpunkten, spaeter optional als kleines Web-Adminpanel.
+
+**Akzeptanzkriterien:**
+- [ ] Interner Prozess "Lizenz erstellen" dokumentiert
+- [ ] Interner Prozess "Lizenz sperren" dokumentiert
+- [ ] Notfallprozess fuer 72h-Emergency-Lizenz dokumentiert
+- [ ] Audit-Log fuer Ausgabe/Sperrung mit Timestamp und Operator vorhanden
+- [ ] Runbook fuer Supportfaelle (Geraetewechsel, Verlust, Missbrauch) vorhanden
+
+### TICKET-024 · Public MVP Rollout (Internet + Offline) verbindlich umsetzen
+
+**Prioritaet:** P0
+**Beschreibung:**
+Bestehende Strategie fuer oeffentlichen Internet-Betrieb und Offline-Nutzung in eine umsetzbare Betriebsstrecke ueberfuehren.
+
+**Akzeptanzkriterien:**
+- [ ] Hostinger VPS Zielsetup final (Domain, TLS, Reverse Proxy, Node-Prozessmanager)
+- [ ] WebSocket unter oeffentlicher Domain stabil getestet
+- [ ] Deployment-Runbook fuer Public MVP erstellt
+- [ ] Electron-Offline-Betrieb als offizieller Fallback dokumentiert
+- [ ] Abnahme-Checkliste fuer Go-Live (Health, Lizenzstatus, WS, Rollback) erstellt
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
@@ -417,3 +459,6 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-013  | CEA-708 Caption Export                   | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
 | TICKET-016  | Frontend-Bundlegroesse optimieren        | 2     | P1        | Alle         | 🔲 Offen     |
 | TICKET-017  | Hostinger VPS public MVP vorbereiten     | 3     | P0        | Alle         | 🔲 Offen     |
+| TICKET-022  | Lizenz-Kill-Switch Beta V1               | 3     | P0        | Alle         | 🔲 Offen     |
+| TICKET-023  | Admin-/Support-Lizenzprozess             | 3     | P0        | Alle         | 🔲 Offen     |
+| TICKET-024  | Public MVP Rollout Internet + Offline    | 3     | P0        | Alle         | 🔲 Offen     |
