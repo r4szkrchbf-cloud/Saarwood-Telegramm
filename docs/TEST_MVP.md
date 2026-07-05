@@ -423,3 +423,46 @@ Nach spaetestens 3 abgearbeiteten Testpunkten wird ein Zwischenstand in der Doku
 | 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
 | 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
 | 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+
+---
+
+## Runde 8 - 2026-07-05 11:53 UTC (Bedingung 3.2 - Checkpoint 1)
+
+### Ziel
+
+Bedingung 3.2 (Speed + Direction) mit den ersten drei Testpunkten verifizieren und den Zwischenstand gemaess 3-Punkte-Regel speichern.
+
+### Durchgefuehrte Testpunkte
+
+1. Speed minus (Button "-"):
+	- Startwert 80 px/s
+	- Nach Klick 75 px/s
+	- Ergebnis: PASS
+
+2. Speed plus (Button "+"):
+	- Ausgang nach Punkt 1: 75 px/s
+	- Nach Klick 80 px/s
+	- Ergebnis: PASS
+
+3. Direction Toggle:
+	- Umschaltung von "down" auf "up" sichtbar im UI (Pfeil nach oben)
+	- Ergebnis: PASS
+
+### Ergebnis Runde 8
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
+- Offener naechster Schritt in 3.2: Slider-Verhalten und Rueck-Umschaltung Richtung (up -> down)
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |
+| 8 | 2026-07-05 11:53 | Bedingung 3.2 Checkpoint 1: Speed-/Direction-Basics | n/a | GRUEN |
