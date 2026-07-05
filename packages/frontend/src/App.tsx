@@ -97,7 +97,6 @@ export function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [showSettings, setShowSettings] = useState(false);
 
-<<<<<<< HEAD
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
   const rotation = usePrompterStore((s) => s.display.rotation);
@@ -137,22 +136,6 @@ export function App() {
     cueMarkerEnabled,
     cueMarkerPosition,
   ]);
-=======
-  const display = usePrompterStore((s) => s.display);
-  const script = usePrompterStore((s) => s.script);
-  const setWsConnected = usePrompterStore((s) => s.setWsConnected);
-  const play = usePrompterStore((s) => s.play);
-  const pause = usePrompterStore((s) => s.pause);
-  const stop = usePrompterStore((s) => s.stop);
-  const setSpeed = usePrompterStore((s) => s.setSpeed);
-  const setPosition = usePrompterStore((s) => s.setPosition);
-  const setScript = usePrompterStore((s) => s.setScript);
-  const setDisplay = usePrompterStore((s) => s.setDisplay);
-  const setScriptTitle = usePrompterStore((s) => s.setScriptTitle);
-  const addSegment = usePrompterStore((s) => s.addSegment);
-  const removeSegment = usePrompterStore((s) => s.removeSegment);
-  const reorderSegment = usePrompterStore((s) => s.reorderSegment);
->>>>>>> 0e17f11462d8690e0bce4950002927c60d11b5e9
 
   const scriptId = usePrompterStore((s) => s.script.id);
   const scriptTitle = usePrompterStore((s) => s.script.title);
@@ -293,7 +276,6 @@ export function App() {
   // ─── Demo script initialisation ───────────────────────────────────────
 
   useEffect(() => {
-<<<<<<< HEAD
     const normalized = ensureUniqueSegmentIds(script);
     if (normalized !== script) {
       setScript(normalized);
@@ -326,38 +308,9 @@ export function App() {
         ],
       });
     }
-=======
-    if (script.segments.length > 0) return;
->>>>>>> 0e17f11462d8690e0bce4950002927c60d11b5e9
 
-<<<<<<< HEAD
     demoSeededRef.current = true;
   }, [hydrated, setScript]);
-
-=======
-    setScript({
-      ...script,
-      lastModified: Date.now(),
-      segments: [
-        {
-          id: 'seg-1',
-          html: '<p>Welcome to <strong>Saarwood Teleprompter</strong> — professional broadcast quality, built for the modern newsroom.</p>',
-          direction: 'ltr',
-          isCloaked: false,
-          isDirectorsNote: false,
-        },
-        {
-          id: 'seg-2',
-          html: '<p>Edit this text in the script editor on the left. Your changes appear in the teleprompter view in real time.</p>',
-          direction: 'ltr',
-          isCloaked: false,
-          isDirectorsNote: false,
-        },
-      ],
-    });
-  }, [script, setScript]);
-
->>>>>>> 0e17f11462d8690e0bce4950002927c60d11b5e9
   // ─── Layout ────────────────────────────────────────────────────────────
 
   const rootClass = [

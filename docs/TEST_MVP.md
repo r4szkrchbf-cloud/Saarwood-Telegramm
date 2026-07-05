@@ -139,4 +139,57 @@ tsc — Exit 0, keine Ausgabe (sauber)
 
 ---
 
-_Dieses Dokument wird nach jeder weiteren Testrunde mit neuen Einträgen ergänzt._
+_Dieses Dokument wird nach jeder weiteren Testrunde mit neuen Eintraegen ergaenzt._
+
+---
+
+## Runde 2 — 2026-07-05 02:34 UTC
+
+### Uebersicht
+
+| Kategorie | Ergebnis | Fehler | Warnungen |
+|-----------|----------|--------|-----------|
+| Unit-Tests Frontend | FAIL | 14 | 0 |
+| Unit-Tests Backend | PASS | 0 | 0 |
+| TypeScript Frontend | PASS | 0 | 0 |
+| TypeScript Backend | PASS | 0 | 0 |
+| Build Frontend (Vite) | PASS | 0 | 1 |
+| Build Backend (tsc) | PASS | 0 | 0 |
+
+Gesamtergebnis: Build gruen, Tests teilweise rot.
+
+### Detailergebnisse
+
+1. Frontend Tests
+- Datei: `src/test/prompterStore.test.ts`
+- Ergebnis: 14/14 fehlgeschlagen
+- Leitfehler: `TypeError: Cannot read properties of undefined (reading 'setItem')`
+- Befund: Persist/Storage-Verhalten im Testkontext ist nicht stabil.
+
+2. Backend Tests
+- Ergebnis: 9/9 bestanden (`mosHandler`, `ndiAdapter`).
+
+3. Build
+- Frontend Build erfolgreich inkl. PWA-Artefakte.
+- Backend Build erfolgreich.
+
+### Bewertung Runde 2
+
+- Runtime-Basis fuer MVP-LAN-Test ist gegeben (Builds gruen).
+- Testharness im Frontend ist aktuell inkonsistent und muss als P0 korrigiert werden.
+
+### Offene Punkte nach Runde 2
+
+| ID | Thema | Beschreibung | Prioritaet |
+|----|-------|--------------|------------|
+| T-01 | Frontend-Testharness | Persist/Storage im Vitest-Setup fuer `prompterStore.test.ts` stabilisieren | Hoch |
+| W-01 | Bundle-Groesse | Chunk-Warnung > 500 kB, spaeteres Code-Splitting | Niedrig |
+
+---
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |

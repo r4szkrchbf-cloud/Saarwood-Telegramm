@@ -7,6 +7,43 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ---
 
+## HOTFIX-Block 2026-07-05 (P0 fuer MVP-Langzeittest)
+
+### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+`prompterStore.test.ts` scheitert aktuell im Vitest-Lauf wegen Storage/Persist-Verhalten (`setItem` auf `undefined`).
+
+**Akzeptanzkriterien:**
+- [ ] `npm run test --workspace=packages/frontend` ist komplett gruen
+- [ ] `prompterStore.test.ts` laeuft stabil lokal und in CI
+- [ ] Persist-Middleware wird im Testkontext korrekt gemockt oder isoliert
+
+### TICKET-014 · MVP-LAN-Testcheckliste produktionsnah machen
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+Feste Durchfuehrungsanleitung fuer echten Langzeittest mit Usern erstellen und anwenden.
+
+**Akzeptanzkriterien:**
+- [ ] Testcheckliste dokumentiert (Startsequenz, Browser, Netzwerk, Rollback)
+- [ ] Erfolgskriterien definiert (Stabilitaet, Latenz, Bedienbarkeit, Fehlerquote)
+- [ ] Logging-Schema fuer Nutzerfeedback und technische Vorfaelle festgelegt
+
+### TICKET-015 · Doku-Code-Drift kontinuierlich verhindern
+
+**Prioritaet:** Hoch  
+**Beschreibung:**  
+Bestehende Doku wich vom aktuellen Teststatus ab. Es braucht einen kleinen Governance-Mechanismus.
+
+**Akzeptanzkriterien:**
+- [ ] `PROJECT_STATUS_DE.md`, `TEST_MVP.md`, `FEHLERBEHEBUNGEN.md` werden nach jedem Gate-Lauf aktualisiert
+- [ ] Neue Statusberichte werden datiert unter `docs/` abgelegt
+- [ ] Jeder Build-/Testlauf wird mit Datum/Uhrzeit und Ergebnis dokumentiert
+
+---
+
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
 
 ### TICKET-001 · CI-Workflow einrichten ✅

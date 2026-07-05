@@ -222,8 +222,8 @@ export function ControlPanel() {
         >
           ↺ −90°
         </button>
-        <span className="rotation-value" aria-label={`Current rotation: ${display.rotation ?? 0}°`}>
-          {display.rotation ?? 0}°
+        <span className="rotation-value" aria-label={`Current rotation: ${rotation ?? 0}°`}>
+          {rotation ?? 0}°
         </span>
         <button
           type="button"

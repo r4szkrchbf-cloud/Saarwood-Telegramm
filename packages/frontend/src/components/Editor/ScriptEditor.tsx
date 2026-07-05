@@ -42,7 +42,7 @@ export function ScriptEditor({ segment, isFirst, isLast, onDelete, onMoveUp, onM
     {
       extensions: TIPTAP_EXTENSIONS,
       content: segment.html,
-      onUpdate: ({ editor: ed }) => {
+      onUpdate: ({ editor: ed }: { editor: { getHTML: () => string } }) => {
         // Debounce is NOT needed: Zustand writes are O(1) and the prompter
         // canvas only reads the store on next animation frame
         updateSegment(segment.id, { html: ed.getHTML() });

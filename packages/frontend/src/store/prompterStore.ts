@@ -255,12 +255,7 @@ export const usePrompterStore = create<PrompterStore>()(
       setWsConnected: (wsConnected) => set({ wsConnected }),
     }),
     {
-<<<<<<< HEAD
-      // Versioned key to avoid re-hydrating previously corrupted client state.
-      name: 'saarwood-teleprompter-state-v2',
-=======
       name: 'saarwood-teleprompter-state-v3',
->>>>>>> 0e17f11462d8690e0bce4950002927c60d11b5e9
       // Persist user preferences and profiles, but not live scroll state
       partialize: (state) => ({
         tier: state.tier,

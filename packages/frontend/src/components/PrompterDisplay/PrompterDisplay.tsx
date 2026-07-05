@@ -153,11 +153,7 @@ export function PrompterDisplay() {
         ref={contentRef}
         style={contentStyle}
       >
-<<<<<<< HEAD
         {scriptSegments.map((segment, idx) => {
-=======
-        {script.segments.map((segment, idx) => {
->>>>>>> 0e17f11462d8690e0bce4950002927c60d11b5e9
           if (segment.isCloaked) return null;
 
           return (
