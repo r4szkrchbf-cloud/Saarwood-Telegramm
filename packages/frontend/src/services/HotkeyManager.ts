@@ -35,6 +35,7 @@ class HotkeyManager {
     if (this.active) return;
     this.active = true;
     window.addEventListener('keydown', this._onKeyDown, { capture: true });
+    window.addEventListener('keyup', this._onKeyUp, { capture: true });
   }
 
   /**
@@ -43,6 +44,7 @@ class HotkeyManager {
   disable(): void {
     this.active = false;
     window.removeEventListener('keydown', this._onKeyDown, { capture: true });
+    window.removeEventListener('keyup', this._onKeyUp, { capture: true });
   }
 
   /**
@@ -83,12 +85,33 @@ class HotkeyManager {
     const binding = this.bindings.get(e.key);
     if (!binding) return;
 
+    // Space toggles play/pause and should only fire once per physical press.
+    if (e.key === ' ' && e.repeat) return;
+
     e.preventDefault();
     e.stopPropagation();
     binding.action();
 
     // Notify voice-tracking / last-device-in-control convention
     window.dispatchEvent(new Event('prompter:manual-control'));
+  };
+
+  private _onKeyUp = (e: KeyboardEvent): void => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target.isContentEditable
+    ) {
+      return;
+    }
+
+    // Prevent keyup default actions (notably Space on focused buttons)
+    // for registered hotkeys so no secondary UI action is triggered.
+    if (!this.bindings.has(e.key)) return;
+    e.preventDefault();
+    e.stopPropagation();
   };
 }
 

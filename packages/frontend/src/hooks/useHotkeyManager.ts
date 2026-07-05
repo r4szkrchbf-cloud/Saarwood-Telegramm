@@ -15,8 +15,8 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *
  * Default bindings:
  *  Space        → Play / Pause toggle
- *  ArrowUp      → Speed +5 px/s
- *  ArrowDown    → Speed −5 px/s
+ *  ArrowRight   → Speed +5 px/s
+ *  ArrowLeft    → Speed −5 px/s
  *  r / R        → Reset (stop + position = 0)
  *  m / M        → Mirror horizontal toggle
  *  f / F        → Fullscreen toggle
@@ -42,11 +42,11 @@ export function useHotkeyManager(): void {
       }
     });
 
-    hotkeyManager.register('ArrowUp', 'Speed +5', () => {
+    hotkeyManager.register('ArrowRight', 'Speed +5', () => {
       setSpeed(usePrompterStore.getState().scroll.speed + 5);
     });
 
-    hotkeyManager.register('ArrowDown', 'Speed −5', () => {
+    hotkeyManager.register('ArrowLeft', 'Speed −5', () => {
       setSpeed(Math.max(0, usePrompterStore.getState().scroll.speed - 5));
     });
 

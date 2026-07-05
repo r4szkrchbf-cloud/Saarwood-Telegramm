@@ -6,6 +6,7 @@
   height: 100%;
   overflow: hidden;
   cursor: none; /* hide cursor during presentation */
+  transform-origin: center center;
   /* Hardware-compositing hint */
   transform-style: preserve-3d;
   backface-visibility: hidden;

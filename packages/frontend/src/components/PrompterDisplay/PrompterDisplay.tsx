@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, CSSProperties } from 'react';
+import { useRef, useEffect, useMemo, useState, CSSProperties } from 'react';
 import DOMPurify from 'dompurify';
 import { usePrompterStore } from '../../store/prompterStore';
 import { useScrollEngine } from '../../hooks/useScrollEngine';
@@ -44,6 +44,7 @@ export function PrompterDisplay() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
 
   const { setPosition } = useScrollEngine({
     speed,
@@ -93,17 +94,47 @@ export function PrompterDisplay() {
     onScrollPositionEstimate: setPosition,
   });
 
+  // Keep viewport dimensions so rotated layouts can be scaled to fit.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const updateSize = () => {
+      setViewportSize({ width: el.clientWidth, height: el.clientHeight });
+    };
+
+    updateSize();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(() => updateSize());
+      observer.observe(el);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
   const mirrorTransform = useMemo<string>(() => {
+    const isQuarterTurn = rotation === 90 || rotation === 270;
+    const width = viewportSize.width;
+    const height = viewportSize.height;
+    const fitScale = isQuarterTurn && width > 0 && height > 0
+      ? Math.min(width / height, height / width)
+      : 1;
+
     const sx = mirrorHorizontal ? -1 : 1;
     const sy = mirrorVertical ? -1 : 1;
+    const scaleX = sx * fitScale;
+    const scaleY = sy * fitScale;
     const parts: string[] = [];
-    // Rotation first, then scale — order matters for correct GPU compositing
+    // Rotation first, then scale — order matters for correct GPU compositing.
     if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
-    if (sx !== 1 || sy !== 1) parts.push(`scale(${sx}, ${sy})`);
+    if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
     return parts.length > 0 ? parts.join(' ') : 'none';
-  }, [mirrorHorizontal, mirrorVertical, rotation]);
+  }, [mirrorHorizontal, mirrorVertical, rotation, viewportSize.width, viewportSize.height]);
 
   // ─── Viewport styles ──────────────────────────────────────────────────────
 

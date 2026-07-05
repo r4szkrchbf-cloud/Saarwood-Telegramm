@@ -148,14 +148,7 @@ export function App() {
     lastModified: scriptLastModified,
   }), [scriptId, scriptTitle, scriptSegments, scriptLastModified]);
   const hydrated = usePrompterStore((s) => s.hydrated);
-  const setWsConnected = usePrompterStore((s) => s.setWsConnected);
-  const play = usePrompterStore((s) => s.play);
-  const pause = usePrompterStore((s) => s.pause);
-  const stop = usePrompterStore((s) => s.stop);
-  const setSpeed = usePrompterStore((s) => s.setSpeed);
-  const setPosition = usePrompterStore((s) => s.setPosition);
   const setScript = usePrompterStore((s) => s.setScript);
-  const setDisplay = usePrompterStore((s) => s.setDisplay);
   const setScriptTitle = usePrompterStore((s) => s.setScriptTitle);
   const addSegment = usePrompterStore((s) => s.addSegment);
   const removeSegment = usePrompterStore((s) => s.removeSegment);
@@ -178,26 +171,26 @@ export function App() {
   useEffect(() => {
     wsService.connect();
 
-    const unsubPlay = wsService.on('PLAY', () => play());
-    const unsubPause = wsService.on('PAUSE', () => pause());
-    const unsubStop = wsService.on('STOP', () => stop());
+    const unsubPlay = wsService.on('PLAY', () => usePrompterStore.getState().play());
+    const unsubPause = wsService.on('PAUSE', () => usePrompterStore.getState().pause());
+    const unsubStop = wsService.on('STOP', () => usePrompterStore.getState().stop());
     const unsubSpeed = wsService.on('SET_SPEED', (msg) => {
       const p = msg.payload as { speed?: number } | undefined;
-      if (typeof p?.speed === 'number') setSpeed(p.speed);
+      if (typeof p?.speed === 'number') usePrompterStore.getState().setSpeed(p.speed);
     });
     const unsubPosition = wsService.on(
       'SET_POSITION',
       (msg) => {
         const p = msg.payload as { position?: number } | undefined;
-        if (typeof p?.position === 'number') setPosition(p.position);
+        if (typeof p?.position === 'number') usePrompterStore.getState().setPosition(p.position);
       },
     );
     const unsubSync = wsService.on(
       'SYNC_STATE',
       (msg) => {
         const p = msg.payload as Partial<ScrollState> | undefined;
-        if (typeof p?.speed === 'number') setSpeed(p.speed);
-        if (typeof p?.position === 'number') setPosition(p.position);
+        if (typeof p?.speed === 'number') usePrompterStore.getState().setSpeed(p.speed);
+        if (typeof p?.position === 'number') usePrompterStore.getState().setPosition(p.position);
       },
     );
     const unsubMos = wsService.on('MOS_UPDATE', (msg) => {
@@ -210,7 +203,7 @@ export function App() {
         usePrompterStore.getState().script,
         payload.runningOrder,
       );
-      setScript(nextScript);
+      usePrompterStore.getState().setScript(nextScript);
     });
 
     const unsubScriptUpdate = wsService.on('SCRIPT_UPDATE', (msg) => {
@@ -218,7 +211,7 @@ export function App() {
       if (!payload?.script) return;
       // Record the remote lastModified to prevent echo-back
       lastSyncedScriptModified.current = payload.script.lastModified;
-      setScript(payload.script);
+      usePrompterStore.getState().setScript(payload.script);
     });
 
     const unsubSettingsUpdate = wsService.on('SETTINGS_UPDATE', (msg) => {
@@ -226,12 +219,12 @@ export function App() {
       if (!payload?.display) return;
       // Record the remote display JSON to prevent echo-back
       lastSyncedDisplayJson.current = JSON.stringify(payload.display);
-      setDisplay(payload.display);
+      usePrompterStore.getState().setDisplay(payload.display);
     });
 
     // Poll connection state
     const pollTimer = setInterval(() => {
-      setWsConnected(wsService.connected);
+      usePrompterStore.getState().setWsConnected(wsService.connected);
     }, 1000);
 
     return () => {
@@ -247,7 +240,7 @@ export function App() {
       clearInterval(pollTimer);
       wsService.disconnect();
     };
-  }, [play, pause, stop, setSpeed, setPosition, setScript, setDisplay, setWsConnected]);
+  }, []);
 
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 
@@ -416,7 +409,7 @@ export function App() {
       {/* ─── Settings drawer ─────────────────────────────────────────── */}
       {showSettings && (
         <aside className="settings-drawer" aria-label="Settings">
-          <SettingsPanel />
+          <SettingsPanel onClose={() => setShowSettings(false)} />
         </aside>
       )}
     </div>

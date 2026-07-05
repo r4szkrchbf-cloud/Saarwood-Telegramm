@@ -4,13 +4,17 @@ import { speechService } from '../../services/SpeechRecognitionService';
 import type { PresenterProfile } from '../../types';
 import './SettingsPanel.css';
 
+interface SettingsPanelProps {
+  onClose: () => void;
+}
+
 /**
  * SettingsPanel
  *
  * Presenter preferences and display configuration.
  * All changes are persisted to localStorage via Zustand's persist middleware.
  */
-export function SettingsPanel() {
+export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const display = usePrompterStore((s) => s.display);
   const profiles = usePrompterStore((s) => s.profiles);
   const activeProfileId = usePrompterStore((s) => s.activeProfileId);
@@ -47,7 +51,18 @@ export function SettingsPanel() {
 
   return (
     <div className="settings-panel" role="complementary" aria-label="Display settings">
-      <h2 className="settings-title">Settings</h2>
+      <div className="settings-header">
+        <h2 className="settings-title">Settings</h2>
+        <button
+          type="button"
+          className="settings-close-btn"
+          onClick={onClose}
+          aria-label="Close settings"
+          title="Close settings"
+        >
+          Close
+        </button>
+      </div>
 
       {/* ─── Tier selector ─────────────────────────────────────────────── */}
       <fieldset className="settings-group">

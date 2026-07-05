@@ -26,7 +26,12 @@ class WebSocketService {
   // ─── Public API ────────────────────────────────────────────────────────────
 
   connect(): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
+    if (
+      this.ws
+      && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)
+    ) {
+      return;
+    }
     this._openSocket();
   }
 
@@ -67,21 +72,28 @@ class WebSocketService {
   // ─── Private helpers ──────────────────────────────────────────────────────
 
   private _openSocket(): void {
+    if (this.ws && this.ws.readyState === WebSocket.CONNECTING) return;
+
+    const socket = new WebSocket(this.url);
+    this.ws = socket;
+
     try {
-      this.ws = new WebSocket(this.url);
+      // Socket was created above so event handlers can reference this exact instance.
     } catch {
       this._scheduleReconnect();
       return;
     }
 
-    this.ws.onopen = () => {
+    socket.onopen = () => {
+      if (this.ws !== socket) return;
       this._connected = true;
       this.reconnectDelay = 1000;
       this._startHeartbeat();
       this._dispatch({ type: 'HEARTBEAT', timestamp: Date.now() });
     };
 
-    this.ws.onmessage = (event: MessageEvent<string>) => {
+    socket.onmessage = (event: MessageEvent<string>) => {
+      if (this.ws !== socket) return;
       try {
         const msg = JSON.parse(event.data) as WsMessage;
         this._dispatch(msg);
@@ -90,13 +102,16 @@ class WebSocketService {
       }
     };
 
-    this.ws.onerror = () => {
+    socket.onerror = () => {
+      if (this.ws !== socket) return;
       // onerror is always followed by onclose; reconnect logic lives there
     };
 
-    this.ws.onclose = () => {
+    socket.onclose = () => {
+      if (this.ws !== socket) return;
       this._connected = false;
       this._clearHeartbeat();
+      this.ws = null;
       this._scheduleReconnect();
     };
   }
@@ -143,6 +158,11 @@ class WebSocketService {
 
 // Derive backend WS URL from window.location so it works in any deployment
 function buildWsUrl(): string {
+  const env = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
+  const envUrl = env?.VITE_WS_URL;
+  if (typeof envUrl === 'string' && envUrl.trim().length > 0) {
+    return envUrl;
+  }
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = window.location.host;
   return `${proto}//${host}/ws`;

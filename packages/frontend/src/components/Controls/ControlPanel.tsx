@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
 import { wsService } from '../../services/WebSocketService';
 import './ControlPanel.css';
@@ -33,10 +33,28 @@ export function ControlPanel() {
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const resetConfirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (resetConfirmTimerRef.current) {
+        clearTimeout(resetConfirmTimerRef.current);
+        resetConfirmTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const notifyManualControl = useCallback(() => {
     window.dispatchEvent(new Event('prompter:manual-control'));
   }, []);
+
+  const applySpeed = useCallback((nextSpeed: number) => {
+    const clamped = Math.max(0, Math.min(400, nextSpeed));
+    setSpeed(clamped);
+    wsService.send('SET_SPEED', { speed: clamped });
+    notifyManualControl();
+  }, [setSpeed, notifyManualControl]);
 
   const handleRotate = useCallback(
     (delta: -90 | 90) => {
@@ -62,30 +80,61 @@ export function ControlPanel() {
   }, [pause, notifyManualControl]);
 
   const handleStop = useCallback(() => {
+    if (!confirmingReset) {
+      setConfirmingReset(true);
+      if (resetConfirmTimerRef.current) clearTimeout(resetConfirmTimerRef.current);
+      resetConfirmTimerRef.current = setTimeout(() => {
+        setConfirmingReset(false);
+        resetConfirmTimerRef.current = null;
+      }, 2000);
+      return;
+    }
+
+    if (resetConfirmTimerRef.current) {
+      clearTimeout(resetConfirmTimerRef.current);
+      resetConfirmTimerRef.current = null;
+    }
+    setConfirmingReset(false);
     stop();
     wsService.send('STOP');
     notifyManualControl();
-  }, [stop, notifyManualControl]);
+  }, [confirmingReset, stop, notifyManualControl]);
 
   const handleSpeedChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const spd = Number(e.target.value);
-      setSpeed(spd);
-      wsService.send('SET_SPEED', { speed: spd });
-      notifyManualControl();
+      applySpeed(Number(e.target.value));
     },
-    [setSpeed, notifyManualControl],
+    [applySpeed],
   );
 
   const handleSpeedNudge = useCallback(
     (delta: number) => {
-      const newSpeed = speed + delta;
-      setSpeed(newSpeed);
-      wsService.send('SET_SPEED', { speed: newSpeed });
-      notifyManualControl();
+      const currentSpeed = usePrompterStore.getState().scroll.speed;
+      applySpeed(currentSpeed + delta);
     },
-    [speed, setSpeed, notifyManualControl],
+    [applySpeed],
   );
+
+  const handleSpeedSliderKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const currentSpeed = usePrompterStore.getState().scroll.speed;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      applySpeed(currentSpeed - 1);
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      applySpeed(currentSpeed + 1);
+      return;
+    }
+
+    // Prevent vertical arrow keys from changing speed to avoid accidental
+    // jumps during keyboard-based testing.
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+    }
+  }, [applySpeed]);
 
   const handleDirectionToggle = useCallback(() => {
     const dir = direction === 'down' ? 'up' : 'down';
@@ -107,12 +156,12 @@ export function ControlPanel() {
       <div className="transport-buttons">
         <button
           type="button"
-          className="btn btn--stop"
+          className={['btn', 'btn--stop', confirmingReset ? 'active' : ''].join(' ')}
           onClick={handleStop}
-          aria-label="Stop and reset"
-          title="Stop (reset to beginning)"
+          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Reset to beginning'}
+          title={confirmingReset ? 'Click again to confirm reset' : 'Reset to beginning'}
         >
-          ■
+          {confirmingReset ? 'Confirm reset' : 'Reset'}
         </button>
 
         {isPlaying ? (
@@ -173,6 +222,7 @@ export function ControlPanel() {
           step={1}
           value={speed}
           onChange={handleSpeedChange}
+          onKeyDown={handleSpeedSliderKeyDown}
           className="speed-slider"
           aria-valuenow={speed}
           aria-valuemin={0}
