@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
 import { wsService } from '../../services/WebSocketService';
 import './ControlPanel.css';
+
+type ViewMode = 'editor' | 'prompter' | 'split';
 
 const ROTATION_STEPS = [0, 90, 180, 270] as const;
 type RotationDeg = (typeof ROTATION_STEPS)[number];
@@ -19,7 +21,11 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  3. Fire a `prompter:manual-control` DOM event so the voice-tracking engine
  *     honours the "last-device-in-control" convention (Expert tier).
  */
-export function ControlPanel() {
+interface ControlPanelProps {
+  viewMode: ViewMode;
+}
+
+export function ControlPanel({ viewMode }: ControlPanelProps) {
   const isPlaying = usePrompterStore((s) => s.scroll.isPlaying);
   const speed = usePrompterStore((s) => s.scroll.speed);
   const direction = usePrompterStore((s) => s.scroll.direction);
@@ -33,21 +39,9 @@ export function ControlPanel() {
   const setDirection = usePrompterStore((s) => s.setDirection);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
   const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
-  const [confirmingReset, setConfirmingReset] = useState(false);
-  const resetConfirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   useEffect(() => {
     setSpeedInput(String(Math.round(speed)));
   }, [speed]);
-
-  useEffect(() => {
-    return () => {
-      if (resetConfirmTimerRef.current) {
-        clearTimeout(resetConfirmTimerRef.current);
-        resetConfirmTimerRef.current = null;
-      }
-    };
-  }, []);
 
   const notifyManualControl = useCallback(() => {
     window.dispatchEvent(new Event('prompter:manual-control'));
@@ -87,35 +81,19 @@ export function ControlPanel() {
   }, [pause, notifyManualControl]);
 
   const handleStop = useCallback(() => {
-    if (!confirmingReset) {
-      // First press always behaves like an immediate stop (no reset), so
-      // operators can halt motion instantly. A second press confirms reset.
-      if (isPlaying) {
-        const currentPosition = usePrompterStore.getState().scroll.position;
-        wsService.send('SET_POSITION', { position: currentPosition });
-        pause();
-        wsService.send('PAUSE');
-        notifyManualControl();
-      }
-
-      setConfirmingReset(true);
-      if (resetConfirmTimerRef.current) clearTimeout(resetConfirmTimerRef.current);
-      resetConfirmTimerRef.current = setTimeout(() => {
-        setConfirmingReset(false);
-        resetConfirmTimerRef.current = null;
-      }, 2000);
-      return;
-    }
-
-    if (resetConfirmTimerRef.current) {
-      clearTimeout(resetConfirmTimerRef.current);
-      resetConfirmTimerRef.current = null;
-    }
-    setConfirmingReset(false);
+    wsService.send('SET_POSITION', { position: 0 });
     stop();
     wsService.send('STOP');
     notifyManualControl();
-  }, [confirmingReset, isPlaying, pause, stop, notifyManualControl]);
+  }, [stop, notifyManualControl]);
+
+  const handleRestart = useCallback(() => {
+    usePrompterStore.getState().setPosition(0);
+    wsService.send('SET_POSITION', { position: 0 });
+    play();
+    wsService.send('PLAY');
+    notifyManualControl();
+  }, [play, notifyManualControl]);
 
   const handleSpeedNudge = useCallback(
     (delta: number) => {
@@ -168,13 +146,25 @@ export function ControlPanel() {
       <div className="transport-buttons">
         <button
           type="button"
-          className={['btn', 'btn--stop', confirmingReset ? 'active' : ''].join(' ')}
+          className="btn btn--stop"
           onClick={handleStop}
-          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Reset to beginning'}
-          title={confirmingReset ? 'Click again to confirm reset' : 'Reset to beginning (stops immediately, reset on second click)'}
+          aria-label="Text auf Anfang"
+          title="Text auf Anfang"
         >
-          {confirmingReset ? 'Confirm reset' : 'Reset'}
+          Text auf Anfang
         </button>
+
+        {viewMode !== 'prompter' && (
+          <button
+            type="button"
+            className="btn btn--restart"
+            onClick={handleRestart}
+            aria-label="Prompter NeuStart"
+            title="Prompter NeuStart"
+          >
+            Prompter NeuStart
+          </button>
+        )}
 
         {isPlaying ? (
           <button

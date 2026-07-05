@@ -405,7 +405,7 @@ export function App() {
       </header>
 
       {/* ─── Control bar ─────────────────────────────────────────────── */}
-      <ControlPanel />
+      <ControlPanel viewMode={viewMode} />
 
       {/* ─── Main workspace ──────────────────────────────────────────── */}
       <main className="app-workspace">

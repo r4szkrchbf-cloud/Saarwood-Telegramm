@@ -36,10 +36,12 @@
 .btn--play  { background: #27ae60; color: #fff; border-color: #27ae60; }
 .btn--pause { background: #f39c12; color: #fff; border-color: #f39c12; }
 .btn--stop  { background: #2980b9; color: #fff; border-color: #2980b9; }
+.btn--restart { background: #8e44ad; color: #fff; border-color: #8e44ad; }
 
 .btn--play:hover  { background: #2ecc71; }
 .btn--pause:hover { background: #f1c40f; }
 .btn--stop:hover  { background: #3498db; }
+.btn--restart:hover { background: #9b59b6; }
 
 .transport-buttons {
   display: flex;
