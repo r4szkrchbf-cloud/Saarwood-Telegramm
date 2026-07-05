@@ -6,7 +6,6 @@ import { useSpeechTracking } from '../../hooks/useSpeechTracking';
 import './PrompterDisplay.css';
 
 const DEFAULT_CHARS_PER_PIXEL = 0.1;
-const DIN_A4_RATIO = 210 / 297;
 
 /**
  * PrompterDisplay
@@ -142,30 +141,8 @@ export function PrompterDisplay() {
   }, [mirrorHorizontal, mirrorVertical, rotation, stageSize.width, stageSize.height]);
 
   const viewportFrameStyle = useMemo<CSSProperties>(() => {
-    const isPortraitMode = rotation === 90 || rotation === 270;
-    if (!isPortraitMode) {
-      return { width: '100%', height: '100%' };
-    }
-
-    const width = stageSize.width;
-    const height = stageSize.height;
-    if (width <= 0 || height <= 0) {
-      return { width: '100%', height: '100%' };
-    }
-
-    // Center an A4-like portrait frame within the available prompter pane.
-    let frameWidth = width;
-    let frameHeight = width / DIN_A4_RATIO;
-    if (frameHeight > height) {
-      frameHeight = height;
-      frameWidth = height * DIN_A4_RATIO;
-    }
-
-    return {
-      width: `${frameWidth}px`,
-      height: `${frameHeight}px`,
-    };
-  }, [rotation, stageSize.width, stageSize.height]);
+    return { width: '100%', height: '100%' };
+  }, []);
 
   // ─── Viewport styles ──────────────────────────────────────────────────────
 

@@ -166,10 +166,10 @@ export function ControlPanel() {
           type="button"
           className={['btn', 'btn--stop', confirmingReset ? 'active' : ''].join(' ')}
           onClick={handleStop}
-          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Stop and arm reset'}
-          title={confirmingReset ? 'Click again to confirm reset' : 'Stop now, click again within 2s to reset'}
+          aria-label={confirmingReset ? 'Confirm reset to beginning' : 'Reset to beginning'}
+          title={confirmingReset ? 'Click again to confirm reset' : 'Reset to beginning (stops immediately, reset on second click)'}
         >
-          {confirmingReset ? 'Confirm reset' : 'Stop'}
+          {confirmingReset ? 'Confirm reset' : 'Reset'}
         </button>
 
         {isPlaying ? (
