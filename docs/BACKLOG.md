@@ -107,6 +107,19 @@ Trotz der letzten Stabilisierung gibt es vereinzelt weiterhin beobachtete Spruen
 - [ ] Kein Nebeneffekt auf Play/Pause/Stop-Hotkeys
 - [ ] Regression-Tests erweitert (manuell + automatisiert, soweit sinnvoll)
 
+### TICKET-019 · Automatische Bildschirmanpassung + Screen-Presets
+
+**Prioritaet:** P1 (direkt nach Langzeittest)  
+**Beschreibung:**  
+Automatische Anpassung des Prompter-Layouts an reale Bildschirmformate (Querformat/Hochformat) weiter verfeinern. Zusaetzlich feste, auswaehlbare Screen-Presets anbieten (z. B. typische Tablet-/Monitor-Groessen), damit Operatoren reproduzierbare Ausgabeprofile waehlen koennen.
+
+**Akzeptanzkriterien:**
+- [ ] Automatische Anpassung funktioniert robust fuer Quer- und Hochformat
+- [ ] 90/270 Grad Modi koennen auf verschiedenen Geraeteklassen sauber skaliert werden
+- [ ] Preset-Auswahl fuer definierte Zielgeraete in Settings verfuegbar
+- [ ] Presets speichern/verladen ueber bestehendes Profilsystem moeglich
+- [ ] Dokumentation mit empfohlenen Presets fuer Broadcast-Workflows vorhanden
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
