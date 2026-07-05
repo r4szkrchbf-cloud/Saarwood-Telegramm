@@ -1031,3 +1031,39 @@ Nach Runde 18 die noch offenen Live-Nachweise fuer Professional-Tier und Start/P
 
 - Ergebnis: PASS (GRUEN)
 - Neue Blocker: keine
+
+---
+
+## Runde 21 - 2026-07-05 13:38:00 UTC (10-Minuten-Dauerlauf unter Last)
+
+### Ziel
+
+Praxisfall unter Last pruefen: aktives Tippen im Editor plus gleichzeitige Hotkeys (Speed/Direction), dabei parallel Terminal-Output beobachten.
+
+### Testdurchfuehrung
+
+- Gesamtdauer: 10 Minuten in 5 x 2-Minuten-Bloecken.
+- Lastprofil je Block:
+  - Titel und Segmenttext laufend erweitert (Editor-Last)
+  - Richtungswechsel per ArrowUp/ArrowDown
+  - Speed-Aenderung per Tastatur (`=`/`-`) und Zahleneingabe
+  - Zwischenmesspunkte fuer Speed/Direction/WS-Verbindung
+- Terminal-Monitoring parallel in jedem Block durchgefuehrt.
+
+### Beobachtungen
+
+1. Runtime/Watcher:
+	- Keine neuen `tsx change in ../../node_modules ... Process hasn't exited`-Sturmfolgen.
+	- Backend blieb erreichbar (`/ws` aktiv), WS-Clients verbunden.
+
+2. Direction unter Last:
+	- Richtung wechselte stabil zwischen up/down, keine festhaengende Richtung.
+
+3. Speed unter Last:
+	- Nach den Sync-Fixes kein Heartbeat-Ruecksprung auf alten Wert mehr im Normalfall.
+	- Zusaetzlicher UI-Konsistenzfix eingebaut: Zahleneingabe wird auf den geklammerten Wert normalisiert, damit Feld und State nicht auseinanderlaufen.
+
+### Ergebnis Runde 21
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
