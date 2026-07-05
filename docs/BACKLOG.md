@@ -94,6 +94,19 @@ WordPress oder klassisches Shared Hosting sind fuer unseren Node/Express/WebSock
 - [ ] Betriebsdoku fuer oeffentliche Nutzung erstellt
 - [ ] Pilotbetrieb fuer echte Nutzer moeglich
 
+### TICKET-018 · Restproblem Speed-Slider-Sprung (nach Langzeittest beheben)
+
+**Prioritaet:** P0 (direkt nach Abschluss des Langzeittests)  
+**Beschreibung:**  
+Trotz der letzten Stabilisierung gibt es vereinzelt weiterhin beobachtete Spruenge am Speed-Slider bei Tastaturbedienung in bestimmten Laufzustaenden. Das Thema ist als bekanntes Restproblem aufgenommen und wird bewusst **nach** dem aktuellen Langzeittest gezielt abgeschlossen.
+
+**Akzeptanzkriterien:**
+- [ ] Reproduktion sauber dokumentiert (inkl. exakter Fokus-/View-/Play-Zustaende)
+- [ ] Slider reagiert in allen Fokuszustaenden linear ohne Spruenge
+- [ ] Keyboard-Steuerung konsistent (Left/Right) in Editor-, Split- und Prompter-View
+- [ ] Kein Nebeneffekt auf Play/Pause/Stop-Hotkeys
+- [ ] Regression-Tests erweitert (manuell + automatisiert, soweit sinnvoll)
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
