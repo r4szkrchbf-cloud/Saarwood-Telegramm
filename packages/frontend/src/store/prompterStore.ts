@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type {
   ScrollState,
   DisplaySettings,
@@ -41,6 +41,43 @@ const DEFAULT_SCRIPT: Script = {
   segments: [],
   lastModified: Date.now(),
 };
+
+function createMemoryStorage(): Storage {
+  const storage = new Map<string, string>();
+  return {
+    get length() {
+      return storage.size;
+    },
+    clear() {
+      storage.clear();
+    },
+    getItem(key: string) {
+      return storage.has(key) ? storage.get(key)! : null;
+    },
+    key(index: number) {
+      return Array.from(storage.keys())[index] ?? null;
+    },
+    removeItem(key: string) {
+      storage.delete(key);
+    },
+    setItem(key: string, value: string) {
+      storage.set(key, value);
+    },
+  };
+}
+
+const fallbackStorage = createMemoryStorage();
+
+function getPersistStorage(): Storage {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage;
+    }
+  } catch {
+    // Fall through to in-memory storage for non-browser/test environments.
+  }
+  return fallbackStorage;
+}
 
 function normalizeUniqueSegmentIds(script: Script): Script {
   const seen = new Set<string>();
@@ -256,6 +293,7 @@ export const usePrompterStore = create<PrompterStore>()(
     }),
     {
       name: 'saarwood-teleprompter-state-v3',
+      storage: createJSONStorage(getPersistStorage),
       // Persist user preferences and profiles, but not live scroll state
       partialize: (state) => ({
         tier: state.tier,

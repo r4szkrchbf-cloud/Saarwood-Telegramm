@@ -168,6 +168,39 @@ Kontext: Vollstaendiger Doku-Abgleich auf den aktuellen Code- und Teststand, Ers
 
 ---
 
+## Eintrag 2026-07-05 02:45 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: P0-Fix fuer Frontend-Testharness und finaler Voll-Gate-Lauf fuer MVP-LAN-Go/No-Go.
+
+### Ausgangsproblem
+- Frontend-Testlauf brach in `prompterStore.test.ts` mit
+  `TypeError: Cannot read properties of undefined (reading 'setItem')` ab.
+
+### Durchgefuehrte Schritte
+- Persist-Storage im Frontend-Store robust fuer Test-/Nicht-Browser-Kontexte gemacht.
+- Danach Frontend-Tests separat erneut ausgefuehrt.
+- Anschliessend kompletter Gate-Lauf:
+  - Frontend Build
+  - Backend Build
+  - Frontend Tests
+  - Backend Tests
+
+### Ergebnis
+- Frontend Tests: PASS (25/25)
+- Backend Tests: PASS (9/9)
+- Frontend Build: PASS
+- Backend Build: PASS
+- Go/No-Go fuer MVP-Langzeittest: GO
+
+### Offene Punkte
+- Build-Warnung zur Bundle-Groesse bleibt als nicht-blockierender Performance-Punkt im Backlog.
+
+### Lessons Learned
+- Persistente Stores brauchen explizit testfeste Storage-Strategie.
+- Nach jedem P0-Fix sofort Voll-Gate laufen lassen, bevor Go/No-Go entschieden wird.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)
