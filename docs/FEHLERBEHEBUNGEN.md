@@ -299,6 +299,40 @@ Kontext: Transparente Repo-Konsolidierung auf dem iMac, Verzeichnis-Aufraeumen, 
 
 ---
 
+## Eintrag 2026-07-05 13:20 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Vorbereitung der naechsten gemeinsamen Testsession inkl. frischer Gate-Validierung.
+
+### Ausgangsproblem
+- Test/Lint/Build waren initial lokal instabil trotz vorher gruener Historie.
+- Fehlende Module in `node_modules` fuehrten zu falschen roten Signalen:
+  - `Cannot find module 'xml-name-validator'` (Vitest/jsdom)
+  - `Cannot find module 'yocto-queue'` (ESLint)
+
+### Durchgefuehrte Schritte
+- Lokale Abhaengigkeiten vollstaendig neu installiert (`rm -rf node_modules && npm ci`).
+- Danach kompletter Gate-Lauf erneut:
+  - `npm test`
+  - `npm run lint`
+  - `npm run build`
+- Dev-Server fuer Live-Test gestartet (`npm run dev` mit Frontend + Backend).
+
+### Ergebnis
+- Frontend Tests: 25/25 PASS
+- Backend Tests: 9/9 PASS
+- Lint Frontend/Backend: PASS
+- Build Frontend/Backend: PASS
+- Bekannte nicht-blockierende Warnung bleibt: Frontend-Chunk > 500 kB.
+
+### Offene Punkte
+- ASR/Voice-Tracking bleibt das aktive Testthema fuer die naechste gemeinsame Runde.
+
+### Lessons Learned
+- Bei ploetzlichen Modulfehlern zuerst Installation deterministisch ueber Lockfile neu aufbauen.
+- Erst nach sauberem Baseline-Gate mit funktionierender Dev-Instanz in Live-Tests gehen.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)

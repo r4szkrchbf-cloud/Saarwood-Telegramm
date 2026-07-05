@@ -332,3 +332,55 @@ Den Prompter von der Bedienung her einmal komplett live vorfuehren, um den reale
 | 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
 | 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
 | 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+
+---
+
+## Runde 6 — 2026-07-05 13:20 UTC (Baseline-Reparatur und Testvorbereitung)
+
+### Ziel
+
+Vor dem naechsten gemeinsamen Testfenster den lokalen Zustand sauber herstellen und alle Gates erneut validieren.
+
+### Ausgangsproblem
+
+- Test/Lint liefen initial nicht stabil, weil lokale Node-Module unvollstaendig waren.
+- Typische Fehlerbilder:
+	- `Cannot find module 'xml-name-validator'` (Vitest/jsdom)
+	- `Cannot find module 'yocto-queue'` (ESLint)
+
+### Durchgefuehrte Schritte
+
+1. Abhaengigkeiten deterministisch neu aufgebaut (`rm -rf node_modules && npm ci`).
+2. Voller Gate-Lauf erneut ausgefuehrt:
+	 - `npm test`
+	 - `npm run lint`
+	 - `npm run build`
+3. Dev-Umgebung fuer gemeinsamen Live-Test gestartet (`npm run dev`).
+
+### Ergebnis
+
+- Frontend Tests: PASS (25/25)
+- Backend Tests: PASS (9/9)
+- Lint Frontend/Backend: PASS
+- Build Frontend/Backend: PASS
+- Bekannte Restwarnung bleibt: Frontend-Chunk > 500 kB (kein MVP-Blocker)
+- Live-Setup laeuft:
+	- Frontend: `http://localhost:3000/`
+	- Backend: Port `4000`, WebSocket unter `/ws`
+
+### Bewertung Runde 6
+
+- Ergebnis: PASS (GRUEN)
+- Testbetrieb kann direkt fortgesetzt werden.
+- Fokus fuer naechste gemeinsame Runde bleibt ASR/Voice-Tracking-Stabilitaet.
+
+## Runden-Uebersicht (neu)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
