@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
 import { speechService } from '../../services/SpeechRecognitionService';
 import type { PresenterProfile } from '../../types';
@@ -47,6 +47,8 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationInfo, setCalibrationInfo] = useState('');
   const [calibrationRecommendation, setCalibrationRecommendation] = useState<number | null>(null);
+  const [scriptIoInfo, setScriptIoInfo] = useState('');
+  const importInputRef = useRef<HTMLInputElement | null>(null);
 
   const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
 
@@ -117,8 +119,130 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     });
   }, [script, setScript]);
 
+  const handleExportSegments = useCallback(() => {
+    try {
+      const payload = {
+        format: 'saarwood-segments-v1',
+        exportedAt: new Date().toISOString(),
+        title: script.title,
+        segments: script.segments,
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'saarwood-segmente-export.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setScriptIoInfo('Segmente erfolgreich exportiert.');
+    } catch {
+      setScriptIoInfo('Export fehlgeschlagen.');
+    }
+  }, [script]);
+
+  const handleImportSegmentsClick = useCallback(() => {
+    importInputRef.current?.click();
+  }, []);
+
+  const handleImportSegmentsFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const raw = await file.text();
+      const parsed = JSON.parse(raw) as {
+        title?: string;
+        segments?: Array<{
+          id?: string;
+          html?: string;
+          direction?: 'ltr';
+          isCloaked?: boolean;
+          isDirectorsNote?: boolean;
+          mosItemId?: string;
+        }>;
+      };
+
+      if (!Array.isArray(parsed.segments)) {
+        throw new Error('invalid format');
+      }
+
+      const now = Date.now();
+      const segments = parsed.segments
+        .filter((seg) => typeof seg?.html === 'string')
+        .map((seg, idx) => ({
+          id: seg.id || `imp-${now}-${idx + 1}`,
+          html: seg.html || '<p></p>',
+          direction: 'ltr' as const,
+          isCloaked: Boolean(seg.isCloaked),
+          isDirectorsNote: Boolean(seg.isDirectorsNote),
+          mosItemId: seg.mosItemId,
+        }));
+
+      if (segments.length === 0) {
+        throw new Error('no segments');
+      }
+
+      setScript({
+        ...script,
+        title: parsed.title || script.title,
+        lastModified: now,
+        segments,
+      });
+      setScriptIoInfo(`Import erfolgreich: ${segments.length} Segmente geladen.`);
+    } catch {
+      setScriptIoInfo('Import fehlgeschlagen. Bitte gueltige JSON-Datei verwenden.');
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  }, [script, setScript]);
+
+  const handlePrintSegments = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
+    if (!printWindow) {
+      setScriptIoInfo('Drucken blockiert. Bitte Pop-up erlauben.');
+      return;
+    }
+
+    const bodyHtml = script.segments
+      .map((seg, idx) => `<section><h3>Segment ${idx + 1}</h3>${seg.html}</section>`)
+      .join('<hr />');
+
+    const html = `<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>${script.title} - Segmentdruck</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 24px; color: #111; }
+      h1 { margin-top: 0; }
+      h3 { margin-bottom: 6px; }
+      section { margin-bottom: 18px; }
+      hr { margin: 18px 0; border: 0; border-top: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <h1>${script.title}</h1>
+    ${bodyHtml}
+  </body>
+</html>`;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    setScriptIoInfo('Druckansicht geoeffnet.');
+  }, [script]);
+
   const handleRunCalibration = useCallback(async () => {
-    if (!speechService.isSupported || isCalibrating) return;
+    if (tier !== 'expert' || !speechService.isSupported || isCalibrating) return;
 
     const normalize = (text: string) =>
       text
@@ -188,7 +312,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       setSpeechEnabled(previouslyEnabled);
       setIsCalibrating(false);
     }
-  }, [isCalibrating, speechEnabled, setSpeechEnabled, setSpeechSensitivity, CALIBRATION_PHRASE]);
+  }, [tier, isCalibrating, speechEnabled, setSpeechEnabled, setSpeechSensitivity, CALIBRATION_PHRASE]);
 
   return (
     <div className="settings-panel" role="complementary" aria-label="Display settings">
@@ -357,7 +481,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="settings-row">
             <label>
               <input
@@ -370,7 +494,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="settings-row">
             <label htmlFor={speechInputId}>Microphone source</label>
             <select
@@ -392,7 +516,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="settings-row">
             <label htmlFor={speechSensitivityId}>Voice-Empfindlichkeit</label>
             <input
@@ -418,7 +542,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="voice-status-legend" aria-label="Voice status legend">
             <div className="voice-status-legend-title">Voice-Status Legende</div>
             <ul className="voice-status-legend-list">
@@ -434,7 +558,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="voice-calibration" aria-label="Voice calibration assistant">
             <div className="voice-calibration-title">Kalibrierungs-Assistent</div>
             <p className="voice-calibration-phrase">
@@ -461,7 +585,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {!speechService.isSupported && (
+        {tier !== 'expert' && (
+          <div className="settings-row">
+            <span className="settings-value">Voice tracking ist nur im Expert-Tier verfuegbar.</span>
+          </div>
+        )}
+
+        {tier === 'expert' && !speechService.isSupported && (
           <div className="settings-row">
             <span className="settings-value">
               Voice tracking is not available in this browser because the Web Speech API is not supported.
@@ -478,6 +608,34 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             Deutschen 4-Segment-Testtext laden
           </button>
         </div>
+      </fieldset>
+
+      <fieldset className="settings-group">
+        <legend>Segmente</legend>
+        <div className="settings-row segment-io-actions">
+          <button type="button" className="btn-small" onClick={handleImportSegmentsClick}>
+            Importieren
+          </button>
+          <button type="button" className="btn-small" onClick={handleExportSegments}>
+            Exportieren
+          </button>
+          <button type="button" className="btn-small" onClick={handlePrintSegments}>
+            Drucken
+          </button>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept="application/json"
+            onChange={handleImportSegmentsFile}
+            className="segment-import-input"
+            aria-label="Segmente importieren"
+          />
+        </div>
+        {scriptIoInfo && (
+          <div className="settings-row">
+            <span className="settings-value segment-io-status">{scriptIoInfo}</span>
+          </div>
+        )}
       </fieldset>
 
       {tier !== 'basic' && (

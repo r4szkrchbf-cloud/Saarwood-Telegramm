@@ -38,6 +38,7 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
   const stop = usePrompterStore((s) => s.stop);
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
+  const tier = usePrompterStore((s) => s.tier);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
   const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
@@ -173,7 +174,7 @@ export function ControlPanel({ viewMode }: ControlPanelProps) {
           </button>
         )}
 
-        {viewMode !== 'prompter' && (
+        {viewMode !== 'prompter' && tier === 'expert' && (
           <div className="voice-quick-controls" role="group" aria-label="Voice tracking">
             <button
               type="button"

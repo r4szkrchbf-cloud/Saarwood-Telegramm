@@ -19,8 +19,9 @@
   align-items: center;
   gap: 1rem;
   padding: 0.5rem 1rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: #000000;
+  border-bottom: 1px solid #1a1a1a;
+  color: #f3f3f3;
   height: 48px;
 }
 
@@ -89,30 +90,30 @@
 
 .view-btn {
   padding: 0.25rem 0.7rem;
-  border: 1px solid var(--border);
+  border: 1px solid #3a3a3a;
   border-radius: 3px;
   background: transparent;
-  color: var(--text-muted);
+  color: #d3d3d3;
   cursor: pointer;
   font-size: 0.82rem;
   transition: background 0.1s, color 0.1s;
 }
 
-.view-btn:hover { background: var(--hover); color: var(--text); }
+.view-btn:hover { background: #1b1b1b; color: #ffffff; }
 .view-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 .settings-toggle {
   padding: 0.25rem 0.7rem;
-  border: 1px solid var(--border);
+  border: 1px solid #3a3a3a;
   border-radius: 3px;
   background: transparent;
-  color: var(--text-muted);
+  color: #d3d3d3;
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.1s;
 }
 
-.settings-toggle:hover { background: var(--hover); }
+.settings-toggle:hover { background: #1b1b1b; }
 
 /* ─── Control bar ─────────────────────────────────────────────────────────── */
 /* (grid row 2 — rendered by ControlPanel) */

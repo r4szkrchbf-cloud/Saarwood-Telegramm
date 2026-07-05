@@ -41,6 +41,7 @@ export function PrompterDisplay() {
   const cueMarkerEnabled = usePrompterStore((s) => s.display.cueMarkerEnabled);
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
+  const tier = usePrompterStore((s) => s.tier);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
   const speechInputDeviceId = usePrompterStore((s) => s.speechInputDeviceId);
   const speechSensitivity = usePrompterStore((s) => s.speechSensitivity);
@@ -139,7 +140,7 @@ export function PrompterDisplay() {
     status: voiceStatus,
     statusDetail: voiceStatusDetail,
   } = useSpeechTracking({
-    enabled: speechEnabled && isPlaying,
+    enabled: tier === 'expert' && speechEnabled && isPlaying,
     scriptText: plainText,
     charsPerPixel,
     onScrollPositionEstimate: applySpeechPosition,
@@ -149,6 +150,7 @@ export function PrompterDisplay() {
 
   const voiceStatusLabel = useMemo(() => {
     if (!speechEnabled) return 'Voice: AUS';
+    if (tier !== 'expert') return 'Voice: nur Expert';
     if (!isPlaying) return 'Voice: Gemutet (Pause)';
 
     switch (voiceStatus) {
@@ -169,7 +171,7 @@ export function PrompterDisplay() {
       default:
         return 'Voice: Bereit';
     }
-  }, [speechEnabled, isPlaying, voiceStatus, voiceStatusDetail]);
+  }, [speechEnabled, tier, isPlaying, voiceStatus, voiceStatusDetail]);
 
   const voiceStatusTitle = voiceStatusDetail
     ? `${voiceStatusLabel} - ${voiceStatusDetail}`

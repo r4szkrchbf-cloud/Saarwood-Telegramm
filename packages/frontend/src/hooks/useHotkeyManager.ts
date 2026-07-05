@@ -92,15 +92,19 @@ export function useHotkeyManager(): void {
     });
 
     hotkeyManager.register('v', 'Voice tracking ON', () => {
+      if (usePrompterStore.getState().tier !== 'expert') return;
       setSpeechEnabled(true);
     });
     hotkeyManager.register('V', 'Voice tracking ON', () => {
+      if (usePrompterStore.getState().tier !== 'expert') return;
       setSpeechEnabled(true);
     });
     hotkeyManager.register('m', 'Voice tracking OFF', () => {
+      if (usePrompterStore.getState().tier !== 'expert') return;
       setSpeechEnabled(false);
     });
     hotkeyManager.register('M', 'Voice tracking OFF', () => {
+      if (usePrompterStore.getState().tier !== 'expert') return;
       setSpeechEnabled(false);
     });
 

@@ -179,6 +179,20 @@
   color: var(--text-muted);
 }
 
+.segment-io-actions {
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.segment-import-input {
+  display: none;
+}
+
+.segment-io-status {
+  text-align: left;
+  min-width: auto;
+}
+
 /* ─── Tier Selector ───────────────────────────────────────────────────────── */
 
 .tier-radio-group {
