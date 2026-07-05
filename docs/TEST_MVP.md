@@ -384,3 +384,42 @@ Vor dem naechsten gemeinsamen Testfenster den lokalen Zustand sauber herstellen 
 | 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
 | 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
 | 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+
+---
+
+## Runde 7 - 2026-07-05 11:50 UTC (Zwischenstand nach 3 Testpunkten)
+
+### Ziel
+
+Zwischenstand waehrend des laufenden manuellen Testzyklus dokumentieren und verbindlich speichern.
+
+### Durchgefuehrte Testpunkte seit letztem Speicherstand
+
+1. Testpunkt 3.1 Kernsteuerung (Play/Stop): PASS
+2. UX-Sicherheitspruefung Reset:
+	- Hover auf Reset loest nichts aus: PASS
+	- Zweistufige Bestaetigung aktiv (Confirm reset): PASS
+3. UX-Pruefung Settings-Panel:
+	- Panel ueber expliziten Close-Button einklappbar: PASS
+
+### Ergebnis Runde 7
+
+- Ergebnis: PASS (GRUEN)
+- Blocker: keine neuen Blocker bis hierhin
+- Offene fachliche Folgepruefung: Testpunkt 3.2 (Speed + Direction) als naechster Schritt
+
+### Verbindliche Testregel (ab jetzt)
+
+Nach spaetestens 3 abgearbeiteten Testpunkten wird ein Zwischenstand in der Doku festgehalten und gespeichert.
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 1 | 2026-07-04 02:12 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 2 | 2026-07-05 02:34 | Frontend 11/25, Backend 9/9 | PASS | GELB |
+| 3 | 2026-07-05 02:44 | Frontend 25/25, Backend 9/9 | PASS | GRUEN |
+| 4 | 2026-07-05 00:57 | Frontend 25/25, Live-Smoke ok | PASS | GRUEN |
+| 5 | 2026-07-05 01:03 | Live-Demo ok, ASR offen | PASS | GELB |
+| 6 | 2026-07-05 13:20 | Frontend 25/25, Backend 9/9, Lint PASS | PASS | GRUEN |
+| 7 | 2026-07-05 11:50 | Manueller Zwischenstand: 3 Testpunkte dokumentiert | n/a | GRUEN |

@@ -65,6 +65,10 @@ Pro Beobachtung bitte ein Eintrag mit:
 
 ## 4. Abschluss je Testrunde
 
+0. Zwischenstand-Regel (verbindlich)
+- Spaetestens nach 3 Testpunkten muss ein Zwischenstand dokumentiert und gespeichert werden.
+- Pflichtablage: docs/TEST_MVP.md (Runde/Checkpoint) und bei Fehlern zusaetzlich docs/FEHLERBEHEBUNGEN.md.
+
 1. Kurzfazit erstellen
 - GO / NO-GO fuer naechsten Schritt
 
