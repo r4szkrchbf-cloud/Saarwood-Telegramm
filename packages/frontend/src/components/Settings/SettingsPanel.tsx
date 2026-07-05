@@ -182,19 +182,23 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         </div>
 
         <div className="settings-row">
-          <label>
-            <input
-              type="checkbox"
-              checked={display.cueMarkerEnabled}
-              onChange={(e) =>
-                setDisplay({ cueMarkerEnabled: e.target.checked })
-              }
-            />
-            Cue marker
-          </label>
+          {tier !== 'basic' ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={display.cueMarkerEnabled}
+                onChange={(e) =>
+                  setDisplay({ cueMarkerEnabled: e.target.checked })
+                }
+              />
+              Cue marker
+            </label>
+          ) : (
+            <span className="settings-value">Cue marker available in Professional and Expert tiers.</span>
+          )}
         </div>
 
-        {display.cueMarkerEnabled && (
+        {tier !== 'basic' && display.cueMarkerEnabled && (
           <div className="settings-row">
             <label htmlFor={cuePositionId}>Cue position</label>
             <input
@@ -212,7 +216,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {speechService.isSupported && (
+        {tier === 'expert' && speechService.isSupported && (
           <div className="settings-row">
             <label>
               <input
@@ -225,11 +229,17 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           </div>
         )}
 
-        {!speechService.isSupported && (
+        {tier === 'expert' && !speechService.isSupported && (
           <div className="settings-row">
             <span className="settings-value">
               Voice tracking is not available in this browser because the Web Speech API is not supported.
             </span>
+          </div>
+        )}
+
+        {tier !== 'expert' && (
+          <div className="settings-row">
+            <span className="settings-value">Voice tracking is available in Expert tier.</span>
           </div>
         )}
       </fieldset>

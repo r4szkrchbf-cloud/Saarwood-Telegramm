@@ -29,6 +29,7 @@ export function useHotkeyManager(): void {
   const pause = usePrompterStore((s) => s.pause);
   const stop = usePrompterStore((s) => s.stop);
   const setSpeed = usePrompterStore((s) => s.setSpeed);
+  const setDirection = usePrompterStore((s) => s.setDirection);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   useEffect(() => {
@@ -60,6 +61,13 @@ export function useHotkeyManager(): void {
     });
     hotkeyManager.register('NumpadSubtract', 'Speed −5', () => {
       setSpeed(Math.max(0, usePrompterStore.getState().scroll.speed - 5));
+    });
+
+    hotkeyManager.register('ArrowUp', 'Set direction up', () => {
+      setDirection('up');
+    });
+    hotkeyManager.register('ArrowDown', 'Set direction down', () => {
+      setDirection('down');
     });
 
     hotkeyManager.register('r', 'Reset (Stop)', () => stop());
@@ -110,5 +118,5 @@ export function useHotkeyManager(): void {
     return () => {
       hotkeyManager.disable();
     };
-  }, [play, pause, stop, setSpeed, setDisplay]);
+  }, [play, pause, stop, setSpeed, setDirection, setDisplay]);
 }

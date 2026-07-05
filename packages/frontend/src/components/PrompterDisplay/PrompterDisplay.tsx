@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, useState, CSSProperties } from 'react';
+import { useRef, useEffect, useMemo, CSSProperties } from 'react';
 import DOMPurify from 'dompurify';
 import { usePrompterStore } from '../../store/prompterStore';
 import { useScrollEngine } from '../../hooks/useScrollEngine';
@@ -41,11 +41,11 @@ export function PrompterDisplay() {
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
+  const tier = usePrompterStore((s) => s.tier);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
   const { setPosition } = useScrollEngine({
     speed,
@@ -89,56 +89,25 @@ export function PrompterDisplay() {
   }, [fontFamily, fontSize]);
 
   useSpeechTracking({
-    enabled: speechEnabled,
+    enabled: tier === 'expert' && speechEnabled,
     scriptText: plainText,
     charsPerPixel,
     onScrollPositionEstimate: setPosition,
   });
 
-  // Keep outer stage dimensions so rotated layouts can be framed in
-  // portrait mode (DIN A4-like) for tablet/phone portrait usage.
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-
-    const updateSize = () => {
-      setStageSize({ width: el.clientWidth, height: el.clientHeight });
-    };
-
-    updateSize();
-
-    if (typeof ResizeObserver !== 'undefined') {
-      const observer = new ResizeObserver(() => updateSize());
-      observer.observe(el);
-      return () => observer.disconnect();
-    }
-
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
   const mirrorTransform = useMemo<string>(() => {
-    const width = stageSize.width;
-    const height = stageSize.height;
-
-    // In quarter-turn modes, fit the rotated content to the framed viewport.
-    const isQuarterTurn = rotation === 90 || rotation === 270;
-    const fitScale = isQuarterTurn && width > 0 && height > 0
-      ? Math.min(width / height, height / width)
-      : 1;
-
     const sx = mirrorHorizontal ? -1 : 1;
     const sy = mirrorVertical ? -1 : 1;
-    const scaleX = sx * fitScale;
-    const scaleY = sy * fitScale;
+    const scaleX = sx;
+    const scaleY = sy;
     const parts: string[] = [];
     // Rotation first, then scale — order matters for correct GPU compositing.
     if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
     if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
     return parts.length > 0 ? parts.join(' ') : 'none';
-  }, [mirrorHorizontal, mirrorVertical, rotation, stageSize.width, stageSize.height]);
+  }, [mirrorHorizontal, mirrorVertical, rotation]);
 
   const viewportFrameStyle = useMemo<CSSProperties>(() => {
     return { width: '100%', height: '100%' };
@@ -166,7 +135,7 @@ export function PrompterDisplay() {
 
   // ─── Cue marker position ──────────────────────────────────────────────────
 
-  const cueMarkerStyle: CSSProperties = cueMarkerEnabled
+  const cueMarkerStyle: CSSProperties = (tier !== 'basic' && cueMarkerEnabled)
     ? {
         top: `${cueMarkerPosition}%`,
         display: 'block',
