@@ -77,12 +77,14 @@ All MVP features are fully unlocked for Beta testing.
 - Voice settings enhancements in `Settings`: microphone source selection, sensitivity slider + numeric value (`0-100%`), German status legend.
 - Voice calibration assistant in `Settings` with spoken test phrase, auto-analysis and automatic sensitivity recommendation.
 - Explicit `Deutschen 4-Segment-Testtext laden` action in `Settings` for immediate speaker-script setup.
+- New docs: `docs/SAARwooD_BESCHREIBUNG_BETA_V1_DE.md` and `docs/SAARwooD_NUTZERHANDBUCH_BETA_V1_DE.md`.
 
 ### Changed
 - Voice tracking execution is now transport-bound: ASR runs only while playback is active and is hard-muted during pause.
 - Prompter restart (`Prompter NeuStart`) now resets/reloads without forced autoplay.
 - Default demo content migrated to a German 4-segment speaker test script, including legacy English default-script detection.
 - Prompter start anchor behavior refined: starts at viewport center, or exactly three lines below cue marker when cue marker is enabled.
+- App header now shows a Beta warning that Voice Tracking is not included for current Beta operation.
 
 ### Fixed
 - `packages/electron`: added no-op `"test"` script so `npm test --workspaces` no longer fails with *"Missing script: test"*

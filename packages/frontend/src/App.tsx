@@ -408,8 +408,16 @@ export function App() {
       <header className="app-header">
         <div className="app-logo" aria-label="Saarwood Teleprompter Beta V1">
           <span className="logo-icon" aria-hidden="true">📺</span>
-          <span className="logo-text">Saarwood Teleprompter</span>
+          <span className="logo-text" aria-label="SAARwooD Teleprompter">
+            <span className="brand-red">SAAR</span>
+            <span className="brand-white">woo</span>
+            <span className="brand-red">D</span>
+            <span className="brand-gap"> Teleprompter</span>
+          </span>
           <span className="beta-badge" aria-label="Beta Version 1">BETA V1</span>
+          <span className="beta-warning" aria-label="Voice Tracking in Beta-Version nicht enthalten">
+            Voice Tracking in Beta-Version nicht enthalten
+          </span>
         </div>
 
         {/* View mode switcher */}

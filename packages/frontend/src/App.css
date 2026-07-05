@@ -36,6 +36,21 @@
 .logo-icon { font-size: 1.2rem; }
 .logo-text { letter-spacing: -0.01em; }
 
+.brand-red {
+  color: #ff3b30;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.brand-white {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.brand-gap {
+  margin-left: 0.1rem;
+}
+
 .beta-badge {
   display: inline-block;
   padding: 0.1em 0.45em;
@@ -47,6 +62,19 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   vertical-align: middle;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.beta-warning {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background: #5a1f1f;
+  color: #ffe1e1;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   line-height: 1.5;
   user-select: none;
 }
@@ -217,4 +245,5 @@
   }
 
   .logo-text { display: none; }
+  .beta-warning { display: none; }
 }

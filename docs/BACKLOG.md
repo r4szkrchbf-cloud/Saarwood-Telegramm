@@ -133,6 +133,19 @@ Anbindung einer Tally-Schnittstelle, damit der Prompter den Produktionsstatus (z
 - [ ] Fallback-Verhalten bei Signalverlust definiert und dokumentiert
 - [ ] Manuelle Testfaelle fuer Program/Preview-Wechsel in `TEST_MVP.md` dokumentiert
 
+### TICKET-021 · Voice Tracking in Beta als nicht enthalten markieren und neu aufbauen
+
+**Prioritaet:** P0
+**Beschreibung:**
+Voice Tracking ist im aktuellen Beta-Betrieb fuer den produktiven Ablauf nicht stabil genug und wird deshalb explizit als nicht enthalten markiert, bis ein robuster Neuaufbau abgeschlossen ist.
+
+**Akzeptanzkriterien:**
+- [ ] App-Header zeigt klaren Hinweis: Voice Tracking in Beta-Version nicht enthalten
+- [ ] Nutzerhandbuch und Beschreibung dokumentieren den eingeschraenkten Beta-Status
+- [ ] Offener Repro- und Fehlerkatalog fuer Voice Tracking ist in der Doku enthalten
+- [ ] Neuer Stabilitaetsplan mit messbaren Kriterien (z. B. 30 Minuten fehlerfreier Lauf ohne Fehltrigger) dokumentiert
+- [ ] Erst nach erfolgreichen Stabilitaetstests wird der Hinweis wieder entfernt
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
