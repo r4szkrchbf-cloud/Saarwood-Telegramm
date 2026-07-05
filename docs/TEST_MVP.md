@@ -971,8 +971,41 @@ Offene Funktionswunsche final abdecken: Richtung per Pfeiltasten, Basic-Tier ohn
 | 17 | 2026-07-05 12:40:24 | Speed-UI umgestellt und Dev-Watcher stabilisiert | PASS | GRUEN |
 | 18 | 2026-07-05 12:51:34 | Direction-Hotkeys + Tier-Gating + Fullscreen-Hochkant | PASS | GRUEN |
 | 19 | 2026-07-05 12:56:00 | Professional-Tier + Start/Pause Live-Retest | PASS | GRUEN |
+| 20 | 2026-07-05 13:24:00 | Richtung/Speed-Sync-Fix + Watcher-Stabilisierung | PASS | GRUEN |
 
 ---
+
+## Runde 20 - 2026-07-05 13:24:00 UTC (Richtung/Speed-Kollision behoben)
+
+### Ziel
+
+Gemeldete Instabilitaeten beheben:
+- Richtung hoch/runter nicht sauber synchron
+- Speed springt nach Tastatur-Aenderung auf alten Wert zurueck
+- Backend-Dev-Prozess reagiert auf `node_modules`-Aenderungen mit Restart-Sturm
+
+### Durchgefuehrte Testpunkte
+
+1. WS-Protokoll fuer Richtung erweitert (`SET_DIRECTION` End-to-End):
+	- Hotkeys und Richtungstaste senden Richtung jetzt an den Server
+	- `SYNC_STATE` uebernimmt Richtung ebenfalls wieder korrekt in den Client
+	- Ergebnis: PASS
+
+2. Speed-Kollision beseitigt:
+	- `+/-` Hotkeys senden `SET_SPEED` jetzt immer an den Server
+	- Heartbeat/SYNC kann damit keinen alten Speed mehr zurueckdruecken
+	- Livecheck: nach 7s kein Ruecksprung beobachtet
+	- Ergebnis: PASS
+
+3. Dev-Stabilisierung:
+	- Backend-Watcher auf globale Excludes umgestellt (`**/node_modules/**`, `**/dist/**`, `**/.git/**`)
+	- Doppelte Alt-Prozesse beendet, saubere Session gestartet
+	- Ergebnis: PASS
+
+### Ergebnis Runde 20
+
+- Ergebnis: PASS (GRUEN)
+- Neue Blocker: keine
 
 ## Runde 19 - 2026-07-05 12:56:00 UTC (Professional + Transport-Retest)
 
