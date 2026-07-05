@@ -10,24 +10,6 @@
   flex-wrap: wrap;
 }
 
-/* ─── WS Connection Indicator ─────────────────────────────────────────────── */
-
-.ws-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.ws-indicator.connected {
-  background: #2ecc71;
-  box-shadow: 0 0 6px #2ecc71;
-}
-
-.ws-indicator.disconnected {
-  background: #e74c3c;
-}
-
 /* ─── Buttons ─────────────────────────────────────────────────────────────── */
 
 .btn {

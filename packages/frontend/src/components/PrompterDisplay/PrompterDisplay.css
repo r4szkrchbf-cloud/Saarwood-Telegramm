@@ -31,6 +31,26 @@
   backface-visibility: hidden;
 }
 
+.prompter-link-indicator {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  z-index: 22;
+}
+
+.prompter-link-indicator.connected {
+  background: #2ecc71;
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.9);
+}
+
+.prompter-link-indicator.disconnected {
+  background: #e74c3c;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.9);
+}
+
 /* ─── Scrollable Content ──────────────────────────────────────────────────── */
 
 .prompter-content {

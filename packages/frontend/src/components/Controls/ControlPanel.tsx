@@ -26,7 +26,6 @@ export function ControlPanel() {
   const rotation = usePrompterStore((s) => s.display.rotation);
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
-  const wsConnected = usePrompterStore((s) => s.wsConnected);
   const play = usePrompterStore((s) => s.play);
   const pause = usePrompterStore((s) => s.pause);
   const stop = usePrompterStore((s) => s.stop);
@@ -129,12 +128,7 @@ export function ControlPanel() {
   const handleSpeedInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
     setSpeedInput(raw);
-    if (raw.trim() === '') return;
-
-    const parsed = Number(raw);
-    if (!Number.isFinite(parsed)) return;
-    applySpeed(parsed);
-  }, [applySpeed]);
+  }, []);
 
   const handleSpeedInputBlur = useCallback(() => {
     if (speedInput.trim() === '') {
@@ -156,15 +150,19 @@ export function ControlPanel() {
     notifyManualControl();
   }, [direction, setDirection, notifyManualControl]);
 
+  const handleSpeedInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const parsed = Number(speedInput);
+    if (!Number.isFinite(parsed)) {
+      setSpeedInput(String(Math.round(usePrompterStore.getState().scroll.speed)));
+      return;
+    }
+    applySpeed(parsed);
+  }, [speedInput, applySpeed]);
+
   return (
     <div className="control-panel" role="region" aria-label="Teleprompter controls">
-
-      {/* ─── Connection indicator ─────────────────────────────────────── */}
-      <div
-        className={['ws-indicator', wsConnected ? 'connected' : 'disconnected'].join(' ')}
-        title={wsConnected ? 'Remote control connected' : 'Remote control disconnected'}
-        aria-label={`Remote control ${wsConnected ? 'connected' : 'disconnected'}`}
-      />
 
       {/* ─── Transport ────────────────────────────────────────────────── */}
       <div className="transport-buttons">
@@ -238,6 +236,7 @@ export function ControlPanel() {
           value={speedInput}
           onChange={handleSpeedInputChange}
           onBlur={handleSpeedInputBlur}
+          onKeyDown={handleSpeedInputKeyDown}
           className="speed-input"
           aria-label="Speed input"
           aria-valuenow={speed}

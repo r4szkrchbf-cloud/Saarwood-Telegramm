@@ -11,6 +11,8 @@ interface ScrollEngineOptions {
   contentRef: React.RefObject<HTMLElement | null>;
   /** Called on every frame with the current scroll position in pixels. */
   onPositionChange?: (position: number) => void;
+  /** Called when scrolling reaches top or bottom while playing. */
+  onBoundaryReached?: (boundary: 'top' | 'bottom', position: number) => void;
 }
 
 interface ScrollEngineControls {
@@ -42,6 +44,7 @@ export function useScrollEngine({
   containerRef,
   contentRef,
   onPositionChange,
+  onBoundaryReached,
 }: ScrollEngineOptions): ScrollEngineControls {
   const positionRef = useRef(0);
   const lastTimestampRef = useRef<number | null>(null);
@@ -53,11 +56,13 @@ export function useScrollEngine({
   const isPlayingRef = useRef(isPlaying);
   const directionRef = useRef(direction);
   const onPositionChangeRef = useRef(onPositionChange);
+  const onBoundaryReachedRef = useRef(onBoundaryReached);
 
   useEffect(() => { speedRef.current = speed; }, [speed]);
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
   useEffect(() => { directionRef.current = direction; }, [direction]);
   useEffect(() => { onPositionChangeRef.current = onPositionChange; }, [onPositionChange]);
+  useEffect(() => { onBoundaryReachedRef.current = onBoundaryReached; }, [onBoundaryReached]);
 
   // Stable ref to the animate callback so the rAF loop can call it without
   // creating a self-referencing closure (which lint flags as access-before-init).
@@ -86,8 +91,14 @@ export function useScrollEngine({
           positionRef.current + deltaPixels,
           maxScroll,
         );
+        if (positionRef.current >= maxScroll && maxScroll > 0) {
+          onBoundaryReachedRef.current?.('bottom', positionRef.current);
+        }
       } else {
         positionRef.current = Math.max(positionRef.current - deltaPixels, 0);
+        if (positionRef.current <= 0) {
+          onBoundaryReachedRef.current?.('top', positionRef.current);
+        }
       }
 
       content.style.transform = `translateY(-${positionRef.current}px)`;

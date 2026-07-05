@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { usePrompterStore } from '../../store/prompterStore';
 import { useScrollEngine } from '../../hooks/useScrollEngine';
 import { useSpeechTracking } from '../../hooks/useSpeechTracking';
+import { wsService } from '../../services/WebSocketService';
 import './PrompterDisplay.css';
 
 const DEFAULT_CHARS_PER_PIXEL = 0.1;
@@ -42,6 +43,10 @@ export function PrompterDisplay() {
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
   const tier = usePrompterStore((s) => s.tier);
+  const wsConnected = usePrompterStore((s) => s.wsConnected);
+  const pause = usePrompterStore((s) => s.pause);
+
+  const boundaryPauseGuardRef = useRef(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +59,23 @@ export function PrompterDisplay() {
     containerRef,
     contentRef,
     onPositionChange: usePrompterStore.getState().setPosition,
+    onBoundaryReached: (_boundary, boundaryPosition) => {
+      if (!usePrompterStore.getState().scroll.isPlaying) return;
+      if (boundaryPauseGuardRef.current) return;
+
+      boundaryPauseGuardRef.current = true;
+      usePrompterStore.getState().setPosition(boundaryPosition);
+      pause();
+      wsService.send('SET_POSITION', { position: boundaryPosition });
+      wsService.send('PAUSE');
+    },
   });
+
+  useEffect(() => {
+    if (!isPlaying) {
+      boundaryPauseGuardRef.current = false;
+    }
+  }, [isPlaying]);
 
   // Sync store position changes (from remote control / WS) to DOM
   useEffect(() => {
@@ -153,6 +174,15 @@ export function PrompterDisplay() {
         aria-live="polite"
       >
         <div className="prompter-transform-layer" style={transformLayerStyle}>
+          <div
+            className={[
+              'prompter-link-indicator',
+              wsConnected ? 'connected' : 'disconnected',
+            ].join(' ')}
+            aria-label={`Remote control ${wsConnected ? 'connected' : 'disconnected'}`}
+            title={wsConnected ? 'Remote connected' : 'Remote disconnected'}
+          />
+
           {/* Cue marker overlay */}
           <div
             className="cue-marker"
