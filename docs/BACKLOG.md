@@ -120,6 +120,19 @@ Automatische Anpassung des Prompter-Layouts an reale Bildschirmformate (Querform
 - [ ] Presets speichern/verladen ueber bestehendes Profilsystem moeglich
 - [ ] Dokumentation mit empfohlenen Presets fuer Broadcast-Workflows vorhanden
 
+### TICKET-020 · Tally-Schnittstelle (On-Air/Preview Status)
+
+**Prioritaet:** P1 (nach MVP-Langzeittest)  
+**Beschreibung:**  
+Anbindung einer Tally-Schnittstelle, damit der Prompter den Produktionsstatus (z. B. Program/Preview) empfangen und visuell anzeigen kann.
+
+**Akzeptanzkriterien:**
+- [ ] Technische Ziel-Schnittstelle festgelegt (z. B. HTTP, WebSocket, GPIO/Relay-Bridge)
+- [ ] Eingangssignale fuer mindestens `ON_AIR` und `PREVIEW` definiert
+- [ ] Visuelle Tally-Anzeige im Prompter-Output implementiert (klarer Farbindikator)
+- [ ] Fallback-Verhalten bei Signalverlust definiert und dokumentiert
+- [ ] Manuelle Testfaelle fuer Program/Preview-Wechsel in `TEST_MVP.md` dokumentiert
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
