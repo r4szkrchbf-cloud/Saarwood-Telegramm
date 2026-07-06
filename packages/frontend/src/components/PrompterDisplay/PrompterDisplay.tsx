@@ -185,6 +185,8 @@ export function PrompterDisplay() {
     ? `${voiceStatusLabel} - ${voiceStatusDetail}`
     : voiceStatusLabel;
 
+  const canShowCueMarker = tier !== 'basic' && cueMarkerEnabled;
+
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
   const mirrorTransform = useMemo<string>(() => {
@@ -236,14 +238,14 @@ export function PrompterDisplay() {
   const initialTopOffset = useMemo(() => {
     if (viewportSize.height <= 0) return 0;
 
-    if (cueMarkerEnabled) {
+    if (canShowCueMarker) {
       const cueY = viewportSize.height * (cueMarkerPosition / 100);
       const threeLines = fontSize * lineHeight * 3;
       return Math.max(0, cueY + threeLines);
     }
 
     return viewportSize.height * 0.5;
-  }, [viewportSize.height, cueMarkerEnabled, cueMarkerPosition, fontSize, lineHeight]);
+  }, [viewportSize.height, canShowCueMarker, cueMarkerPosition, fontSize, lineHeight]);
 
   const contentInlinePadding = useMemo(() => {
     if (isQuarterTurn) {
@@ -271,7 +273,7 @@ export function PrompterDisplay() {
 
   // ─── Cue marker position ──────────────────────────────────────────────────
 
-  const cueMarkerStyle: CSSProperties = cueMarkerEnabled
+  const cueMarkerStyle: CSSProperties = canShowCueMarker
     ? {
         top: `${cueMarkerPosition}%`,
         display: 'block',
