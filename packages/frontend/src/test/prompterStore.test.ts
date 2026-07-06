@@ -146,6 +146,32 @@ describe('prompterStore', () => {
       expect(usePrompterStore.getState().profiles).toHaveLength(0);
     });
 
+    it('duplicates a profile', () => {
+      usePrompterStore.getState().saveProfile({
+        ...mockProfile,
+        scriptTemplate: {
+          id: 'script-1',
+          title: 'Template Script',
+          segments: [
+            {
+              id: 'seg-1',
+              html: '<p>Hallo</p>',
+              direction: 'ltr',
+              isCloaked: false,
+              isDirectorsNote: false,
+            },
+          ],
+          lastModified: 1,
+        },
+      });
+
+      usePrompterStore.getState().duplicateProfile('p1');
+      const state = usePrompterStore.getState();
+      expect(state.profiles).toHaveLength(2);
+      expect(state.activeProfileId).not.toBeNull();
+      expect(state.profiles.some((profile) => profile.name.includes('(Kopie)'))).toBe(true);
+    });
+
     it('renames a profile', () => {
       usePrompterStore.getState().saveProfile(mockProfile);
       usePrompterStore.getState().renameProfile('p1', 'New Name');

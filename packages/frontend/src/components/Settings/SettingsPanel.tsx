@@ -24,6 +24,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const setSpeechSensitivity = usePrompterStore((s) => s.setSpeechSensitivity);
   const saveProfile = usePrompterStore((s) => s.saveProfile);
   const renameProfile = usePrompterStore((s) => s.renameProfile);
+  const duplicateProfile = usePrompterStore((s) => s.duplicateProfile);
   const deleteProfile = usePrompterStore((s) => s.deleteProfile);
   const applyProfile = usePrompterStore((s) => s.applyProfile);
   const setTier = usePrompterStore((s) => s.setTier);
@@ -63,12 +64,14 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [templateSearch, setTemplateSearch] = useState('');
   const [templateCreateName, setTemplateCreateName] = useState('');
   const [templateNameDrafts, setTemplateNameDrafts] = useState<Record<string, string>>({});
+  const [templateIoInfo, setTemplateIoInfo] = useState('');
   const [supportAccessKey, setSupportAccessKey] = useState('');
   const [supportLogs, setSupportLogs] = useState<Array<{ createdAt: string; level: string; source: string; message: string; details?: string }>>([]);
   const [supportLogsStatus, setSupportLogsStatus] = useState('');
   const [supportLogsLoading, setSupportLogsLoading] = useState(false);
   const [activePage, setActivePage] = useState<SettingsPage>('settings');
   const importInputRef = useRef<HTMLInputElement | null>(null);
+  const templateImportInputRef = useRef<HTMLInputElement | null>(null);
 
   const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
 
@@ -200,6 +203,16 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     URL.revokeObjectURL(url);
   }, []);
 
+  const makeTemplateFilename = useCallback((name: string): string => {
+    const base = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9äöüß]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/--+/g, '-');
+    return `${base || 'vorlage'}.json`;
+  }, []);
+
   const handleSaveProfile = useCallback(() => {
     const name = profileName.trim();
     if (!name) return;
@@ -242,6 +255,83 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     renameProfile(id, nextName);
     postClientLog({ level: 'info', source: 'template', message: `Template renamed: ${nextName}` });
   }, [renameProfile, templateNameDrafts, postClientLog]);
+
+  const handleDuplicateTemplate = useCallback((id: string) => {
+    duplicateProfile(id);
+    postClientLog({ level: 'info', source: 'template', message: `Template duplicated: ${id}` });
+  }, [duplicateProfile, postClientLog]);
+
+  const handleExportTemplate = useCallback((id: string) => {
+    const profile = profiles.find((entry) => entry.id === id);
+    if (!profile) return;
+
+    const payload = {
+      format: 'saarwood-template-v1',
+      exportedAt: new Date().toISOString(),
+      profile,
+    };
+
+    downloadBlob(
+      JSON.stringify(payload, null, 2),
+      'application/json',
+      makeTemplateFilename(profile.name),
+    );
+    postClientLog({ level: 'info', source: 'template', message: `Template exported: ${profile.name}` });
+  }, [downloadBlob, makeTemplateFilename, postClientLog, profiles]);
+
+  const handleImportTemplateClick = useCallback(() => {
+    templateImportInputRef.current?.click();
+  }, []);
+
+  const handleImportTemplateFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const raw = await file.text();
+      const parsed = JSON.parse(raw) as {
+        format?: string;
+        profile?: PresenterProfile;
+        name?: string;
+        displaySettings?: PresenterProfile['displaySettings'];
+        scriptTemplate?: PresenterProfile['scriptTemplate'];
+      };
+
+      const sourceProfile = parsed.profile ?? (parsed.name && parsed.displaySettings ? {
+        id: `profile-${Date.now()}`,
+        name: parsed.name,
+        displaySettings: parsed.displaySettings,
+        scriptTemplate: parsed.scriptTemplate,
+      } : null);
+
+      if (!sourceProfile?.name || !sourceProfile.displaySettings) {
+        throw new Error('invalid-template');
+      }
+
+      const imported: PresenterProfile = {
+        id: `profile-${Date.now()}`,
+        name: sourceProfile.name,
+        displaySettings: sourceProfile.displaySettings,
+        scriptTemplate: sourceProfile.scriptTemplate ? {
+          ...sourceProfile.scriptTemplate,
+          id: `script-${Date.now()}`,
+          segments: sourceProfile.scriptTemplate.segments.map((segment, idx) => ({
+            ...segment,
+            id: `${segment.id || 'seg'}-${idx + 1}-${Date.now()}`,
+          })),
+        } : undefined,
+      };
+
+      saveProfile(imported);
+      setTemplateIoInfo(`Vorlage importiert: ${imported.name}`);
+      postClientLog({ level: 'info', source: 'template', message: `Template imported: ${imported.name}` });
+    } catch {
+      setTemplateIoInfo('Vorlage konnte nicht importiert werden. Bitte JSON-Vorlage pruefen.');
+      postClientLog({ level: 'warn', source: 'template', message: 'Template import failed' });
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  }, [postClientLog, saveProfile]);
 
   const handleLoadGermanTestScript = useCallback(() => {
     const now = Date.now();
@@ -868,6 +958,11 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <label htmlFor="template-search">Suchen</label>
             <input id="template-search" type="search" className="profile-name-input" placeholder="Telepromptervorlage durchsuchen" value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} />
           </div>
+          <div className="settings-row template-import-row">
+            <button type="button" className="btn-small" onClick={handleImportTemplateClick}>Vorlage importieren</button>
+            <input ref={templateImportInputRef} type="file" accept="application/json,.json" onChange={handleImportTemplateFile} className="segment-import-input" aria-label="Vorlage importieren" />
+            {templateIoInfo && <span className="settings-value segment-io-status">{templateIoInfo}</span>}
+          </div>
           <div className="template-table-wrap" role="region" aria-label="Liste Telepromptervorlagen">
             <table className="template-table">
               <thead>
@@ -895,6 +990,8 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
                     <td>
                       <div className="template-actions">
                         <button type="button" className="btn-small" onClick={() => applyProfile(p.id)}>Anwenden</button>
+                        <button type="button" className="btn-small" onClick={() => handleDuplicateTemplate(p.id)}>Duplizieren</button>
+                        <button type="button" className="btn-small" onClick={() => handleExportTemplate(p.id)}>Export</button>
                         <button type="button" className="btn-small" onClick={() => handleRenameTemplate(p.id)} disabled={!templateNameDrafts[p.id]?.trim() || templateNameDrafts[p.id] === p.name}>Name speichern</button>
                         <button type="button" className="btn-small btn-small--danger" onClick={() => deleteProfile(p.id)}>Loeschen</button>
                       </div>

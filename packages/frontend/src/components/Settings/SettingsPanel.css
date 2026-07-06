@@ -469,6 +469,12 @@
   flex-wrap: wrap;
 }
 
+.template-import-row {
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .template-name-input {
   width: 100%;
   min-width: 0;

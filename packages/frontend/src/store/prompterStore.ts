@@ -143,6 +143,7 @@ interface PrompterStore {
   activeProfileId: string | null;
   saveProfile: (profile: PresenterProfile) => void;
   renameProfile: (id: string, name: string) => void;
+  duplicateProfile: (id: string) => void;
   deleteProfile: (id: string) => void;
   applyProfile: (id: string) => void;
 
@@ -271,6 +272,34 @@ export const usePrompterStore = create<PrompterStore>()(
             profile.id === id ? { ...profile, name: name.trim() || profile.name } : profile,
           ),
         })),
+      duplicateProfile: (id) => {
+        const profile = get().profiles.find((entry) => entry.id === id);
+        if (!profile) return;
+
+        const duplicateId = `profile-${Date.now()}`;
+        const duplicateName = profile.name.endsWith(' (Kopie)')
+          ? `${profile.name} 2`
+          : `${profile.name} (Kopie)`;
+
+        set((s) => ({
+          profiles: [
+            ...s.profiles,
+            {
+              ...profile,
+              id: duplicateId,
+              name: duplicateName,
+              displaySettings: { ...profile.displaySettings },
+              scriptTemplate: profile.scriptTemplate
+                ? {
+                    ...profile.scriptTemplate,
+                    segments: profile.scriptTemplate.segments.map((segment) => ({ ...segment })),
+                  }
+                : undefined,
+            },
+          ],
+          activeProfileId: duplicateId,
+        }));
+      },
       deleteProfile: (id) =>
         set((s) => ({
           profiles: s.profiles.filter((p) => p.id !== id),
