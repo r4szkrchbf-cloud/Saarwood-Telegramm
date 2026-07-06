@@ -105,6 +105,41 @@ npm run license:admin --workspace @saarwood/backend -- create \
 4. Bei Sperrung: Grund dokumentieren (Missbrauch, Ablauf, Ersatzlizenz).
 5. Nach Sperrung einmal `list-revocations` pruefen.
 
+### 8.1 Interne Schnell-Checkliste: Professional-Beta-Lizenz (Web/Electron)
+
+Fuer internen Testbetrieb wurde ein Professional-Beta-Token erzeugt.
+
+- `lic_id`: `lic-1783310104043-h4bt48`
+- `tier`: `professional`
+- `generation`: `beta-v1`
+- `expires_at`: `2026-10-04T03:55:04.000Z`
+- `grace_offline_until`: `2026-10-18T03:55:04.000Z`
+
+Token-Datei lokal:
+
+- `secrets/license-professional-beta.token`
+
+Aktivierung in Web/Electron (intern):
+
+1. Token aus Datei lesen und in der App unter Lizenz-Aktivierung eintragen.
+2. Backend mit passendem Public Key starten:
+
+```bash
+export LICENSE_MODE=enforce
+export LICENSE_PUBLIC_KEY_PEM="$(cat ./secrets/license-public.pem)"
+```
+
+3. Lizenzstatus gegen API pruefen:
+
+```bash
+curl -sS http://localhost:4000/api/license/status \
+  -H "x-license-token: $(cat ./secrets/license-professional-beta.token)"
+```
+
+Hinweis:
+
+- Dieser Token ist fuer internen Beta-Test gedacht und soll nicht oeffentlich verteilt werden.
+
 ## 9. Phase C - Remote Admin API (ohne Server-SSH)
 
 Voraussetzung: Backend laeuft mit gesetztem `ADMIN_API_KEY`.
