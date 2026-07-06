@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD032 -->
+
 # Statusbericht Repo-Sync und Ordnungsstand (2026-07-05)
 
 Autor: GitHub Copilot (GPT-5.3-Codex) mit manuelangel

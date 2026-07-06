@@ -43,6 +43,44 @@ Kontext: Abschliessender Tiefenscan nach Tier-, Import/Export-, Projektname- und
 
 ---
 
+## Eintrag 2026-07-06 06:58 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Build-Regression nach Vollscan beheben, Testausgabe beruhigen, Doku-Stand fuer die aktuellen Aenderungen synchronisieren.
+
+### Ausgangsproblem
+- Frontend-Build brach mit `TS5103` ab:
+  - `Invalid value for '--ignoreDeprecations'` in `packages/frontend/tsconfig.json`.
+- Gleiche `ignoreDeprecations: "6.0"`-Konfiguration war auch in Backend/Electron gesetzt und damit versionsabhaengig fragil.
+- Frontend-Testlauf war zwar gruen, zeigte aber wiederkehrend die Node-Warnung:
+  - `ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.`
+
+### Durchgefuehrte Schritte
+- `ignoreDeprecations` aus folgenden `tsconfig`-Dateien entfernt:
+  - `packages/frontend/tsconfig.json`
+  - `packages/backend/tsconfig.json`
+  - `packages/electron/tsconfig.json`
+- Frontend-Testskripte in `packages/frontend/package.json` angepasst:
+  - `test` und `test:watch` laufen jetzt mit
+    `NODE_OPTIONS=--localstorage-file=./.vitest-localstorage`.
+- Runtime-Datei in Root-`.gitignore` aufgenommen:
+  - `packages/frontend/.vitest-localstorage`
+- Doku-Updates synchronisiert in `CHANGELOG.md`, `docs/PROJECT_STATUS_DE.md` und `docs/TEST_MVP.md`.
+
+### Ergebnis
+- Frontend lint/test/build: PASS.
+- Root-Build (Frontend + Backend): PASS.
+- Node-`localStorage`-Warnhinweis wird im Standard-Frontend-Testlauf nicht mehr ausgegeben.
+- Build-Integritaet fuer die aktuelle Toolchain wiederhergestellt.
+
+### Offene Punkte
+- Keine blockierenden Build- oder Testprobleme aus diesem Fehlerbild offen.
+
+### Lessons Learned
+- Deprecation-Suppressions muessen exakt zur installierten TypeScript-Version passen, sonst werden sie selbst zum Build-Blocker.
+- Testumgebungs-Warnungen sollten proaktiv im Script-Setup entschraerft werden, damit echte Fehler im CI-/QA-Output klar sichtbar bleiben.
+
+---
+
 ## Eintrag 2026-07-05 02:15 (lokale Zeit)
 Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
 Kontext: Migration/Recovery von `saarnews/saarwood_telepromter` nach `r4szkrchbf-cloud/Saarwood-Telegramm`, Stabilisierung des Build-Status und Nachvollziehbarkeit der Fehlerbehebung.

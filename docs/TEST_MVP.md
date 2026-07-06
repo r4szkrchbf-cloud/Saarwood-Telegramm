@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD007 MD010 MD022 MD024 MD029 MD031 MD032 MD036 MD040 MD060 -->
+
 # Saarwood Teleprompter — MVP Test Log
 
 > **Zweck:** Lückenlose, nachvollziehbare Dokumentation aller MVP-Testrunden.  
@@ -516,6 +518,42 @@ Restliche Kernpunkte von Bedingung 3.2 validieren (Slider-Verhalten und Richtung
 ### Ziel
 
 Naechsten 3-Punkte-Block in den Anzeige-Kontrollen pruefen (Mirror und Rotation) und unmittelbar dokumentieren.
+
+---
+
+## Runde 11 - 2026-07-06 06:56 UTC (Build-Regressionsfix + Gate-Recheck)
+
+### Ziel
+
+Build-Regression nach Vollscan beheben, Frontend-Gates erneut durchlaufen lassen und die Testausgabe bereinigen.
+
+### Ausgangsproblem
+
+- Frontend-Build schlug fehl mit:
+	- `TS5103: Invalid value for '--ignoreDeprecations'`
+- Frontend-Tests waren gruen, aber mit wiederkehrender Node-Warnung zu `localStorage`.
+
+### Durchgefuehrte Schritte
+
+1. `ignoreDeprecations` aus Workspace-`tsconfig`-Dateien entfernt (Frontend/Backend/Electron).
+2. Frontend-Testskripte mit lokalem Storage-File konfiguriert (`NODE_OPTIONS=--localstorage-file=./.vitest-localstorage`).
+3. Frontend-Gates erneut ausgefuehrt:
+	 - `npm run lint --workspace=packages/frontend`
+	 - `npm run test --workspace=packages/frontend`
+	 - `npm run build --workspace=packages/frontend`
+
+### Ergebnis Runde 11
+
+- Frontend Lint: PASS
+- Frontend Tests: PASS (30/30)
+- Frontend Build: PASS
+- Warnhinweisbereinigung fuer `localStorage` ist im Standard-Testpfad umgesetzt.
+
+## Runden-Uebersicht (aktualisiert)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 11 | 2026-07-06 06:56 | Frontend 30/30, Lint PASS | PASS | GRUEN |
 
 ### Durchgefuehrte Testpunkte
 

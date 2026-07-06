@@ -8,8 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src/ --max-warnings 0",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "NODE_OPTIONS=--localstorage-file=./.vitest-localstorage vitest run",
+    "test:watch": "NODE_OPTIONS=--localstorage-file=./.vitest-localstorage vitest"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

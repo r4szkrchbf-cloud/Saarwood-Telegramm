@@ -14,6 +14,12 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 
 ## 1.1 Delta-Update (neu)
 
+- Build-Stabilitaet wiederhergestellt:
+  - `TS5103` durch ungueltigen `ignoreDeprecations`-Wert in den Workspace-`tsconfig`-Dateien beseitigt.
+  - Frontend-, Backend- und Root-Build laufen wieder konsistent gruen.
+- Testausgabe beruhigt:
+  - Vitest im Frontend nutzt jetzt eine lokale Storage-Datei, wodurch der bisherige Node-`localStorage`-Warnhinweis im Standardlauf entfaellt.
+
 - Voice Tracking ist jetzt strikt an den Transport gekoppelt:
   - `Play` aktiviert die Erkennung (wenn Voice aktiv ist)
   - `Pause` muted die Erkennung hart, damit Sprechen keine Pause unterbricht

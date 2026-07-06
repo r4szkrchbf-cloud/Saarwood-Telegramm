@@ -106,5 +106,8 @@ All MVP features are fully unlocked for Beta testing.
 ### Fixed
 
 - `packages/electron`: added no-op `"test"` script so `npm test --workspaces` no longer fails with *"Missing script: test"*
+- Build blocker removed: invalid `ignoreDeprecations: "6.0"` entry removed from frontend/backend/electron TypeScript configs to restore reliable builds on the current toolchain.
+- Frontend test output noise reduced: Vitest now runs with a dedicated local storage file (`NODE_OPTIONS=--localstorage-file=./.vitest-localstorage`) so the Node localStorage experimental warning no longer appears in standard test runs.
+- Documentation sync completed for this fix cycle (status report + test log + error log + changelog).
 
 *Changes staged for the next release will appear here.*
