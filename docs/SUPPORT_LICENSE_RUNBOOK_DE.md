@@ -1,6 +1,6 @@
 # Support-Runbook Lizenzverwaltung (Phase B)
 
-_Stand: 2026-07-05_
+Stand: 2026-07-05
 
 Dieses Runbook beschreibt die internen Standardkommandos fuer das Support-Team.
 
@@ -44,6 +44,7 @@ npm run license:admin --workspace @saarwood/backend -- create \
 ```
 
 Ausgabe enthaelt:
+
 - `lic_id`
 - Ablaufzeitpunkte
 - Token selbst (oder Datei via `--out`)
