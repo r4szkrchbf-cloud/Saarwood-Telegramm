@@ -537,3 +537,66 @@
   .restart-hint { display: none; }
   .license-hint { display: none; }
 }
+
+@media (max-width: 1024px) {
+  .app-header {
+    height: auto;
+    min-height: 48px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .app-logo {
+    flex-wrap: wrap;
+    row-gap: 0.22rem;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .view-switcher {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+    order: 2;
+  }
+
+  .settings-toggle {
+    margin-left: auto;
+    order: 1;
+  }
+
+  .editor-template-row {
+    flex-wrap: wrap;
+  }
+
+  .editor-template-label {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-workspace {
+    min-height: 0;
+  }
+
+  .editor-scroll {
+    padding: 0.55rem;
+  }
+
+  .project-title-controls {
+    gap: 0.45rem;
+  }
+
+  .project-title-inline-control input[type='range'] {
+    width: 96px;
+  }
+
+  .room-hint {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

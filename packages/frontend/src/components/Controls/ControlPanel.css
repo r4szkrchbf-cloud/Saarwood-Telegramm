@@ -143,3 +143,54 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+@media (max-width: 1024px) {
+  .control-panel {
+    gap: 0.55rem;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .transport-buttons,
+  .voice-quick-controls,
+  .mirror-controls,
+  .rotation-controls {
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 0.34rem 0.62rem;
+    font-size: 0.88rem;
+  }
+
+  .speed-control {
+    flex: 1 1 100%;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 0.3rem;
+  }
+
+  .speed-input {
+    width: 5.4rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .control-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .transport-buttons {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.18rem;
+  }
+
+  .speed-label {
+    font-size: 0.74rem;
+  }
+
+  .btn--nudge {
+    padding: 0.26rem 0.5rem;
+  }
+}

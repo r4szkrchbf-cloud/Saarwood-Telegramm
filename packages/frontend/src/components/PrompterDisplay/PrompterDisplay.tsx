@@ -126,23 +126,63 @@ export function PrompterDisplay() {
       .join(' ');
   }, [scriptSegments]);
 
-  const charsPerPixel = useMemo(() => {
-    const sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return DEFAULT_CHARS_PER_PIXEL;
-    ctx.font = `${fontSize}px ${fontFamily}`;
-    const width = ctx.measureText(sample).width;
-    if (width <= 0) return DEFAULT_CHARS_PER_PIXEL;
-    return sample.length / width;
-  }, [fontFamily, fontSize]);
-
   const applySpeechPosition = useCallback((nextPosition: number) => {
     const bounded = Math.max(0, nextPosition);
     setPosition(bounded);
     storeSetPosition(bounded);
     wsService.send('SET_POSITION', { position: bounded });
   }, [setPosition, storeSetPosition]);
+
+  const canShowCueMarker = tier !== 'basic' && cueMarkerEnabled;
+
+  // ─── Mirror + Rotation transform ────────────────────────────────────────
+
+  const mirrorTransform = useMemo<string>(() => {
+    const sx = mirrorHorizontal ? -1 : 1;
+    const sy = mirrorVertical ? -1 : 1;
+    const scaleX = sx;
+    const scaleY = sy;
+    const parts: string[] = [];
+    // Rotation first, then scale — order matters for correct GPU compositing.
+    if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
+    if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
+    return parts.length > 0 ? parts.join(' ') : 'none';
+  }, [mirrorHorizontal, mirrorVertical, rotation]);
+
+  const isQuarterTurn = rotation === 90 || rotation === 270;
+
+  const portraitEdgeGap = useMemo(() => {
+    if (!isQuarterTurn) return 0;
+    const shortestSide = Math.min(viewportSize.width, viewportSize.height);
+    return Math.max(12, Math.round(shortestSide * 0.025));
+  }, [isQuarterTurn, viewportSize.height, viewportSize.width]);
+
+  const effectiveFontSize = useMemo(() => {
+    if (viewportSize.width <= 0 || viewportSize.height <= 0) return fontSize;
+
+    const byWidth = Math.round(viewportSize.width * 0.115);
+    const byHeight = Math.round(viewportSize.height * 0.11);
+    const adaptiveMax = Math.max(24, Math.min(byWidth, byHeight));
+    return Math.min(fontSize, adaptiveMax);
+  }, [fontSize, viewportSize.height, viewportSize.width]);
+
+  const effectiveProjectTitleFontSize = useMemo(() => {
+    if (viewportSize.width <= 0) return projectTitleFontSize;
+    if (viewportSize.width >= 1024) return projectTitleFontSize;
+    const tabletCap = Math.max(12, Math.round(viewportSize.width * 0.045));
+    return Math.min(projectTitleFontSize, tabletCap);
+  }, [projectTitleFontSize, viewportSize.width]);
+
+  const charsPerPixel = useMemo(() => {
+    const sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return DEFAULT_CHARS_PER_PIXEL;
+    ctx.font = `${effectiveFontSize}px ${fontFamily}`;
+    const width = ctx.measureText(sample).width;
+    if (width <= 0) return DEFAULT_CHARS_PER_PIXEL;
+    return sample.length / width;
+  }, [fontFamily, effectiveFontSize]);
 
   const {
     status: voiceStatus,
@@ -185,30 +225,6 @@ export function PrompterDisplay() {
     ? `${voiceStatusLabel} - ${voiceStatusDetail}`
     : voiceStatusLabel;
 
-  const canShowCueMarker = tier !== 'basic' && cueMarkerEnabled;
-
-  // ─── Mirror + Rotation transform ────────────────────────────────────────
-
-  const mirrorTransform = useMemo<string>(() => {
-    const sx = mirrorHorizontal ? -1 : 1;
-    const sy = mirrorVertical ? -1 : 1;
-    const scaleX = sx;
-    const scaleY = sy;
-    const parts: string[] = [];
-    // Rotation first, then scale — order matters for correct GPU compositing.
-    if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
-    if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
-    return parts.length > 0 ? parts.join(' ') : 'none';
-  }, [mirrorHorizontal, mirrorVertical, rotation]);
-
-  const isQuarterTurn = rotation === 90 || rotation === 270;
-
-  const portraitEdgeGap = useMemo(() => {
-    if (!isQuarterTurn) return 0;
-    const shortestSide = Math.min(viewportSize.width, viewportSize.height);
-    return Math.max(12, Math.round(shortestSide * 0.025));
-  }, [isQuarterTurn, viewportSize.height, viewportSize.width]);
-
   const viewportFrameStyle = useMemo<CSSProperties>(() => {
     return { width: '100%', height: '100%' };
   }, []);
@@ -240,12 +256,12 @@ export function PrompterDisplay() {
 
     if (canShowCueMarker) {
       const cueY = viewportSize.height * (cueMarkerPosition / 100);
-      const threeLines = fontSize * lineHeight * 3;
+      const threeLines = effectiveFontSize * lineHeight * 3;
       return Math.max(0, cueY + threeLines);
     }
 
     return viewportSize.height * 0.5;
-  }, [viewportSize.height, canShowCueMarker, cueMarkerPosition, fontSize, lineHeight]);
+  }, [viewportSize.height, canShowCueMarker, cueMarkerPosition, effectiveFontSize, lineHeight]);
 
   const contentInlinePadding = useMemo(() => {
     if (isQuarterTurn) {
@@ -256,12 +272,12 @@ export function PrompterDisplay() {
 
   const projectTitleOverlayStyle = useMemo<CSSProperties>(() => ({
     color: projectTitleTextColor,
-    padding: `${Math.max(7, Math.round(projectTitleFontSize * 0.34))}px ${Math.max(14, Math.round(projectTitleFontSize * 0.72))}px`,
+    padding: `${Math.max(7, Math.round(effectiveProjectTitleFontSize * 0.34))}px ${Math.max(14, Math.round(effectiveProjectTitleFontSize * 0.72))}px`,
     borderColor: 'rgba(255, 255, 255, 0.34)',
-  }), [projectTitleFontSize, projectTitleTextColor]);
+  }), [effectiveProjectTitleFontSize, projectTitleTextColor]);
 
   const contentStyle: CSSProperties = {
-    fontSize: `${fontSize}px`,
+    fontSize: `${effectiveFontSize}px`,
     fontFamily,
     color: textColor,
     lineHeight,
@@ -324,7 +340,7 @@ export function PrompterDisplay() {
           {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
             <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={projectTitleOverlayStyle}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
-              <strong style={{ fontSize: `${projectTitleFontSize}px` }}>{scriptTitle}</strong>
+              <strong style={{ fontSize: `${effectiveProjectTitleFontSize}px` }}>{scriptTitle}</strong>
             </div>
           )}
 

@@ -36,6 +36,7 @@ Die Projekt-Dokumentation ist thematisch sortiert:
 - [HOSTINGER_GOLIVE_CHECKLIST_OWNER_EXAMPLE_2P_DE](./HOSTINGER_GOLIVE_CHECKLIST_OWNER_EXAMPLE_2P_DE.md)
 - [HOSTINGER_GOLIVE_ONEPAGER_2P_DE](./HOSTINGER_GOLIVE_ONEPAGER_2P_DE.md)
 - [SUPPORT_LICENSE_RUNBOOK_DE](./SUPPORT_LICENSE_RUNBOOK_DE.md)
+- [ADMIN_LICENSE_CHEATSHEET_DE](./ADMIN_LICENSE_CHEATSHEET_DE.md)
 - [SUPPORT_TICKET_OPERATIONS_CLICKUP_DE](./SUPPORT_TICKET_OPERATIONS_CLICKUP_DE.md)
 - [SAARwooD_BESCHREIBUNG_BETA_V1_DE](./SAARwooD_BESCHREIBUNG_BETA_V1_DE.md)
 - [SAARwooD_NUTZERHANDBUCH_BETA_V1_DE](./SAARwooD_NUTZERHANDBUCH_BETA_V1_DE.md)
@@ -49,3 +50,9 @@ Die Projekt-Dokumentation ist thematisch sortiert:
 - [Legacy Planning Files](./archive/legacy)
 
 Die alten Root-Dateien `Telepromter_BRIEFING.txt`, `Telepromter_Brainstorming.txt` und `Telepromter_Struktur.txt` wurden hierher in das Legacy-Archiv verschoben, damit das Repository-Root auf den eigentlichen Code und die zentrale Projektdokumentation fokussiert bleibt.
+
+## Security Policy (Repository)
+
+- Der Ordner `secrets/` ist ausschliesslich lokal und wird niemals versioniert.
+- Tokens, Schluessel, Passwoerter und Lizenz-Artefakte werden nur lokal in `secrets/` oder in einem Secret Manager abgelegt.
+- Keine geheimen Werte in Markdown, Source-Code, Commit-Messages oder Tickets speichern.

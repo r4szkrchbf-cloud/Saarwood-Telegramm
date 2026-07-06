@@ -8,6 +8,69 @@
 4. Optional: `Prompter Fenster` fuer getrennte Ausgabe oeffnen (`?view=prompter&output=1`).
 5. In der Electron-App: `Monitor 2 Vollbild` nutzen, um den Prompter direkt auf den zweiten Bildschirm zu legen.
 
+## 1.1 Als Web-App auf Tablet/Smartphone speichern (PWA)
+
+Die Seite kann auf mobilen Geraeten wie eine App gespeichert werden.
+
+iPhone/iPad (Safari):
+
+1. `https://teleprompter.saarwood.ch` aufrufen.
+2. Teilen-Symbol tippen.
+3. `Zum Home-Bildschirm` waehlen.
+4. Namen bestaetigen und `Hinzufuegen`.
+
+Android (Chrome):
+
+1. `https://teleprompter.saarwood.ch` aufrufen.
+2. Browser-Menue oeffnen.
+3. `App installieren` oder `Zum Startbildschirm hinzufuegen` waehlen.
+
+Wichtig:
+
+- Fuer stabilen Offline-Betrieb die App mindestens einmal vollstaendig online laden.
+- Danach App einmal schliessen und neu oeffnen, damit Cache/Service Worker sicher aktiv sind.
+
+## 1.2 Offline-Nutzung und Lizenzlogik
+
+Aktueller Betriebsmodus:
+
+1. Erstaktivierung braucht einmal Internet, damit Lizenzstatus + Public Key geladen werden.
+2. Danach kann die App offline laufen, wenn der Token kryptografisch gueltig ist.
+3. Offline wird die Signatur des Tokens lokal geprueft (Ed25519), nicht nur der Payload.
+
+Wenn offline Aktivierung nicht klappt:
+
+1. Kurz online gehen.
+2. Lizenz einmal erfolgreich aktivieren.
+3. App neu starten.
+4. Danach erneut offline testen.
+
+Hinweis fuer Support/Admin:
+
+- Entzuege (Revocations) sind auf bereits offline getrennten Geraeten erst wirksam, sobald diese wieder online sind.
+- Fuer mehr Kontrolle kurze Laufzeiten und kurze Offline-Gnadenfrist vergeben.
+
+## 1.3 Gleicher Prompter auf mehreren Tablets/Smartphones synchron
+
+Damit mehrere Geraete denselben Prompter synchron sehen, muessen sie dieselbe Room-ID verwenden.
+
+Beispiel:
+
+- Controller: `https://teleprompter.saarwood.ch/?room=room-abc123`
+- Ausgabe-Geraete: `https://teleprompter.saarwood.ch/?view=prompter&output=1&room=room-abc123`
+
+Vorgehen:
+
+1. Room-ID im Header des Controller-Fensters ablesen.
+2. `Room kopieren` tippen.
+3. Den Link mit derselben Room-ID auf weitere Geraete oeffnen.
+
+Brauchen alle Geraete dasselbe WLAN?
+
+- Nein, nicht zwingend.
+- Entscheidend ist: alle Geraete muessen `teleprompter.saarwood.ch` erreichen und exakt dieselbe `room`-ID nutzen.
+- Im echten Offline-LAN-Betrieb ohne Internet brauchen alle Geraete natuerlich dasselbe lokale Netz und einen lokal erreichbaren Server.
+
 ## 2. Script bearbeiten
 
 1. Titel oben im Editor setzen.
@@ -151,6 +214,20 @@ Im Settings-Bereich:
 - Spiegelung/Rotation ueber Controls
 - Telepromptervorlagen speichern/umbenennen/anwenden je nach Tier
 - Support-Bereich mit Ticket, Support-Links und 78h Logzugriff
+
+## 5.1 Tablet-/Smartphone-Layout (automatische Anpassung)
+
+Ab dem aktuellen Stand passt sich die Oberflaeche auf kleinen Displays besser an:
+
+1. Header und Statuschips umbrechen sauber statt zu ueberlaufen.
+2. Control-Bar ist auf Tablet/Mobile kompakter und besser touchbar.
+3. Prompter-Schrift wird auf kleinen Viewports automatisch begrenzt, damit Text nicht uebergross startet.
+
+Empfehlung fuer den Live-Betrieb auf Mobilgeraeten:
+
+1. Ausgabe-Geraete immer mit `output=1` starten.
+2. Auf dem Controller nur noetige Panels offen lassen.
+3. Vor Show-Beginn je Geraet einmal Schriftgroesse und Zeilenhoehe pruefen.
 
 ## 6. Voice-Hinweis fuer Beta V1
 

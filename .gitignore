@@ -37,3 +37,9 @@ packages/frontend/public/workbox-*.js
 
 # Backend runtime support data
 packages/backend/data/
+
+# Local secrets (never commit)
+secrets/
+*.pem
+*.key
+*.token
