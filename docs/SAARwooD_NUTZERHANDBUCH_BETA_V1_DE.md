@@ -159,4 +159,9 @@ Support-Tickets und Client-Logs gehoeren in den Support-Prozess, nicht in den Pr
 ## 10. Hinweis zur kostenlosen Basic-Version
 
 Vor der oeffentlichen Hostinger-Freigabe der kostenlosen Basic-Version wird das Werbe- und Upgrade-Modell separat festgelegt.
-Dabei bleibt der Prompter-Output selbst werbefrei.
+Aktuelle Produktempfehlung fuer die Diskussion:
+
+- Professional und Expert bleiben werbefrei.
+- Basic kann spaeter interne Upgrade-Hinweise enthalten.
+- Fuer Prompterbild und Output ist eine kleine, deutliche, aber nicht dominante Werbe-/Upgrade-Einblendung als moegliche Option vorgemerkt.
+- Vor technischer Umsetzung wird diese Platzierung gesondert diskutiert und freigegeben.

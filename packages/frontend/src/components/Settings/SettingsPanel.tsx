@@ -607,7 +607,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
           ) ?? [];
           const titleCol = hasTitleColumn ? cols[0] || '' : '';
-          if (titleCol && !title) title = titleCol;
+          if (titleCol) title = titleCol;
           const base = hasTitleColumn ? 1 : 0;
           const text = cols[base + 4] || '';
           const speakerMatch = text.match(/^\[([^\]]+)\]:\s*(.*)$/);

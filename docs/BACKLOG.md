@@ -107,7 +107,8 @@ Referenz:
 
 **Akzeptanzkriterien:**
 - [ ] Entscheidung dokumentiert: nur interne Upgrade-Hinweise oder zusaetzlich Sponsor-Flaechen
-- [ ] Keine Werbung im Prompter-Output und in Output-only Views
+- [ ] Entscheidung dokumentiert, ob Upgrade-Hinweise auch im Prompter-/Output-Bild erscheinen duerfen
+- [ ] Falls Prompter-/Output-Werbung erlaubt wird: nur kleine Overlay-Ebene, nicht im Scrolltext, nicht stoerend
 - [ ] Professional und Expert bleiben werbefrei
 - [ ] Datenschutz-/Consent-Bedarf fuer die gewaehlte Werbeform bewertet
 - [ ] Hostinger-Go-Live-Dokumentation verweist auf das finale Werbemodell

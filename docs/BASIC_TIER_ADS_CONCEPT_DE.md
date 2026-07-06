@@ -12,8 +12,9 @@ Grundsatz:
 
 - Werbung darf nur die kostenlose Basic-Version betreffen.
 - Professional und Expert bleiben werbefrei.
-- Die Prompter-Ausgabe selbst darf nicht mit Werbung ueberdeckt oder technisch beeintraechtigt werden.
-- Output-only View (`?view=prompter&output=1`) bleibt komplett werbefrei.
+- Vor einer Code-Umsetzung wird die Werbeplatzierung fachlich diskutiert und freigegeben.
+- Aktuelle Inhaber-Vorgabe: In der kostenlosen Basic-Version soll spaeter auch im Prompterbild und im Output eine kleine Werbe-/Upgrade-Einblendung moeglich sein.
+- Diese Einblendung darf nicht technisch stoeren, nicht dominant sein, aber bewusst leicht nervig genug bleiben, um auf die kostenpflichtigen Versionen hinzuweisen.
 
 ## 2. Produktregeln
 
@@ -31,8 +32,7 @@ Folgende Elemente gelten im Kontext der Basic-Version als Werbung oder Upgrade-K
 Nicht erlaubt in der Basic-Version:
 
 - Pop-ups waehrend laufendem Scrollbetrieb
-- Werbung innerhalb des Prompter-Textes
-- Werbung im Output-only Modus
+- Werbung innerhalb des eigentlichen Scrolltexts
 - Audio-/Video-Autoplay
 - Externe Werbenetzwerke, die Timing, Layout oder Stabilitaet des Teleprompters beeinflussen
 - Tracking-Skripte, die den Renderpfad des Prompter-Outputs verlangsamen
@@ -41,25 +41,25 @@ Nicht erlaubt in der Basic-Version:
 
 ### 3.1 Erlaubte Zonen
 
-Werbe- oder Upgrade-Hinweise duerfen nur in den Bedienoberflaechen erscheinen:
+Werbe- oder Upgrade-Hinweise duerfen in der finalen Basic-Version in diesen Zonen erscheinen:
 
 - Header / App-Randbereich
 - Settings / Info-Bereich
 - Editor-Seitenbereich
 - Leere Zustandsflaechen, z. B. wenn noch keine Vorlage ausgewaehlt ist
+- Prompterbild / Output als kleine, abgesetzte Upgrade-Einblendung
 
 ### 3.2 Verbotene Zonen
 
 Werbe- oder Upgrade-Hinweise duerfen nicht erscheinen:
 
-- im Prompter-Output
-- auf dem zweiten Monitor / Vollbild-Output
-- ueber Cue-Marker oder laufendem Scripttext
+- ueber Cue-Marker oder mitten im laufenden Scripttext
 - in Notfall-/Fehlerdialogen, die schnellen Betrieb betreffen
+- als grossflächige, blinkende oder animierte Stoerflaeche
 
 ## 4. Empfohlenes MVP-Modell fuer Hostinger
 
-Empfohlen wird fuer die erste Public-Basic-Version ein sehr kontrolliertes Modell:
+Empfohlen wird fuer die erste Public-Basic-Version ein sehr kontrolliertes Modell. Die Platzierung im Prompter/Output ist dabei vor der Umsetzung noch gesondert zu diskutieren und freizugeben.
 
 ### Stufe A - nur Eigenhinweise
 
@@ -97,10 +97,11 @@ Werbeflaechen muessen strikt an das Tier gekoppelt sein:
 
 ### 5.2 Rendering-Regeln
 
-- Werbe-Hinweise nur ausserhalb von `PrompterDisplay`
-- Keine Werbe-Elemente innerhalb des Scrollcontainers
+- Keine Werbe-Elemente innerhalb des Scrollcontainers selbst
 - Keine Werbe-Requests pro Frame oder pro Editor-Update
 - Keine Layout-Verschiebung in ControlPanel oder Output waehrend Play
+- Falls Werbung im Prompter-/Output-Bild eingeblendet wird, dann nur als eigene Overlay-Ebene ausserhalb des Scrolltexts
+- Die Werbe-Einblendung muss klein, klar lesbar und leicht praesent sein, darf aber keine Zeilen abschneiden oder die Cue-Marker-Fuehrung blockieren
 
 ### 5.3 Hostinger / Public-Beta-Regeln
 
@@ -122,6 +123,7 @@ Vor Hostinger-Go-Live muss definiert sein:
 Empfohlen fuer Beta:
 
 - kleine statische Upgrade-Karte im Editor oder in den Einstellungen
+- kleine statische Upgrade-/Hinweisflaeche im Prompterbild und Output, aber nur nach separater Produktfreigabe
 - klare Aussage: "Kostenlose Basic-Version" / "Werbefrei ab Professional"
 
 ## 7. Dokumentationsfolgen
@@ -140,7 +142,7 @@ Empfehlung fuer die Veroeffentlichung ueber Hostinger:
 
 1. Basic-Version startet ohne Drittanbieter-Werbenetzwerke.
 2. Es werden nur interne Upgrade-/Produkt-Hinweise verwendet.
-3. Prompter-Output und Output-only View bleiben vollstaendig werbefrei.
+3. Ob und wie Upgrade-Hinweise im Prompter-/Output-Bild erscheinen, wird vor der Umsetzung separat diskutiert und freigegeben.
 4. Sponsor-/Partnerflaechen werden erst nach stabiler Public-Beta gesondert freigegeben.
 
 ## 9. Offene Entscheidungen
@@ -151,3 +153,4 @@ Vor der finalen Public-Basic-Freigabe noch klaeren:
 - Brauchen wir Cookie-/Consent-Mechanik fuer spaetere Werbeformen?
 - Welche Flaechen im Editor/Settings sind dafuer final freigegeben?
 - Ob "Projekt-/Sendungsname" und Werbehinweise gleichzeitig sichtbar sein duerfen oder getrennt behandelt werden sollen.
+- Welche exakte Groesse, Position und Transparenz fuer eine spaetere Output-/Prompter-Einblendung akzeptabel ist.

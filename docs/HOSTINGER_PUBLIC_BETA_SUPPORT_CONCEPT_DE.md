@@ -174,7 +174,7 @@ Referenzdokument:
 
 Mindestregeln fuer die Public-Basic-Version:
 
-- keine Werbung im Prompter-Output
-- keine Werbung in Output-only Views
+- finale Werbeplatzierung im Prompter-/Output-Bild erst nach gesonderter Produktdiskussion
+- falls Werbung im Prompter-/Output-Bild freigegeben wird, dann nur als kleine Overlay-Ebene und nie im eigentlichen Scrolltext
 - bevorzugt nur interne Upgrade-Hinweise statt externer Werbenetzwerke
 - Professional und Expert bleiben werbefrei
