@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD022 MD032 MD024 -->
+
 # FEHLERBEHEBUNGEN
 
 Fortlaufende Fehlerbehebungs-Dokumentation. Bestehende Eintraege werden niemals geloescht, nur erweitert.
