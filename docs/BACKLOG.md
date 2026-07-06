@@ -276,6 +276,19 @@ Saarwood soll als zentrale Plattform auf `saarwood.ch` auftreten. Dafuer wird ei
 - [ ] Copy-/Branding-Richtlinien fuer Saarwood zentral festgelegt
 - [ ] Plattform-Fahrplan fuer neue Apps und Subdomains erfasst
 
+### TICKET-031 · Smartphone-Design und Layout-Strategie zuerst neu definieren
+
+**Prioritaet:** P0
+**Beschreibung:**
+Smartphone-Layouts sollen bewusst anders geloest werden als Tablet- und Desktop-Layouts. Ziel ist eine schlankere, einhandfreundliche Bedienung mit klarer Priorisierung der wichtigsten Controls und weniger visueller Dichte.
+
+**Akzeptanzkriterien:**
+- [ ] Smartphone-spezifisches Layoutkonzept dokumentiert
+- [ ] Priorisierte Bedienelemente fuer kleine Screens festgelegt
+- [ ] Tablet-Regeln werden nicht blind auf Smartphone uebertragen
+- [ ] Eine klare Design-Richtung fuer mobile Einhand-Bedienung definiert
+- [ ] Umsetzungsschritte fuer den naechsten UI-Release beschrieben
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)

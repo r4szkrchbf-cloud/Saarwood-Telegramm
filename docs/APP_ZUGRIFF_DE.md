@@ -126,13 +126,21 @@ Phase-C Admin-API (nur mit `ADMIN_API_KEY`):
 - `POST /api/admin/license/create` (mintet signierte Lizenz serverseitig)
 
 Hinweis Adminpanel:
-- Aktuell gibt es kein separates Web-Adminpanel mit eigener URL.
-- Der Admin-Zugriff erfolgt ueber die geschuetzten Admin-API-Endpunkte unter `/api/admin/license/*` mit `x-admin-api-key`.
+- Zielbild fuer das Saarwood-Adminpanel sind zwei freigegebene Zugriffsvarianten: `/admin` und `admin.saarwood.ch`.
+- Der aktuelle Admin-Zugriff erfolgt bereits ueber die geschuetzten Admin-API-Endpunkte unter `/api/admin/license/*` mit `x-admin-api-key`.
 - Praxiszugriff fuer Produktion ist in `docs/ADMIN_LICENSE_CHEATSHEET_DE.md` dokumentiert.
+
+Marke:
+- Die Marke wird intern und in der Plattformkommunikation als `SAARwooD` gefuehrt.
+- Schreibweise: `SAAR` rot, `woo` weiss, `D` rot.
 
 Support-API:
 - `GET /api/support/info`
 - `POST /api/support/tickets`
+
+Domain-Rollen:
+- `teleprompter.saarwood.ch` bleibt die operative Teleprompter-App.
+- `saarwood.ch` und `www.saarwood.ch` sind die Marken-/SEO-Hauptseite mit Landingpage-Konzept.
 
 Deploy-Set fuer Hostinger:
 - `deploy/hostinger/nginx.teleprompter.conf`

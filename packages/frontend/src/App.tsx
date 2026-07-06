@@ -42,6 +42,114 @@ interface OfflineTokenClaims {
   grace_offline_until?: number;
 }
 
+const BRAND_HOSTS = new Set(['saarwood.ch', 'www.saarwood.ch']);
+
+function BrandLandingPage() {
+  useEffect(() => {
+    document.title = 'SAARwooD - Teleprompter, Support und Plattform';
+    const description = 'SAARwooD: Teleprompter, Support und Plattform fuer Studio, Redaktion, Live-Events und kuenftige SaaS-Apps.';
+
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.append(meta);
+    }
+    meta.setAttribute('content', description);
+  }, []);
+
+  return (
+    <main className="brand-site" aria-label="SAARwooD Hauptseite">
+      <section className="brand-hero">
+        <div className="brand-hero-copy">
+          <p className="brand-kicker">saarwood.ch · Plattform · SEO · Admin</p>
+          <h1>
+            <span className="brand-wordmark">
+              <span className="brand-red">SAAR</span>
+              <span className="brand-white">woo</span>
+              <span className="brand-red">D</span>
+            </span>
+            <span className="brand-hero-subtitle">Teleprompter und Plattform fuer moderne Live-Workflows</span>
+          </h1>
+          <p className="brand-hero-text">
+            Die offizielle Marken- und Produktseite fuer SAARwooD. Teleprompter, Support, künftige Apps und
+            zentraler Adminzugang werden unter einer gemeinsamen Plattform zusammengefuehrt.
+          </p>
+          <div className="brand-cta-row">
+            <a className="brand-cta brand-cta--primary" href="https://teleprompter.saarwood.ch/">
+              Teleprompter oeffnen
+            </a>
+            <a className="brand-cta" href="/admin">
+              Adminpanel
+            </a>
+            <a className="brand-cta" href="https://admin.saarwood.ch">
+              Adminpanel Subdomain
+            </a>
+          </div>
+        </div>
+
+        <div className="brand-hero-panel" aria-label="Plattform-Highlights">
+          <div className="brand-stat">
+            <span className="brand-stat-label">Produkt</span>
+            <strong>Teleprompter PWA</strong>
+          </div>
+          <div className="brand-stat">
+            <span className="brand-stat-label">Zugang</span>
+            <strong>/admin oder admin.saarwood.ch</strong>
+          </div>
+          <div className="brand-stat">
+            <span className="brand-stat-label">SEO</span>
+            <strong>Robots, Sitemap, Canonical, Search Console</strong>
+          </div>
+          <div className="brand-stat">
+            <span className="brand-stat-label">Marke</span>
+            <strong>SAAR rot · woo weiss · D rot</strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="brand-grid" aria-label="Plattform-Bereiche">
+        <article className="brand-card">
+          <h2>Teleprompter</h2>
+          <p>Browserbasierte Ausgabe fuer Redaktion, Studio und Live-Events. Tablet und Smartphone optimiert.</p>
+        </article>
+        <article className="brand-card">
+          <h2>Admin</h2>
+          <p>Zentrale Freigaben, Lizenzen und Support-Prozesse fuer alle Saarwood-Apps.</p>
+        </article>
+        <article className="brand-card">
+          <h2>SEO / Discovery</h2>
+          <p>Indexierbare Landingpage, strukturierte Daten und Suchmaschinen-Checkliste fuer den Betrieb.</p>
+        </article>
+      </section>
+
+      <section className="brand-details" aria-label="Legal und Kontakt">
+        <article className="brand-legal-box">
+          <h2>Impressum</h2>
+          <p>
+            Hier werden die verbindlichen Betreiberangaben fuer SAARwooD gepflegt. Vor dem finalen Go-Live muessen
+            Name, Adresse und Kontakt formal eingetragen sein.
+          </p>
+        </article>
+        <article className="brand-legal-box">
+          <h2>Datenschutz</h2>
+          <p>
+            Die Plattform erfasst nur die fuer Betrieb und Support noetigen Daten. Details zum Datenfluss gehoeren auf
+            die separate Datenschutzseite bzw. in das Betreiberhandbuch.
+          </p>
+        </article>
+        <article className="brand-legal-box">
+          <h2>Kontakt</h2>
+          <p>
+            Support, Lizenzfreigaben und kuenftige Admin-Workflows werden zentral ueber die Saarwood-Plattform
+            dokumentiert und erreichbar gehalten.
+          </p>
+        </article>
+      </section>
+    </main>
+  );
+}
+
 const GERMAN_TEST_SEGMENTS: ScriptSegment[] = [
   {
     id: 'seg-1',
@@ -200,7 +308,7 @@ async function verifyTokenOffline(
   }
 }
 
-export function App() {
+function TeleprompterApp() {
   const initialContext = useMemo(() => {
     if (typeof window === 'undefined') {
       return { outputOnly: false, initialView: 'split' as ViewMode, room: 'global' };
@@ -1045,4 +1153,15 @@ export function App() {
       )}
     </div>
   );
+}
+
+export function App() {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname.toLowerCase();
+    if (BRAND_HOSTS.has(host)) {
+      return <BrandLandingPage />;
+    }
+  }
+
+  return <TeleprompterApp />;
 }

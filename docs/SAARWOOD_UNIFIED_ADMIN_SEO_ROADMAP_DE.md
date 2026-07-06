@@ -2,11 +2,18 @@
 
 ## Zielbild
 
-Saarwood soll als zentrale Marke auf `saarwood.ch` einheitlich auftreten. Alle heutigen und kuenftigen Apps, Subdomains und Operator-Flows sollen unter einem gemeinsamen Marken- und Admin-Konzept sichtbar sein.
+SAARwooD soll als zentrale Marke auf `saarwood.ch` einheitlich auftreten. Alle heutigen und kuenftigen Apps, Subdomains und Operator-Flows sollen unter einem gemeinsamen Marken- und Admin-Konzept sichtbar sein.
+
+Markenstil:
+
+- `SAAR` gross und rot
+- `woo` klein und weiss
+- `D` gross und rot
 
 ## Was bereits umgesetzt ist
 
 - Die Teleprompter-App ist crawlbar und indexierbar vorbereitet.
+- Die SAARwooD-Hauptseite kann als eigenes Brand-Landingpage-Layout unter `saarwood.ch` oder `www.saarwood.ch` ausgespielt werden.
 - `robots.txt` und `sitemap.xml` sind vorhanden.
 - Basis-SEO-Metadaten sind gesetzt.
 - Admin-Lizenzfunktionen sind bereits ueber geschuetzte API-Endpunkte verfuegbar.
@@ -15,9 +22,10 @@ Saarwood soll als zentrale Marke auf `saarwood.ch` einheitlich auftreten. Alle h
 ## Was der Nutzer erreichen will
 
 - Google soll die App finden und indexieren.
-- Saarwood soll auf allen Subdomains und kuenftigen Apps eine einheitliche Markenstruktur haben.
+- SAARwooD soll auf allen Subdomains und kuenftigen Apps eine einheitliche Markenstruktur haben.
 - Es soll ein zentrales Adminpanel geben, statt nur API-Aufrufe.
 - Impressum, Datenschutz und Copy-Hinweise sollen klar verankert sein.
+- Smartphone-Layouts sollen zuerst separat gedacht werden, statt Tablet- und Desktop-Regeln blind zu uebertragen.
 
 ## Empfohlene Zielarchitektur
 
@@ -34,10 +42,10 @@ Saarwood soll als zentrale Marke auf `saarwood.ch` einheitlich auftreten. Alle h
 
 ### 2. Zentrales Adminpanel
 
-Empfohlene Zieloptionen:
+Empfohlene Zieloptionen. Beide Varianten sind freigegeben und sollen langfristig konsistent bleiben:
 
 - `https://saarwood.ch/admin`
-- oder alternativ `https://admin.saarwood.ch`
+- `https://admin.saarwood.ch`
 
 Empfehlung fuer die technische Umsetzung:
 
@@ -49,7 +57,7 @@ Empfehlung fuer die technische Umsetzung:
 
 ### 3. Einheitliches Brand-/Copy-System
 
-- einheitliche Schreibweise: `Saarwood`
+- einheitliche Schreibweise: `SAARwooD`
 - einheitliche Produktnamen fuer alle Apps
 - Copy-Hinweise und Branding-Texte zentral pflegen
 - Links zu Impressum/DSGVO in jeder App-Footer-Leiste
@@ -63,6 +71,12 @@ Empfehlung fuer die technische Umsetzung:
 - Verifikation der Sitemap-Einreichung
 
 ## Fahrplan
+
+### Phase 0: Smartphone-Design zuerst
+
+1. Fuer Smartphones eigene Layout-Loesungen definieren, statt Tablet-Regeln zu 1:1 uebernehmen.
+2. Headerdichte, Button-Groessen und Informationsprioritaet fuer Einhand-Bedienung neu auslegen.
+3. Erst danach Tablet-Feinschliff und Desktop-Polish iterativ weiterziehen.
 
 ### Phase 1: Sofort umsetzen
 
