@@ -1,0 +1,11 @@
+Task Name,Description,Status,Priority,Due Date,Owner Role,System,Environment,Severity,Go Live Gate,Domain Scope,Runbook Ref
+Finalize subdomain routing,Set final DNS routing for teleprompter.saarwood.ch and verify resolution,Ready,High,2026-07-08,Infra Lead,DNS,Production,P0,true,teleprompter.saarwood.ch,docs/DOMAINSTRUKTUR_ENTSCHEIDUNG_WP_HOSTINGER_DE.md
+Configure Hostinger TLS,Issue and validate TLS certificate for teleprompter.saarwood.ch,Ready,High,2026-07-08,Infra Lead,Hostinger,Production,P0,true,teleprompter.saarwood.ch,docs/HOSTINGER_DAY0_RUNLIST_DE.md
+Set production CORS,Set backend CORS_ORIGIN to final production domain and verify API/WS access,Ready,High,2026-07-08,Backend Lead,Teleprompter,Production,P0,true,teleprompter.saarwood.ch,docs/HOSTINGER_DAY0_RUNLIST_DE.md
+Run day0 smoke tests,Execute health support and admin smoke tests and store evidence,Backlog,High,2026-07-08,QA Lead,Teleprompter,Production,P0,true,teleprompter.saarwood.ch,docs/HOSTINGER_DAY0_RUNLIST_DE.md
+Verify output-only mode,Confirm output view has no support/settings UI and behaves correctly,Backlog,Normal,2026-07-08,Frontend Lead,Teleprompter,Production,P1,true,teleprompter.saarwood.ch,docs/HOSTINGER_GOLIVE_ONEPAGER_2P_DE.md
+Validate ticket flow,Create support ticket and verify generated SWD ticket id and persistence,Backlog,Normal,2026-07-08,Support Lead,Teleprompter,Production,P1,true,teleprompter.saarwood.ch,docs/HOSTINGER_GOLIVE_ONEPAGER_2P_DE.md
+WordPress CTA to app,Add CTA links from saarwood.de to teleprompter.saarwood.ch,Ready,Normal,2026-07-09,Frontend Lead,WordPress,Production,P1,false,teleprompter.saarwood.ch,docs/MASTERREIHENFOLGE_WP_HOSTINGER_INTEGRATION_DE.md
+App links back to newsroom,Add handbook/status backlinks from app to www.saarwood.de,Backlog,Low,2026-07-09,Frontend Lead,Teleprompter,Production,P2,false,saarwood.de,docs/MASTERREIHENFOLGE_WP_HOSTINGER_INTEGRATION_DE.md
+Define rollback trigger,Document rollback trigger and command path for launch window,Ready,High,2026-07-08,Release Lead,Hostinger,Production,P0,true,teleprompter.saarwood.ch,docs/HOSTINGER_GOLIVE_ONEPAGER_2P_DE.md
+24h post-launch monitoring,Run health and error-log monitoring in first 24h and summarize incidents,Backlog,Normal,2026-07-10,Release Lead,Teleprompter,Production,P1,false,teleprompter.saarwood.ch,docs/HOSTINGER_DAY0_RUNLIST_DE.md

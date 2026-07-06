@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { SignJWT, importPKCS8 } from 'jose';
 
 type Tier = 'basic' | 'professional' | 'expert';
 
@@ -104,6 +103,7 @@ function printHelp(): void {
 }
 
 async function createLicense(args: ArgMap): Promise<void> {
+  const { SignJWT, importPKCS8 } = await import('jose');
   const privateKeyFile = getRequiredArg(args, 'private-key-file');
   const privateKeyPem = readTextFile(privateKeyFile);
   const privateKey = await importPKCS8(privateKeyPem, 'EdDSA');

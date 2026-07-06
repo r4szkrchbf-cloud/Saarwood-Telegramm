@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { jwtVerify, importSPKI, importPKCS8, SignJWT } from 'jose';
 
 export type LicenseMode = 'disabled' | 'monitor' | 'enforce';
 export type LicenseStatus = 'active' | 'expired' | 'revoked' | 'invalid' | 'missing';
@@ -98,6 +97,7 @@ export class LicenseService {
     }
 
     try {
+      const { importSPKI, jwtVerify } = await import('jose');
       const publicKey = await importSPKI(this.publicKeyPem, 'EdDSA');
       const verified = await jwtVerify(token, publicKey, {
         algorithms: ['EdDSA'],
@@ -203,6 +203,7 @@ export class LicenseService {
       throw new Error('license-private-key-missing');
     }
 
+    const { importPKCS8, SignJWT } = await import('jose');
     const privateKey = await importPKCS8(this.privateKeyPem, 'EdDSA');
     const now = Math.floor(Date.now() / 1000);
     const expiresAt = now + Math.max(1, Math.floor(input.days)) * 24 * 60 * 60;
