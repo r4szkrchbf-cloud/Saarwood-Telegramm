@@ -81,6 +81,8 @@ All MVP features are fully unlocked for Beta testing.
 
 ### Added
 
+- Live-Setup Statusreport fuer Public-MVP-Betrieb auf Hostinger VPS: `docs/STATUSBERICHT_LIVE_SETUP_2026-07-06.md`.
+- Operationales Support-/Ticket-Runbook mit ClickUp- und Rollenmodell (Developer/Admin/Support): `docs/SUPPORT_TICKET_OPERATIONS_CLICKUP_DE.md`.
 - Voice diagnostics badge in prompter output with German runtime states (`AUS`, `Gemutet (Pause)`, `Startet`, `Hoert zu`, `Wartet`, `Keine Sprache`, `Fehler`).
 - Voice settings enhancements in `Settings`: microphone source selection, sensitivity slider + numeric value (`0-100%`), German status legend.
 - Voice calibration assistant in `Settings` with spoken test phrase, auto-analysis and automatic sensitivity recommendation.

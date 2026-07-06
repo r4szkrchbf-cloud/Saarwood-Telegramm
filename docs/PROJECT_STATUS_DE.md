@@ -14,6 +14,16 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 
 ## 1.1 Delta-Update (neu)
 
+- Live Public-MVP Basis erfolgreich umgesetzt:
+  - VPS auf Linux-Basis neu aufgebaut und als Teleprompter-Ziel konfiguriert.
+  - DNS fuer `teleprompter.saarwood.ch` auf produktive VPS-IP gesetzt.
+  - Nginx + TLS (Let's Encrypt) aktiv, Domain oeffentlich erreichbar.
+  - Systemd-Service fuer Backend aktiv, Health-Checks lokal und oeffentlich gruen.
+  - Browser-Smoke-Test positiv (UI, API, WebSocket-Verbindung stabil).
+- Vollstaendige Ablaufdokumentation abgelegt in:
+  - `docs/STATUSBERICHT_LIVE_SETUP_2026-07-06.md`
+  - `docs/SUPPORT_TICKET_OPERATIONS_CLICKUP_DE.md`
+
 - Grosser Statuscheck (Code + Doku + Hostinger) abgeschlossen:
   - Voll-Gates (lint/test/build) fuer Frontend und Backend erneut gruen.
   - Code-Doku-Drift in `APP_ZUGRIFF_DE.md` behoben (Repo-URL, Ports, WS/Health-Beispiele, Testzaehler).
