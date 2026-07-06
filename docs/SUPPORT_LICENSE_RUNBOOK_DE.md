@@ -105,41 +105,6 @@ npm run license:admin --workspace @saarwood/backend -- create \
 4. Bei Sperrung: Grund dokumentieren (Missbrauch, Ablauf, Ersatzlizenz).
 5. Nach Sperrung einmal `list-revocations` pruefen.
 
-### 8.1 Interne Schnell-Checkliste: Professional-Beta-Lizenz (Web/Electron)
-
-Fuer internen Testbetrieb wurde ein Professional-Beta-Token erzeugt.
-
-- `lic_id`: `lic-1783310104043-h4bt48`
-- `tier`: `professional`
-- `generation`: `beta-v1`
-- `expires_at`: `2026-10-04T03:55:04.000Z`
-- `grace_offline_until`: `2026-10-18T03:55:04.000Z`
-
-Token-Datei lokal:
-
-- `secrets/license-professional-beta.token`
-
-Aktivierung in Web/Electron (intern):
-
-1. Token aus Datei lesen und in der App unter Lizenz-Aktivierung eintragen.
-2. Backend mit passendem Public Key starten:
-
-```bash
-export LICENSE_MODE=enforce
-export LICENSE_PUBLIC_KEY_PEM="$(cat ./secrets/license-public.pem)"
-```
-
-3. Lizenzstatus gegen API pruefen:
-
-```bash
-curl -sS http://localhost:4000/api/license/status \
-  -H "x-license-token: $(cat ./secrets/license-professional-beta.token)"
-```
-
-Hinweis:
-
-- Dieser Token ist fuer internen Beta-Test gedacht und soll nicht oeffentlich verteilt werden.
-
 ## 9. Phase C - Remote Admin API (ohne Server-SSH)
 
 Voraussetzung: Backend laeuft mit gesetztem `ADMIN_API_KEY`.
@@ -214,3 +179,46 @@ Erwartetes Verhalten:
 1. Ticket wird erzeugt und mit ID gespeichert (z. B. `SWD-2026-000123`).
 2. App bestaetigt: "Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ...".
 3. Absender erhaelt automatisch eine E-Mail mit Ticket-ID und Ticket-Kopie (Name, Betreff, Nachricht, Kontext, Zeitstempel).
+
+## 11. Interne Test-Checkliste Professional-Lizenz (Web/Electron)
+
+Ziel: Einen Professional-Beta-Token intern schnell pruefen, ohne den Ablauf jedes Mal neu zu suchen.
+
+### 11.1 Professional-Token bereitstellen
+
+1. Token lokal in Datei ablegen, z. B. `./secrets/license-professional-beta.token`.
+2. Backend mit passendem Public Key starten:
+
+```bash
+export LICENSE_MODE=enforce
+export LICENSE_PUBLIC_KEY_PEM="$(cat ./secrets/license-public.pem)"
+export LICENSE_REVOCATION_FILE="$(pwd)/packages/backend/config/license-revocations.json"
+```
+
+### 11.2 Web-App aktivieren
+
+1. App oeffnen.
+2. Lizenz im Gate oder im Aktivierungsdialog einfuegen.
+3. Erwartung: Tier wird auf `professional` gesetzt, Features sind ohne Expert-only-Funktionen aktiv.
+
+API-Check (optional):
+
+```bash
+curl -sS "http://localhost:4000/api/license/status" \
+  -H "x-license-token: $(cat ./secrets/license-professional-beta.token)"
+```
+
+### 11.3 Electron-App aktivieren
+
+1. Electron-App starten.
+2. Professional-Token in die Lizenzaktivierung einfuegen.
+3. Erwartung: dieselbe Tier-Freigabe wie im Web, keine Expert-only Features.
+
+### 11.4 Schnellvalidierung
+
+Nach Aktivierung pruefen:
+
+1. Lizenzstatus zeigt `active`.
+2. `tier` ist `professional`.
+3. Professional-Funktionen vorhanden.
+4. Expert-Funktionen (z. B. Voice-Tracking) bleiben deaktiviert.
