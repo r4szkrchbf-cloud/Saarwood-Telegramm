@@ -142,6 +142,7 @@ interface PrompterStore {
   profiles: PresenterProfile[];
   activeProfileId: string | null;
   saveProfile: (profile: PresenterProfile) => void;
+  renameProfile: (id: string, name: string) => void;
   deleteProfile: (id: string) => void;
   applyProfile: (id: string) => void;
 
@@ -263,6 +264,12 @@ export const usePrompterStore = create<PrompterStore>()(
             ...s.profiles.filter((p) => p.id !== profile.id),
             profile,
           ],
+        })),
+      renameProfile: (id, name) =>
+        set((s) => ({
+          profiles: s.profiles.map((profile) =>
+            profile.id === id ? { ...profile, name: name.trim() || profile.name } : profile,
+          ),
         })),
       deleteProfile: (id) =>
         set((s) => ({

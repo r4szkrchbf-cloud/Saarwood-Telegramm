@@ -23,6 +23,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const speechSensitivity = usePrompterStore((s) => s.speechSensitivity);
   const setSpeechSensitivity = usePrompterStore((s) => s.setSpeechSensitivity);
   const saveProfile = usePrompterStore((s) => s.saveProfile);
+  const renameProfile = usePrompterStore((s) => s.renameProfile);
   const deleteProfile = usePrompterStore((s) => s.deleteProfile);
   const applyProfile = usePrompterStore((s) => s.applyProfile);
   const setTier = usePrompterStore((s) => s.setTier);
@@ -60,6 +61,8 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [ticketMessage, setTicketMessage] = useState('');
   const [profileName, setProfileName] = useState('');
   const [templateSearch, setTemplateSearch] = useState('');
+  const [templateCreateName, setTemplateCreateName] = useState('');
+  const [templateNameDrafts, setTemplateNameDrafts] = useState<Record<string, string>>({});
   const [supportAccessKey, setSupportAccessKey] = useState('');
   const [supportLogs, setSupportLogs] = useState<Array<{ createdAt: string; level: string; source: string; message: string; details?: string }>>([]);
   const [supportLogsStatus, setSupportLogsStatus] = useState('');
@@ -213,6 +216,32 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     postClientLog({ level: 'info', source: 'template', message: `Template saved: ${name}` });
     setProfileName('');
   }, [display, profileName, saveProfile, script, postClientLog]);
+
+  const handleCreateTemplate = useCallback(() => {
+    const name = templateCreateName.trim();
+    if (!name) return;
+
+    const profile: PresenterProfile = {
+      id: `profile-${Date.now()}`,
+      name,
+      displaySettings: { ...display },
+      scriptTemplate: {
+        ...script,
+        segments: script.segments.map((seg) => ({ ...seg })),
+      },
+    };
+
+    saveProfile(profile);
+    setTemplateCreateName('');
+    postClientLog({ level: 'info', source: 'template', message: `Template created: ${name}` });
+  }, [display, script, saveProfile, templateCreateName, postClientLog]);
+
+  const handleRenameTemplate = useCallback((id: string) => {
+    const nextName = templateNameDrafts[id]?.trim();
+    if (!nextName) return;
+    renameProfile(id, nextName);
+    postClientLog({ level: 'info', source: 'template', message: `Template renamed: ${nextName}` });
+  }, [renameProfile, templateNameDrafts, postClientLog]);
 
   const handleLoadGermanTestScript = useCallback(() => {
     const now = Date.now();
@@ -822,6 +851,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         <fieldset className="settings-group">
           <legend>Telepromptervorlagen</legend>
           <div className="settings-row">
+            <label htmlFor="template-create-name">Neu anlegen</label>
+            <input
+              id="template-create-name"
+              type="text"
+              className="profile-name-input"
+              placeholder="Neuer Vorlagenname"
+              value={templateCreateName}
+              onChange={(e) => setTemplateCreateName(e.target.value)}
+            />
+            <button type="button" className="btn-small btn-small--primary" onClick={handleCreateTemplate} disabled={!templateCreateName.trim()}>
+              Vorlage anlegen
+            </button>
+          </div>
+          <div className="settings-row">
             <label htmlFor="template-search">Suchen</label>
             <input id="template-search" type="search" className="profile-name-input" placeholder="Telepromptervorlage durchsuchen" value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} />
           </div>
@@ -838,12 +881,21 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
               <tbody>
                 {filteredProfiles.map((p) => (
                   <tr key={p.id} className={activeProfileId === p.id ? 'active' : ''}>
-                    <td>{p.name}</td>
+                    <td>
+                      <input
+                        type="text"
+                        className="template-name-input"
+                        value={templateNameDrafts[p.id] ?? p.name}
+                        onChange={(e) => setTemplateNameDrafts((current) => ({ ...current, [p.id]: e.target.value }))}
+                        aria-label={`Vorlagenname von ${p.name}`}
+                      />
+                    </td>
                     <td>{activeProfileId === p.id ? 'Aktiv' : '-'}</td>
                     <td>{p.scriptTemplate?.segments.length ?? 0}</td>
                     <td>
                       <div className="template-actions">
                         <button type="button" className="btn-small" onClick={() => applyProfile(p.id)}>Anwenden</button>
+                        <button type="button" className="btn-small" onClick={() => handleRenameTemplate(p.id)} disabled={!templateNameDrafts[p.id]?.trim() || templateNameDrafts[p.id] === p.name}>Name speichern</button>
                         <button type="button" className="btn-small btn-small--danger" onClick={() => deleteProfile(p.id)}>Loeschen</button>
                       </div>
                     </td>

@@ -145,5 +145,11 @@ describe('prompterStore', () => {
       usePrompterStore.getState().deleteProfile('p1');
       expect(usePrompterStore.getState().profiles).toHaveLength(0);
     });
+
+    it('renames a profile', () => {
+      usePrompterStore.getState().saveProfile(mockProfile);
+      usePrompterStore.getState().renameProfile('p1', 'New Name');
+      expect(usePrompterStore.getState().profiles[0].name).toBe('New Name');
+    });
   });
 });

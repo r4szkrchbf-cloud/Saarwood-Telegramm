@@ -469,6 +469,17 @@
   flex-wrap: wrap;
 }
 
+.template-name-input {
+  width: 100%;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 0.28rem 0.45rem;
+  font-size: 0.82rem;
+}
+
 /* ─── Tier Selector ───────────────────────────────────────────────────────── */
 
 .tier-radio-group {
