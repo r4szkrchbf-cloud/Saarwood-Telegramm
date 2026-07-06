@@ -432,7 +432,6 @@ export const usePrompterStore = create<PrompterStore>()(
         speechEnabled: state.speechEnabled,
         speechInputDeviceId: state.speechInputDeviceId,
         speechSensitivity: state.speechSensitivity,
-        licenseToken: state.licenseToken,
         projectTitlePresets: state.projectTitlePresets,
         profiles: state.profiles,
         activeProfileId: state.activeProfileId,

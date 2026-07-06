@@ -359,7 +359,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const handleApplyProjectTitlePreset = useCallback((id: string) => {
     if (!canUseExpertTemplateTools) return;
     applyProjectTitlePreset(id);
-    setProjectTitleIoInfo('Projekt-/Sendungsname angewendet.');
+    setProjectTitleIoInfo('Projekt-/Sendungsname als aktiver Script-Titel angewendet.');
   }, [applyProjectTitlePreset, canUseExpertTemplateTools]);
 
   const handleImportProjectTitleClick = useCallback(() => {
@@ -375,10 +375,12 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
     const header = values[0].map((value) => value.toLowerCase());
     const titleIndex = header.findIndex((value) => value === 'title' || value === 'name' || value === 'projekt' || value === 'sendung');
-    const dataRows = titleIndex >= 0 ? values.slice(1) : values;
+    const headerConfidence = header.filter((value) => ['title', 'name', 'projekt', 'sendung', 'id', 'index'].includes(value)).length;
+    const hasHeader = titleIndex >= 0 && headerConfidence >= 2;
+    const dataRows = hasHeader ? values.slice(1) : values;
     return dataRows
       .map((cols) => {
-        if (titleIndex >= 0) return cols[titleIndex] ?? '';
+        if (hasHeader && titleIndex >= 0) return cols[titleIndex] ?? '';
         return cols[0] ?? '';
       })
       .map((name) => name.trim())
@@ -695,15 +697,19 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       } else if (lowerName.endsWith('.csv')) {
         if (tier === 'basic') throw new Error('basic-tier-csv-import-blocked');
         const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        if (rows.length < 2) throw new Error('csv-empty');
         const headerCols = rows[0]?.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
           col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
         ) ?? [];
         const hasTitleColumn = headerCols[0]?.toLowerCase() === 'title';
+        const minimumColumns = hasTitleColumn ? 7 : 6;
+        if (headerCols.length < minimumColumns) throw new Error('csv-insufficient-columns');
         const dataRows = rows.slice(1);
         segments = dataRows.map((line, idx) => {
           const cols = line.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
             col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
           ) ?? [];
+          if (cols.length < minimumColumns) throw new Error('csv-row-insufficient-columns');
           const titleCol = hasTitleColumn ? cols[0] || '' : '';
           if (titleCol) title = titleCol;
           const base = hasTitleColumn ? 1 : 0;
@@ -1352,7 +1358,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
                             <td>{script.title === preset.name ? 'Aktiv' : '-'}</td>
                             <td>
                               <div className="template-actions">
-                                <button type="button" className="btn-small" onClick={() => handleApplyProjectTitlePreset(preset.id)}>Anwenden</button>
+                                <button type="button" className="btn-small" onClick={() => handleApplyProjectTitlePreset(preset.id)}>Als Titel setzen</button>
                                 <button type="button" className="btn-small" onClick={() => handleRenameProjectTitlePreset(preset.id)} disabled={!projectTitleDrafts[preset.id]?.trim() || projectTitleDrafts[preset.id] === preset.name}>Name speichern</button>
                                 <button type="button" className="btn-small btn-small--danger" onClick={() => handleDeleteProjectTitlePreset(preset.id)}>Loeschen</button>
                               </div>

@@ -48,6 +48,9 @@ interface TicketSequenceState {
   seq: number;
 }
 
+const MAX_CLIENT_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
+const MAX_CLIENT_LOG_BACKUPS = 5;
+
 export class SupportService {
   private readonly chatUrl: string | null;
 
@@ -149,6 +152,7 @@ export class SupportService {
       createdAt: new Date().toISOString(),
     };
     fs.mkdirSync(path.dirname(this.clientLogFilePath), { recursive: true });
+    this.rotateClientLogIfNeeded();
     fs.appendFileSync(this.clientLogFilePath, `${JSON.stringify(record)}\n`, 'utf-8');
   }
 
@@ -177,6 +181,32 @@ export class SupportService {
   private appendTicket(record: SupportTicketRecord): void {
     fs.mkdirSync(path.dirname(this.ticketFilePath), { recursive: true });
     fs.appendFileSync(this.ticketFilePath, `${JSON.stringify(record)}\n`, 'utf-8');
+  }
+
+  private rotateClientLogIfNeeded(): void {
+    try {
+      if (!fs.existsSync(this.clientLogFilePath)) return;
+      const stats = fs.statSync(this.clientLogFilePath);
+      if (stats.size < MAX_CLIENT_LOG_FILE_SIZE_BYTES) return;
+
+      const rotatedPath = `${this.clientLogFilePath}.${Date.now()}`;
+      fs.renameSync(this.clientLogFilePath, rotatedPath);
+
+      const backups = fs.readdirSync(path.dirname(this.clientLogFilePath))
+        .filter((entry) => entry.startsWith(path.basename(this.clientLogFilePath) + '.'))
+        .map((entry) => path.join(path.dirname(this.clientLogFilePath), entry))
+        .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+
+      backups.slice(MAX_CLIENT_LOG_BACKUPS).forEach((entry) => {
+        try {
+          fs.unlinkSync(entry);
+        } catch {
+          // ignore cleanup failures
+        }
+      });
+    } catch {
+      // ignore rotation failures to avoid blocking support log writes
+    }
   }
 
   private nextTicketId(): string {

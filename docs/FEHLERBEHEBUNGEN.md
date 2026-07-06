@@ -4,6 +4,43 @@ Fortlaufende Fehlerbehebungs-Dokumentation. Bestehende Eintraege werden niemals 
 
 ---
 
+## Eintrag 2026-07-06 05:40 (lokale Zeit)
+Name: GitHub Copilot mit manuelangel
+Kontext: Abschliessender Tiefenscan nach Tier-, Import/Export-, Projektname- und Prompter-Anpassungen.
+
+### Ausgangsbild
+- Frontend-Lint, Build und Tests waren gruen.
+- Trotzdem wurden im Abschlussscan mehrere mittlere und niedrige Restpunkte identifiziert.
+
+### Gefundene Punkte
+1. CSV-Import fuer Scriptdaten validiert Spaltenstruktur nicht streng genug.
+2. Projekt-/Sendungsnamen-Presets wirken semantisch wie Bibliothekseintraege, aendern aber beim Anwenden direkt den aktiven Script-Titel.
+3. `licenseToken` wird im Frontend persistent gespeichert und ist fuer Public-Betrieb zu sensibel fuer `localStorage`.
+4. CSV-Import fuer Projekt-/Sendungsnamen erkennt Header zu tolerant.
+5. Support-Client-Logs wachsen serverseitig unbegrenzt in einer Datei.
+6. Support-Client-Logs akzeptieren beliebige `source`-Strings.
+7. Root-Dokumente (`README.md`, `docs/README.md`, `CHANGELOG.md`) haben noch Markdownlint-Verstoesse.
+
+### Arbeitsplan fuer die Behebung
+- Zuerst: Doku dieses Tiefenscans festhalten.
+- Dann: CSV-Import und Preset-/Lizenzpfade im Frontend korrigieren.
+- Danach: Support-Logging im Backend haerten.
+- Zum Schluss: Root-Dokumente formal fuer Markdownlint bereinigen.
+
+### Fortschritt
+- Eintrag angelegt.
+- Punkte 1, 3, 4, 5 und 6 technisch nachgezogen:
+  - CSV-Import validiert Struktur jetzt strenger.
+  - `licenseToken` wird nicht mehr per Persist-Middleware im Frontend gespeichert.
+  - CSV-Header-Erkennung fuer Projekt-/Sendungsnamen ist robuster.
+  - Support-Client-Logs rotieren jetzt dateibasiert bei Groessenlimit.
+  - Support-Client-Log-`source` ist jetzt formal eingeschraenkt.
+- Punkt 2 fachlich geklaert und im UI sprachlich deutlicher gemacht:
+  - Projekt-/Sendungsnamen werden bewusst als aktiver Script-Titel angewendet.
+- Root-Dokumente (`README.md`, `docs/README.md`, `CHANGELOG.md`) formal fuer Markdownlint nachgezogen.
+
+---
+
 ## Eintrag 2026-07-05 02:15 (lokale Zeit)
 Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
 Kontext: Migration/Recovery von `saarnews/saarwood_telepromter` nach `r4szkrchbf-cloud/Saarwood-Telegramm`, Stabilisierung des Build-Status und Nachvollziehbarkeit der Fehlerbehebung.

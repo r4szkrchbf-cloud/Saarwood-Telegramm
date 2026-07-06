@@ -4,7 +4,7 @@ Professional broadcast-grade teleprompter web application — PWA, three tiers (
 
 ## Architecture
 
-```
+```text
 saarwood_telepromter/
 ├── packages/
 │   ├── frontend/        # Progressive Web App (Vite + React 18 + TypeScript)
@@ -15,7 +15,7 @@ saarwood_telepromter/
 ### Tech Stack
 
 | Layer | Technology | Why |
-|-------|-----------|-----|
+| ----- | ---------- | --- |
 | Frontend build | Vite 6 + `@vitejs/plugin-react` | Sub-second HMR, native ESM |
 | PWA | `vite-plugin-pwa` (Workbox) | Offline-first, installable on iOS/Android/Desktop |
 | UI framework | React 18 + TypeScript 5.7 | Concurrent rendering, type-safety |
@@ -43,6 +43,7 @@ The teleprompter output uses a **GPU-composited CSS transform** strategy:
 ## Feature Tiers
 
 ### Basic (Content Creator / Education)
+
 - ✅ Cross-platform PWA (Windows, macOS, iOS, Android) — installable, offline-capable
 - ✅ Hardware-accelerated smooth scrolling (CSS compositor + rAF)
 - ✅ Rich text editor (bold, italic, underline, colour) — LTR Latin scripts only
@@ -54,6 +55,7 @@ The teleprompter output uses a **GPU-composited CSS transform** strategy:
 - ✅ Presenter preferences (font size, family, colours, line height) with localStorage persistence
 
 ### Professional (Regional Broadcast)
+
 - ✅ **MOS Protocol v2.8.5** (TCP/XML, Profile 0 heartbeat + Profile 2 running order) — backend `MosHandler`
 - ✅ **Hot-update while scrolling**: Tiptap editor writes to Zustand store; PrompterDisplay reads on next rAF frame — zero scroll interruption
 - ✅ **Cue marker** and cue position controls
@@ -64,6 +66,7 @@ The teleprompter output uses a **GPU-composited CSS transform** strategy:
 - ✅ **Import/Export**: JSON, CSV, TXT, PDF plus tier-aware import rules
 
 ### Expert (Enterprise Broadcast)
+
 - ✅ **Voice tracking** via Web Speech API with microphone selection, sensitivity and calibration
 - ✅ **A/B Redundancy architecture**: `RedundancyState` (primary/backup/standalone) in store; WebSocket `SYNC_STATE` messages keep peers in sync. Hitless failover logic connects in the backend control server.
 - ✅ **NDI abstraction layer**: `NdiAdapter` interface + `StubNdiAdapter` (development) + `NativeNdiAdapter` shell that loads an optional native addon. **Real NDI output requires the NDI SDK C++ native addon** — see `packages/backend/src/ndi/NdiAdapter.ts` for integration notes.
@@ -95,7 +98,7 @@ The application ships in two forms:
 ### 1 · PWA — installable on every platform without any build step
 
 | Platform | How to install |
-|----------|---------------|
+| -------- | -------------- |
 | **macOS / Windows / Linux** | Open in Chrome/Edge → address-bar **Install** icon |
 | **iOS / iPadOS** | Open in Safari → Share → **Add to Home Screen** |
 | **Android** | Open in Chrome → banner or menu → **Install App** |
@@ -141,14 +144,14 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 - Kickoff preparation document (German):
   - `docs/PROJECT_PREPARATION_DE.md`
 - External requirement lists (iCloud Notes):
-  - https://www.icloud.com/notes/045l_lo2kVm7Miml4b4DSZdow
-  - https://www.icloud.com/notes/0c3iy6aWi5WxgCSuPHr-MzIQQ
-  - https://www.icloud.com/notes/08e7syc7g3MlplEYAGB3DtmAQ
+  - <https://www.icloud.com/notes/045l_lo2kVm7Miml4b4DSZdow>
+  - <https://www.icloud.com/notes/0c3iy6aWi5WxgCSuPHr-MzIQQ>
+  - <https://www.icloud.com/notes/08e7syc7g3MlplEYAGB3DtmAQ>
 
 ### Environment variables (backend)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `PORT` | `4000` | HTTP / WebSocket port |
 | `MOS_PORT` | `10540` | MOS TCP port (upper connection per spec) |
 | `APP_TIER` | `basic` | `basic` / `professional` / `expert` |
@@ -165,6 +168,7 @@ The following decisions were made deliberately and must be traceable for future 
 **Decision:** This application exclusively supports **left-to-right (LTR) Latin scripts** (e.g. German, English, French, Spanish, Italian, …).
 
 **What is explicitly NOT supported in this app:**
+
 - Arabic (right-to-left)
 - Hebrew (right-to-left)
 - Chinese / CJK (vertical / mixed-direction)
@@ -179,8 +183,9 @@ The following decisions were made deliberately and must be traceable for future 
 > It will share the same backend infrastructure (WebSocket control bus, MOS, NDI abstraction) but use a separate frontend package.
 
 **Code impact of this decision (traceability):**
+
 | File | Change |
-|------|--------|
+| ---- | ------ |
 | `packages/frontend/src/types/index.ts` | `TextDirection` type narrowed from `'ltr' \| 'rtl' \| 'auto'` → `'ltr'` |
 | `packages/frontend/package.json` | `tiptap-text-direction` dependency removed |
 | `packages/frontend/src/components/Editor/ScriptEditor.tsx` | `TextDirection` Tiptap extension removed; LTR/RTL toolbar buttons removed; `setDirection` callback removed |
@@ -193,6 +198,7 @@ The following decisions were made deliberately and must be traceable for future 
 **Decision:** The teleprompter output is rendered using **CSS `transform: translateY()`** driven by `requestAnimationFrame`. WebGL / WebGPU is **not** used in the initial version.
 
 **Rationale:**
+
 - CSS compositor transforms run on the GPU compositor thread with zero layout/paint overhead — equivalent to, or better than, a full WebGL canvas for plain text scrolling.
 - CSS avoids per-frame texture uploads that a WebGL text renderer would require.
 - A CSS-only approach is zero-dependency, maximally compatible (all modern browsers, iOS Safari, Android WebView), and trivially auditable.
@@ -210,7 +216,7 @@ The following decisions were made deliberately and must be traceable for future 
 The following features require components that are **outside the browser sandbox** and are explicitly documented as such:
 
 | Feature | Limitation | Production Path |
-|---------|-----------|-----------------|
+| ------- | ---------- | --------------- |
 | **NDI output** | NDI SDK is a proprietary C/C++ library. No WebAssembly port exists. | Node.js native addon wrapping `NDIlib_send_*` API, or OBS NDI plugin capturing the browser window |
 | **SMPTE ST 2110** | Requires dedicated NIC with PTP hardware timestamping. Browser/Node.js cannot generate ST 2110 RTP streams natively. | Dedicated hardware encoder (e.g., Matrox, AJA) or software stack (FFmpeg + Mellanox VMA) receiving frames from this app via NDI or REST |
 | **On-premise ASR** | Web Speech API delegates to the OS/cloud. True on-premise inference runs server-side. | Whisper.cpp / Vosk / DeepSpeech running in the backend; transcripts relayed to clients via the existing WebSocket bus |

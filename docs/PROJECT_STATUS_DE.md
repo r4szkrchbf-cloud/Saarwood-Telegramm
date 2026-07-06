@@ -1,6 +1,6 @@
 # Projektstand Saarwood Teleprompter
 
-_Stand: 2026-07-06 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support- und Import/Export-Stand)_
+Stand: 2026-07-06 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support- und Import/Export-Stand)
 
 ## 1. Kurzfazit
 
@@ -15,8 +15,8 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 ## 1.1 Delta-Update (neu)
 
 - Voice Tracking ist jetzt strikt an den Transport gekoppelt:
-	- `Play` aktiviert die Erkennung (wenn Voice aktiv ist)
-	- `Pause` muted die Erkennung hart, damit Sprechen keine Pause unterbricht
+  - `Play` aktiviert die Erkennung (wenn Voice aktiv ist)
+  - `Pause` muted die Erkennung hart, damit Sprechen keine Pause unterbricht
 - Deutscher Laufzeit-Status im Prompter-Output ergaenzt (`Voice: ...`) inklusive konkreter Fehlerursachen.
 - Mikrofonquelle waehlbar und persistiert.
 - Voice-Empfindlichkeit (`0-100%`) ergaenzt und als Reaktionsschwelle angebunden.
@@ -58,12 +58,14 @@ Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 ## 2. Aktueller technischer Ist-Stand
 
 ### Frontend (`packages/frontend`)
+
 - Build: PASS (`tsc && vite build`)
 - PWA-Build erfolgreich (Service Worker und Manifest erzeugt)
 - Kernfunktionen vorhanden: Editor, Prompter-Render, Controls, Mirror/Rotation, Settings, Speech-Tracking, WebSocket-Sync
 - Warnung beim Build: groesseres Bundle (>500 kB), aktuell kein MVP-Blocker
 
 ### Backend (`packages/backend`)
+
 - Build: PASS (`tsc`)
 - Tests: PASS (9/9)
 - REST, WebSocket, MOS-Handler, NDI-Adapter (Stub/Fallback) vorhanden
@@ -71,18 +73,20 @@ Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 ## 3. Qualitaetsstatus (heute verifiziert)
 
 | Gate | Status | Details |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | Frontend Build | PASS | Vite Build inkl. PWA-Dateien erfolgreich |
 | Backend Build | PASS | TypeScript Build erfolgreich |
-| Frontend Tests | PASS | 27/27 Tests bestanden (P0-Fix aktiv) |
+| Frontend Tests | PASS | 30/30 Tests bestanden |
 | Backend Tests | PASS | 9/9 Tests gruen |
 
 ## 4. MVP-Readiness fuer realen Langzeittest
 
 ### Technisch ausreichend fuer Start
+
 Die App ist fuer den echten LAN-Langzeittest geeignet, aber die Testphase ist noch nicht abgeschlossen.
 Wir befinden uns weiterhin in der Testphase; der naechste Schritt ist die oeffentliche MVP-Variante auf einem VPS.
 Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfuehrung von A bis Z ebenfalls.
+
 1. Frontend-Testharness stabilisieren (erledigt)
 2. Smoke-Test-Skript fuer LAN-Lauf dokumentieren (Start, Browser-Checks, WS-Verbindung)
 3. ASR / Voice Tracking stabilisieren und erneut pruefen
@@ -91,34 +95,41 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfue
 ## 5. Relevante Risiken
 
 ### Oeffentlicher MVP-Pfad
+
 1. Hostinger VPS als Public-Hosting-Variante festlegen
 2. Frontend/Backend-Deployment fuer oeffentlichen Zugriff vorbereiten
 3. WebSocket-URL und Betriebsdoku fuer externe Nutzer anpassen
 
 ### Noch offene Testthemen
+
 1. ASR / Voice Tracking stabilisieren
 2. `recognition has already started`-Fehler untersuchen
 3. Nach Behebung erneut einen echten Langzeittest mit Nutzern laufen lassen
 
 1. Bundle-Groesse
+
 - Risiko: langsameres Initial-Load auf schwachen Clients.
 - Status: beobachtet, aber kein Blocker fuer MVP-LAN-Test.
 
-2. NDI produktiv noch nicht verifiziert
+1. NDI produktiv noch nicht verifiziert
+
 - Risiko nur fuer Broadcast-Integrationsphase; fuer MVP-LAN nicht blockierend.
 
-3. UI-Editor Warnung (Tiptap Duplicate Extension)
+1. UI-Editor Warnung (Tiptap Duplicate Extension)
+
 - Risiko: moegliche Inkonsistenzen in Editor-Funktionen bei spaeteren Erweiterungen.
 - Status: aktuell beobachtet, fuer MVP-LAN nicht blockierend.
 
 ## 6. Naechste Schritte (Prioritaet)
 
 ### P0 (sofort)
+
 1. Kurzen LAN-Betriebsplan als Checkliste in Doku aufnehmen
 2. Pilot-Langzeittest mit echten Usern starten
 3. Incident-Logging waehrend des Testfensters durchgehend fuehren
 
 ### P1 (direkt nach erstem Feldtest)
+
 1. Beobachtete UX-/Stabilitaetsprobleme aus Feldtest in Backlog ueberfuehren
 2. Bundle-Splitting evaluieren
 

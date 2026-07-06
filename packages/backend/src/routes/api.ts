@@ -78,7 +78,7 @@ export function createRouter(
 
   const supportClientLogSchema = z.object({
     level: z.enum(['info', 'warn', 'error']).default('info'),
-    source: z.string().min(1).max(120),
+    source: z.string().min(1).max(120).regex(/^[a-z0-9._-]+$/i),
     message: z.string().min(1).max(2000),
     details: z.string().max(4000).optional(),
   });
