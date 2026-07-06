@@ -193,6 +193,7 @@ export function App() {
   const lineHeight = usePrompterStore((s) => s.display.lineHeight);
   const textAlign = usePrompterStore((s) => s.display.textAlign);
   const darkMode = usePrompterStore((s) => s.display.darkMode);
+  const showProjectTitle = usePrompterStore((s) => s.display.showProjectTitle);
   const cueMarkerEnabled = usePrompterStore((s) => s.display.cueMarkerEnabled);
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const display = useMemo<DisplaySettings>(() => ({
@@ -206,6 +207,7 @@ export function App() {
     lineHeight,
     textAlign,
     darkMode,
+    showProjectTitle,
     cueMarkerEnabled,
     cueMarkerPosition,
   }), [
@@ -219,6 +221,7 @@ export function App() {
     lineHeight,
     textAlign,
     darkMode,
+    showProjectTitle,
     cueMarkerEnabled,
     cueMarkerPosition,
   ]);
@@ -248,6 +251,7 @@ export function App() {
   const tier = usePrompterStore((s) => s.tier);
   const licenseToken = usePrompterStore((s) => s.licenseToken);
   const setLicenseToken = usePrompterStore((s) => s.setLicenseToken);
+  const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   const filteredTemplates = useMemo(() => {
     const q = templateSearch.trim().toLowerCase();
@@ -279,6 +283,11 @@ export function App() {
     if (!targetId) return;
     applyProfile(targetId);
   }, [applyProfile, selectedTemplateId, activeProfileId]);
+
+  const handleToggleProjectTitle = useCallback(() => {
+    if (tier === 'basic') return;
+    setDisplay({ showProjectTitle: !showProjectTitle });
+  }, [setDisplay, showProjectTitle, tier]);
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
   useHotkeyManager(!isOutputOnly);
@@ -774,14 +783,30 @@ export function App() {
 
             {/* Script title */}
             <div className="editor-title-bar">
+              {tier !== 'basic' && showProjectTitle && (
+                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige">
+                  <span className="project-title-banner-label">Projekt / Sendung</span>
+                  <span className="project-title-banner-value">{script.title || 'Unbenanntes Projekt'}</span>
+                </div>
+              )}
               <input
                 type="text"
                 className="script-title-input"
                 value={script.title}
                 onChange={(e) => setScriptTitle(e.target.value)}
                 aria-label="Script title"
-                placeholder="Untitled Script"
+                placeholder="Projekt- oder Sendungsname"
               />
+              {tier !== 'basic' && (
+                <button
+                  type="button"
+                  className="project-title-toggle-btn"
+                  onClick={handleToggleProjectTitle}
+                  aria-pressed={showProjectTitle}
+                >
+                  {showProjectTitle ? 'Projektname ausblenden' : 'Projektname einblenden'}
+                </button>
+              )}
             </div>
             <div className="editor-scroll">
               {script.segments.map((seg, idx) => (

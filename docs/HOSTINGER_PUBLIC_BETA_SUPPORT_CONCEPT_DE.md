@@ -163,3 +163,18 @@ Anweisung umgesetzt:
 
 - Fokus bleibt auf MVP- und Public-Beta-Funktionalitaet.
 - Rechtliche Hinweise zu Saarwood und der Softwareentwicklungsfirma werden erst am Schluss eingepflegt.
+
+## 9. Werbekonzept fuer Basic vor Hostinger-Go-Live
+
+Vor der oeffentlichen Basic-Freigabe ueber Hostinger muss das Werbe- und Upgrade-Modell verbindlich geklaert sein.
+
+Referenzdokument:
+
+- `docs/BASIC_TIER_ADS_CONCEPT_DE.md`
+
+Mindestregeln fuer die Public-Basic-Version:
+
+- keine Werbung im Prompter-Output
+- keine Werbung in Output-only Views
+- bevorzugt nur interne Upgrade-Hinweise statt externer Werbenetzwerke
+- Professional und Expert bleiben werbefrei

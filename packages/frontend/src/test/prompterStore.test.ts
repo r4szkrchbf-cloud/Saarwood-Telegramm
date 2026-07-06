@@ -123,6 +123,7 @@ describe('prompterStore', () => {
         lineHeight: 1.8,
         textAlign: 'center' as const,
         darkMode: true,
+        showProjectTitle: true,
         cueMarkerEnabled: true,
         cueMarkerPosition: 30,
       },

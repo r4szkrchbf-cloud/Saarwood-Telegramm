@@ -11,7 +11,8 @@
 ## 2. Script bearbeiten
 
 1. Titel oben im Editor setzen.
-2. Segmente bearbeiten oder neue Segmente mit Add segment hinzufuegen.
+2. Der Titel dient zugleich als Projektname oder Sendungsname und wird in Import-/Exportvorlagen mitgefuehrt.
+3. Segmente bearbeiten oder neue Segmente mit Add segment hinzufuegen.
 3. Fuer Testbetrieb kann in Settings der deutsche 4-Segment-Testtext geladen werden.
 4. Import aus TXT ist im Basic-Tier vorgesehen; JSON/CSV/TXT sind in hoehren Tiers verfuegbar.
 
@@ -50,6 +51,8 @@ Wichtig:
 - `html` ist nicht zwingend erforderlich.
 - Wenn nur `text` vorhanden ist, erzeugt die App automatisch die benoetigte HTML-Struktur.
 - Bei JSON koennen einfache Vorlagen mit `speaker` + `text` verwendet werden.
+- Bei TXT kann optional eine erste Titelzeile wie `Titel: Abendnachrichten` verwendet werden.
+- Bei CSV kann der Projekttitel ueber die Spalte `title` mitgegeben werden.
 - Bei TXT koennen Sprecherzeilen direkt als `[Name]: Text` geschrieben werden.
 
 ## 2.3 Praktische Beispiele
@@ -79,10 +82,21 @@ Einfaches JSON-Beispiel:
 Einfaches TXT-Beispiel:
 
 ```text
+Titel: Abendnachrichten
+
 [Sprecherin 1]: Guten Abend und herzlich willkommen.
 
 [Sprecher 2]: Hier ist der zweite Abschnitt.
 ```
+
+## 2.4 Projekt- oder Sendungsname
+
+Ab Professional kann der Script-Titel als Projekt- oder Sendungsname zusaetzlich eingeblendet werden.
+
+- im Editor und Split-Modus als eigene, abgesetzte Titelbox
+- im Prompter als graue, transparente Einblendung
+- per Button ein- und ausblendbar
+- in Telepromptervorlagen mitgespeichert, damit der Titel nicht jedes Mal neu eingegeben werden muss
 
 ## 3. Prompter steuern
 
@@ -141,3 +155,8 @@ Wenn kein Unterstuetzungs-Browser vorhanden ist oder das Feature bewusst klein g
 
 Fuer Pilotbetrieb alle Auffaelligkeiten mit Zeitstempel dokumentieren und in die Projektdoku uebernehmen.
 Support-Tickets und Client-Logs gehoeren in den Support-Prozess, nicht in den Prompter-Workflow.
+
+## 10. Hinweis zur kostenlosen Basic-Version
+
+Vor der oeffentlichen Hostinger-Freigabe der kostenlosen Basic-Version wird das Werbe- und Upgrade-Modell separat festgelegt.
+Dabei bleibt der Prompter-Output selbst werbefrei.

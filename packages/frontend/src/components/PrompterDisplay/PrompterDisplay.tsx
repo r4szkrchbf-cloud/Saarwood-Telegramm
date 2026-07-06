@@ -40,6 +40,8 @@ export function PrompterDisplay() {
   const rotation = usePrompterStore((s) => s.display.rotation);
   const cueMarkerEnabled = usePrompterStore((s) => s.display.cueMarkerEnabled);
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
+  const showProjectTitle = usePrompterStore((s) => s.display.showProjectTitle);
+  const scriptTitle = usePrompterStore((s) => s.script.title);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const tier = usePrompterStore((s) => s.tier);
   const speechEnabled = usePrompterStore((s) => s.speechEnabled);
@@ -52,15 +54,16 @@ export function PrompterDisplay() {
   const boundaryPauseGuardRef = useRef(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const transformLayerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [viewportHeight, setViewportHeight] = useState(0);
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
 
   const { setPosition } = useScrollEngine({
     speed,
     isPlaying,
     direction,
-    containerRef,
+    containerRef: transformLayerRef,
     contentRef,
     onPositionChange: usePrompterStore.getState().setPosition,
     onBoundaryReached: (_boundary, boundaryPosition) => {
@@ -82,18 +85,21 @@ export function PrompterDisplay() {
   }, [isPlaying]);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
 
-    const updateHeight = () => {
-      setViewportHeight(container.clientHeight);
+    const updateSize = () => {
+      setViewportSize({
+        width: viewport.clientWidth,
+        height: viewport.clientHeight,
+      });
     };
 
-    updateHeight();
+    updateSize();
     if (typeof ResizeObserver === 'undefined') return;
 
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(container);
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(viewport);
     return () => observer.disconnect();
   }, []);
 
@@ -191,6 +197,14 @@ export function PrompterDisplay() {
     return parts.length > 0 ? parts.join(' ') : 'none';
   }, [mirrorHorizontal, mirrorVertical, rotation]);
 
+  const isQuarterTurn = rotation === 90 || rotation === 270;
+
+  const portraitEdgeGap = useMemo(() => {
+    if (!isQuarterTurn) return 0;
+    const shortestSide = Math.min(viewportSize.width, viewportSize.height);
+    return Math.max(12, Math.round(shortestSide * 0.025));
+  }, [isQuarterTurn, viewportSize.height, viewportSize.width]);
+
   const viewportFrameStyle = useMemo<CSSProperties>(() => {
     return { width: '100%', height: '100%' };
   }, []);
@@ -203,20 +217,38 @@ export function PrompterDisplay() {
   };
 
   const transformLayerStyle: CSSProperties = {
-    transform: mirrorTransform,
+    inset: isQuarterTurn ? 'auto' : 0,
+    width: isQuarterTurn
+      ? `${Math.max(0, viewportSize.height - portraitEdgeGap * 2)}px`
+      : '100%',
+    height: isQuarterTurn
+      ? `${Math.max(0, viewportSize.width - portraitEdgeGap * 2)}px`
+      : '100%',
+    left: isQuarterTurn ? '50%' : 0,
+    top: isQuarterTurn ? '50%' : 0,
+    transform: isQuarterTurn
+      ? `translate(-50%, -50%) ${mirrorTransform === 'none' ? '' : mirrorTransform}`.trim()
+      : mirrorTransform,
   };
 
   const initialTopOffset = useMemo(() => {
-    if (viewportHeight <= 0) return 0;
+    if (viewportSize.height <= 0) return 0;
 
     if (cueMarkerEnabled) {
-      const cueY = viewportHeight * (cueMarkerPosition / 100);
+      const cueY = viewportSize.height * (cueMarkerPosition / 100);
       const threeLines = fontSize * lineHeight * 3;
       return Math.max(0, cueY + threeLines);
     }
 
-    return viewportHeight * 0.5;
-  }, [viewportHeight, cueMarkerEnabled, cueMarkerPosition, fontSize, lineHeight]);
+    return viewportSize.height * 0.5;
+  }, [viewportSize.height, cueMarkerEnabled, cueMarkerPosition, fontSize, lineHeight]);
+
+  const contentInlinePadding = useMemo(() => {
+    if (isQuarterTurn) {
+      return `${Math.max(18, portraitEdgeGap + 10)}px`;
+    }
+    return '8%';
+  }, [isQuarterTurn, portraitEdgeGap]);
 
   const contentStyle: CSSProperties = {
     fontSize: `${fontSize}px`,
@@ -225,6 +257,7 @@ export function PrompterDisplay() {
     lineHeight,
     textAlign,
     paddingTop: `${Math.round(initialTopOffset)}px`,
+    paddingInline: contentInlinePadding,
     willChange: 'transform',
   };
 
@@ -242,12 +275,12 @@ export function PrompterDisplay() {
       <div
         id="prompter-viewport"
         className="prompter-viewport"
-        ref={containerRef}
+        ref={viewportRef}
         style={viewportStyle}
         aria-label="Teleprompter output"
         aria-live="polite"
       >
-        <div className="prompter-transform-layer" style={transformLayerStyle}>
+        <div className="prompter-transform-layer" ref={transformLayerRef} style={transformLayerStyle}>
           <div
             className={[
               'prompter-link-indicator',
@@ -277,6 +310,13 @@ export function PrompterDisplay() {
           >
             {voiceStatusLabel}
           </div>
+
+          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
+            <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname">
+              <span className="prompter-project-title-label">Projekt / Sendung</span>
+              <strong>{scriptTitle}</strong>
+            </div>
+          )}
 
           {/* Cue marker overlay */}
           <div

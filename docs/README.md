@@ -4,6 +4,7 @@ Die Projekt-Dokumentation ist thematisch sortiert:
 
 ## Planung
 - [HOSTINGER_PUBLIC_BETA_SUPPORT_CONCEPT_DE](./HOSTINGER_PUBLIC_BETA_SUPPORT_CONCEPT_DE.md)
+- [BASIC_TIER_ADS_CONCEPT_DE](./BASIC_TIER_ADS_CONCEPT_DE.md)
 
 ## Status
 - [CODE_DOC_SYNC_DE](./CODE_DOC_SYNC_DE.md)

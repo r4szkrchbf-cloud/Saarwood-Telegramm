@@ -31,6 +31,8 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Erweiterte Hostinger-Anforderung dokumentiert: zentrale Hauptseite fuer mehrere Apps plus App-Unterseiten (`/apps/<name>/...`) und Teleprompter-Dokumente/Formular direkt verlinkbar aus App und Website.
 - Mehrserver-/Baukasten-Prinzip dokumentiert: Hauptwebsite kann getrennt vom Teleprompter-App-Server laufen; App-uebergreifender Datenaustausch erfolgt API-/Event-basiert statt direkter DB-Kopplung.
 - Telepromptervorlagen wurden im UI und in der Doku umbenannt; Support-Log-Zugriff und Import/Export-Regeln sind tierabhängig dokumentiert.
+- Projekt-/Sendungsname ist jetzt als eigener Titelpfad im Script vorhanden, in Vorlagenformaten enthalten und im Professional-Tier ein-/ausblendbar.
+- Werbekonzept fuer die kostenlose Basic-Version vor Hostinger-Go-Live als separates Konzept dokumentiert (`docs/BASIC_TIER_ADS_CONCEPT_DE.md`).
 
 ## 1.2 Code-/Doku-Abgleich (aktuell)
 
@@ -45,6 +47,7 @@ Folgende Codebereiche sind derzeit in der Dokumentation abgedeckt und sollen bei
 Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 
 - VPS/Public-MVP-Rollout
+- Basic-Tier Werbe-/Upgrade-Modell fuer Hostinger-Go-Live
 - Lizenz-Kill-Switch / Revocation-Runbook
 - Tally / On-Air-Preview-Schnittstelle
 - Screen-Presets und weitere Layout-Automation

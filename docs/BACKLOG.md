@@ -11,8 +11,8 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
 
-**Prioritaet:** P0  
-**Beschreibung:**  
+**Prioritaet:** P0
+**Beschreibung:**
 `prompterStore.test.ts` scheitert aktuell im Vitest-Lauf wegen Storage/Persist-Verhalten (`setItem` auf `undefined`).
 
 **Akzeptanzkriterien:**
@@ -22,8 +22,8 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ### TICKET-014 · MVP-LAN-Testcheckliste produktionsnah machen
 
-**Prioritaet:** P0  
-**Beschreibung:**  
+**Prioritaet:** P0
+**Beschreibung:**
 Feste Durchfuehrungsanleitung fuer echten Langzeittest mit Usern erstellen und anwenden.
 
 **Akzeptanzkriterien:**
@@ -93,6 +93,24 @@ WordPress oder klassisches Shared Hosting sind fuer unseren Node/Express/WebSock
 - [ ] Test-Deployment auf VPS erfolgreich
 - [ ] Betriebsdoku fuer oeffentliche Nutzung erstellt
 - [ ] Pilotbetrieb fuer echte Nutzer moeglich
+
+### TICKET-027 · Werbekonzept fuer kostenlose Basic-Version vor Hostinger-Go-Live finalisieren
+
+**Prioritaet:** P0
+**Beschreibung:**
+Vor der oeffentlichen Veroeffentlichung der Basic-Version ueber Hostinger muss das Werbe- und Upgrade-Modell verbindlich definiert sein.
+Die kostenlose Version darf den Teleprompter-Betrieb nicht stoeren und der Output-only Modus muss werbefrei bleiben.
+
+Referenz:
+
+- `docs/BASIC_TIER_ADS_CONCEPT_DE.md`
+
+**Akzeptanzkriterien:**
+- [ ] Entscheidung dokumentiert: nur interne Upgrade-Hinweise oder zusaetzlich Sponsor-Flaechen
+- [ ] Keine Werbung im Prompter-Output und in Output-only Views
+- [ ] Professional und Expert bleiben werbefrei
+- [ ] Datenschutz-/Consent-Bedarf fuer die gewaehlte Werbeform bewertet
+- [ ] Hostinger-Go-Live-Dokumentation verweist auf das finale Werbemodell
 
 ### TICKET-018 · Restproblem Speed-Slider-Sprung (nach Langzeittest beheben)
 

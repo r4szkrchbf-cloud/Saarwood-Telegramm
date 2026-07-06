@@ -100,6 +100,37 @@
   border-color: rgba(255, 107, 107, 0.55);
 }
 
+.prompter-project-title {
+  position: absolute;
+  top: 0.85rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  min-width: min(42vw, 420px);
+  max-width: calc(100% - 3rem);
+  padding: 0.42rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(96, 96, 96, 0.91);
+  color: #f3f3f3;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+}
+
+.prompter-project-title-label {
+  display: block;
+  margin-bottom: 0.14rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.prompter-project-title strong {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
 /* ─── Scrollable Content ──────────────────────────────────────────────────── */
 
 .prompter-content {
@@ -107,6 +138,7 @@
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100%;
   padding: 0 8%;
   box-sizing: border-box;
   /* GPU compositor layer — updated via JS transform, never scrollTop */

@@ -27,6 +27,7 @@ export interface DisplaySettings {
   lineHeight: number;       // multiplier, e.g. 1.5
   textAlign: 'left' | 'center' | 'right';
   darkMode: boolean;        // director/editor UI
+  showProjectTitle: boolean;
   cueMarkerEnabled: boolean;
   cueMarkerPosition: number; // 0–100 % of viewport height
 }

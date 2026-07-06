@@ -231,6 +231,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
   const buildCsv = useCallback((): string => {
     const rows = script.segments.map((seg, idx) => [
+      script.title,
       String(idx + 1),
       seg.id,
       seg.isCloaked ? '1' : '0',
@@ -238,9 +239,19 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       htmlToPlain(seg.html),
       seg.html,
     ]);
-    const header = ['index', 'id', 'isCloaked', 'isDirectorsNote', 'text', 'html'];
+    const header = ['title', 'index', 'id', 'isCloaked', 'isDirectorsNote', 'text', 'html'];
     return [header, ...rows].map((row) => row.map((cell) => escapeCsv(cell)).join(',')).join('\n');
-  }, [escapeCsv, htmlToPlain, script.segments]);
+  }, [escapeCsv, htmlToPlain, script.segments, script.title]);
+
+  const extractTxtTitle = useCallback((raw: string, fallbackTitle: string) => {
+    const normalized = raw.replace(/\r\n/g, '\n').trim();
+    const match = normalized.match(/^(Titel|Title)\s*:\s*(.+)$/im);
+    if (!match) return { title: fallbackTitle, content: raw };
+
+    const title = match[2].trim() || fallbackTitle;
+    const content = normalized.replace(match[0], '').trim();
+    return { title, content };
+  }, []);
 
   const downloadBlob = useCallback((content: string, mimeType: string, filename: string) => {
     const blob = new Blob([content], { type: mimeType });
@@ -580,26 +591,34 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
       const lowerName = file.name.toLowerCase();
       if (lowerName.endsWith('.txt')) {
-        segments = parsePlainTextSegments(raw, now);
-        title = lowerName.replace(/\.txt$/i, '') || script.title;
+        const extracted = extractTxtTitle(raw, lowerName.replace(/\.txt$/i, '') || script.title);
+        segments = parsePlainTextSegments(extracted.content, now);
+        title = extracted.title;
       } else if (lowerName.endsWith('.csv')) {
         if (tier === 'basic') throw new Error('basic-tier-csv-import-blocked');
         const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const headerCols = rows[0]?.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
+          col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
+        ) ?? [];
+        const hasTitleColumn = headerCols[0]?.toLowerCase() === 'title';
         const dataRows = rows.slice(1);
         segments = dataRows.map((line, idx) => {
           const cols = line.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
             col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
           ) ?? [];
-          const text = cols[4] || '';
+          const titleCol = hasTitleColumn ? cols[0] || '' : '';
+          if (titleCol && !title) title = titleCol;
+          const base = hasTitleColumn ? 1 : 0;
+          const text = cols[base + 4] || '';
           const speakerMatch = text.match(/^\[([^\]]+)\]:\s*(.*)$/);
           const speaker = speakerMatch?.[1] ?? '';
           const body = speakerMatch?.[2] ?? text;
           return {
-            id: cols[1] || `imp-${now}-${idx + 1}`,
-            html: cols[5] || plainTextToHtml(body, speaker),
+            id: cols[base + 1] || `imp-${now}-${idx + 1}`,
+            html: cols[base + 5] || plainTextToHtml(body, speaker),
             direction: 'ltr' as const,
-            isCloaked: cols[2] === '1' || cols[2]?.toLowerCase() === 'true',
-            isDirectorsNote: cols[3] === '1' || cols[3]?.toLowerCase() === 'true',
+            isCloaked: cols[base + 2] === '1' || cols[base + 2]?.toLowerCase() === 'true',
+            isDirectorsNote: cols[base + 3] === '1' || cols[base + 3]?.toLowerCase() === 'true',
           };
         });
       } else {
@@ -677,7 +696,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     } finally {
       if (e.target) e.target.value = '';
     }
-  }, [parsePlainTextSegments, plainTextToHtml, script, setScript, postClientLog, tier]);
+  }, [extractTxtTitle, parsePlainTextSegments, plainTextToHtml, script, setScript, postClientLog, tier]);
 
   const handleDownloadJsonTemplate = useCallback(() => {
     const sample = {
@@ -704,15 +723,17 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
   const handleDownloadCsvTemplate = useCallback(() => {
     const sample = [
-      '"index","id","isCloaked","isDirectorsNote","text","html"',
-      '"1","sample-1","0","0","[Sprecherin 1]: Willkommen zur Sendung.","<p>[Sprecherin 1]: Willkommen zur Sendung.</p>"',
-      '"2","sample-2","0","0","[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.","<p>[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.</p>"',
+      '"title","index","id","isCloaked","isDirectorsNote","text","html"',
+      '"Beispiel Telepromptervorlage","1","sample-1","0","0","[Sprecherin 1]: Willkommen zur Sendung.","<p>[Sprecherin 1]: Willkommen zur Sendung.</p>"',
+      '"Beispiel Telepromptervorlage","2","sample-2","0","0","[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.","<p>[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.</p>"',
     ].join('\n');
     downloadBlob(sample, 'text/csv;charset=utf-8', 'import-vorlage.csv');
   }, [downloadBlob]);
 
   const handleDownloadTxtTemplate = useCallback(() => {
     const sample = [
+      'Titel: Beispiel Telepromptervorlage',
+      '',
       '[Sprecherin 1]: Willkommen zur Sendung.',
       '',
       '[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.',

@@ -24,6 +24,7 @@ const DEFAULT_DISPLAY_SETTINGS: DisplaySettings = {
   lineHeight: 1.6,
   textAlign: 'center',
   darkMode: true,
+  showProjectTitle: true,
   cueMarkerEnabled: true,
   cueMarkerPosition: 30,
 };

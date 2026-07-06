@@ -3,7 +3,6 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
-import Underline from '@tiptap/extension-underline';
 import { usePrompterStore } from '../../store/prompterStore';
 import type { ScriptSegment } from '../../types';
 import './ScriptEditor.css';
@@ -21,7 +20,6 @@ const TIPTAP_EXTENSIONS = [
   StarterKit,
   TextStyle,
   Color,
-  Underline,
 ];
 
 /**
