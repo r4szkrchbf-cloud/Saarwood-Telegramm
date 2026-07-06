@@ -1,8 +1,16 @@
-# Saarwood Teleprompter — Beta-Tester-Leitfaden (Langzeittest)
+# Saarwood Teleprompter - Beta-Tester-Leitfaden (Langzeittest)
 
 **Version:** Beta V1 (1.0.0-beta.1)  
-**Erstelldatum:** 2026-07-04  
+**Aktualisiert:** 2026-07-05  
 **Zweck:** Strukturierter Langzeittest mit echten Nutzern unter realen Sendebedingungen.
+
+Neu in dieser Revision:
+- Support-Ticket-Bestaetigung in der App mit Ticket-ID
+- Automatische Ticket-Kopie per E-Mail (wenn SMTP konfiguriert)
+- Output-only Modus (`?view=prompter&output=1`)
+- Non-disruptive Restart (kein Stop fuer reine Ausgabe)
+- Desktop-Funktion "Monitor 2 Vollbild" fuer Prompter-Ausgabe
+- Lizenz-Status/Gate fuer Beta-Zugriff
 
 Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** in `docs/TEST_MVP.md` dokumentiert.
 
@@ -64,7 +72,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 
 ---
 
-## Checkliste 3 — Teleprompter / Scroll-Engine
+## Checkliste 3 - Teleprompter / Scroll-Engine
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
 |---|------|----------|----------|--------------|
@@ -83,6 +91,8 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | S-13 | Tab in Hintergrund, zurückkehren | Kein Sprung >50 ms nach Tab-Reaktivierung | | |
 | S-14 | Scrollen bei sehr langem Script (5.000+ Wörter) | Keine Verlangsamung, kein Ruckeln | | |
 | S-15 | Cue-Marker sichtbar | Horizontale Linie an eingestellter Position | | |
+| S-16 | Restart in Split/Editor (zweistufig bestaetigen) | Erst Klick setzt "NeuStart bestaetigen", zweiter Klick fuehrt Reload aus | | |
+| S-17 | Restart waehrend aktiver Ausgabe auf zweitem Client | Lokale UI kann neu laden, Ausgabe-Client wird nicht per STOP unterbrochen | | |
 
 ---
 
@@ -115,7 +125,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 
 ---
 
-## Checkliste 6 — WebSocket Remote Control
+## Checkliste 6 - WebSocket Remote Control
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
 |---|------|----------|----------|--------------|
@@ -124,6 +134,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | W-03 | Play-Kommando von zweitem Browser-Tab | Scrollen startet in beiden Instanzen | | |
 | W-04 | Script-Update von Tab A sichtbar in Tab B | Echtzeit-Sync ohne Scroll-Unterbruch | | |
 | W-05 | Einstellungs-Update sync | Display-Einstellungen sync zwischen Clients | | |
+| W-06 | Output-only URL in zweitem Tab (`?view=prompter&output=1`) | Ausgabe sichtbar, keine Settings/Controls/Header in Output-only View | | |
 
 ---
 
@@ -140,7 +151,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 
 ---
 
-## Checkliste 8 — Performance & Stresstest
+## Checkliste 8 - Performance & Stresstest
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
 |---|------|----------|----------|--------------|
@@ -150,6 +161,54 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | X-04 | 10x schnelles Öffnen/Schließen Settings | Kein State-Fehler | | |
 | X-05 | Gerät im Ruhezustand → Aufwecken | Scrollen setzt fort, kein Sprung | | |
 | X-06 | CPU-intensiver Tab im Hintergrund | Kein FPS-Einbruch im Prompter | | |
+
+---
+
+## Checkliste 9 - Support-Ticket und Kommunikation
+
+| # | Test | Erwartet | Ergebnis | Fehler/Notiz |
+|---|------|----------|----------|--------------|
+| T-01 | Support-Felder vollstaendig ausfuellen und Ticket absenden | Ticket wird erstellt, Ticket-ID wird angezeigt (`SWD-YYYY-XXXXXX`) | | |
+| T-02 | Ticket-Bestaetigungstext in der App pruefen | Text enthaelt: "Ihr Ticket ist beim Support eingegangen... Ticket-ID ..." | | |
+| T-03 | Automatische E-Mail bei aktivem SMTP | Absender erhaelt E-Mail mit Ticket-ID und Kopie (Name, Betreff, Nachricht) | | |
+| T-04 | Verhalten ohne SMTP | Ticket wird trotzdem gespeichert, App zeigt Hinweis dass Auto-Mail nicht gesendet werden konnte | | |
+| T-05 | Ticket-ID im Backend-Log pruefen | ID in Antwort und gespeicherten Tickets konsistent | | |
+
+---
+
+## Checkliste 10 - Lizenz und Zugriff
+
+| # | Test | Erwartet | Ergebnis | Fehler/Notiz |
+|---|------|----------|----------|--------------|
+| L-01 | App ohne gueltiges Token starten (Lizenzmodus enforce) | Lizenz-Hinweis/Gate erscheint, geschuetzte Nutzung blockiert | | |
+| L-02 | Gueltiges Token aktivieren | Status wird aktiv, App nutzbar | | |
+| L-03 | Ungueltiges/abgelaufenes Token aktivieren | Klare Fehlermeldung, kein Aktiv-Status | | |
+| L-04 | App neu laden nach Aktivierung | Lizenzstatus bleibt konsistent erhalten | | |
+
+---
+
+## Checkliste 11 - Desktop / Monitor 2 Output (Electron)
+
+| # | Test | Erwartet | Ergebnis | Fehler/Notiz |
+|---|------|----------|----------|--------------|
+| D-01 | Desktop-App starten, Button "Monitor 2 Vollbild" nutzen | Prompter-Ausgabe oeffnet auf zweitem Monitor im Vollbild | | |
+| D-02 | Kein zweiter Monitor angeschlossen | Klare Rueckmeldung, kein Absturz | | |
+| D-03 | Ausgabe-Fenster waehrend laufendem Scrollen oeffnen | Ausgabe startet stabil und synchron | | |
+| D-04 | Editor/Settings nur im Steuerfenster, nicht im Output | Zweitmonitor zeigt reine Prompter-Ausgabe | | |
+
+---
+
+## Mindestumfang fuer Live-Tester (Pflichtlauf)
+
+Bitte pro Tester mindestens diese Faelle durchfuehren:
+
+1. I-01 bis I-04
+2. E-01, E-03, E-08, E-10
+3. S-01, S-02, S-04, S-16, S-17
+4. W-01, W-04, W-06
+5. T-01, T-02, T-03 (oder T-04 wenn SMTP fehlt)
+6. L-01 und L-02
+7. D-01 bis D-04 (nur Desktop/Electron-Tester)
 
 ---
 

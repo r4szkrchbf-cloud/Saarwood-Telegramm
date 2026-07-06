@@ -1067,3 +1067,177 @@ Praxisfall unter Last pruefen: aktives Tippen im Editor plus gleichzeitige Hotke
 
 - Ergebnis: PASS (GRUEN)
 - Neue Blocker: keine
+
+---
+
+## Runde Live Tester V1.1 - Vorlage (leer)
+
+### Meta
+
+| Feld | Eintrag |
+|------|---------|
+| Datum / Uhrzeit (UTC) | |
+| Testleiter | |
+| Tester-Team | |
+| App-Version | 1.0.0-beta.1 |
+| Testumgebung | Browser / PWA / Electron |
+| Backend-Tier | basic / professional / expert |
+| Build-Stand (Commit) | |
+
+### Ziel
+
+Live-Tester-Runde fuer neue Features gemaess aktueller Beta-Tester-Checkliste dokumentieren.
+
+### Durchgefuehrte Kernpruefungen (Pflichtlauf)
+
+| Block | Referenz aus BETA_TESTER_GUIDE | Status | Notiz |
+|-------|--------------------------------|--------|-------|
+| Installation | I-01 bis I-04 | | |
+| Editor/Script | E-01, E-03, E-08, E-10 | | |
+| Teleprompter | S-01, S-02, S-04, S-16, S-17 | | |
+| WebSocket/Output-only | W-01, W-04, W-06 | | |
+| Support-Ticket | T-01, T-02, T-03 oder T-04 | | |
+| Lizenz | L-01, L-02 | | |
+| Desktop (optional) | D-01 bis D-04 | | |
+
+### Support-Ticket Nachweis
+
+| Feld | Wert |
+|------|------|
+| Ticket-ID (aus App) | |
+| App-Bestaetigungstext korrekt | ja / nein |
+| Auto-E-Mail erhalten | ja / nein / n.a. |
+| Ticket-Kopie in E-Mail enthalten | ja / nein / n.a. |
+| SMTP aktiv in Testumgebung | ja / nein |
+
+### Lizenz-Nachweis
+
+| Pruefung | Erwartet | Ergebnis |
+|----------|----------|----------|
+| Ungueltiges Token (L-01) | Gate/Hinweis aktiv | |
+| Gueltiges Token (L-02) | Aktivierung erfolgreich | |
+| Persistenz nach Reload | Status bleibt konsistent | |
+
+### Output/Restart-Nachweis
+
+| Pruefung | Erwartet | Ergebnis |
+|----------|----------|----------|
+| Output-only View (`?view=prompter&output=1`) | Keine Header/Controls/Settings | |
+| Restart zweistufig | Erst bestaetigen, dann Reload | |
+| Restart beeinflusst externe Ausgabe nicht | Kein unerwuenschter STOP auf Output-Client | |
+
+### Build/Test Gates waehrend der Runde
+
+| Gate | Befehl | Ergebnis | Fehler/Warnungen |
+|------|--------|----------|------------------|
+| Frontend Tests | `npm run test --workspace=packages/frontend` | | |
+| Backend Tests | `npm run test --workspace=packages/backend` | | |
+| Frontend Lint | `npm run lint --workspace=packages/frontend` | | |
+| Backend Lint | `npm run lint --workspace=packages/backend` | | |
+| Gesamt-Build | `npm run build` | | |
+
+### Gefundene Bugs
+
+| ID | Schweregrad | Kurzbeschreibung | Reproduzierbar | Ticket/Link |
+|----|-------------|------------------|----------------|-------------|
+| BUG- | Kritisch / Hoch / Mittel / Niedrig | | ja / nein / manchmal | |
+
+### UX-Verbesserungen
+
+| ID | Prioritaet | Vorschlag | Kontext |
+|----|------------|-----------|---------|
+| UX- | Hoch / Mittel / Niedrig | | |
+
+### Abschlussbewertung Runde Live Tester V1.1
+
+| Frage | Antwort |
+|-------|---------|
+| Gesamtstatus | GRUEN / GELB / ROT |
+| Go/No-Go fuer naechste Beta-Welle | GO / NO-GO |
+| Wichtigster Blocker | |
+| Wichtigste positive Erkenntnis | |
+| Naechste 3 Aktionen | 1) 2) 3) |
+
+---
+
+## Kurzprotokoll 5-Minuten-Live-Check - Vorlage (leer)
+
+### Meta
+
+| Feld | Eintrag |
+|------|---------|
+| Datum / Uhrzeit (UTC) | |
+| Tester | |
+| Umgebung | Browser / PWA / Electron |
+| Tier | basic / professional / expert |
+| Commit / Build | |
+
+### Quick-Checks (max. 5 Minuten)
+
+| # | Pruefung | Erwartet | Status | Notiz |
+|---|----------|----------|--------|-------|
+| Q-01 | App startet | UI laedt ohne Blocker | PASS / FAIL | |
+| Q-02 | WS-Verbindung | Status zeigt verbunden | PASS / FAIL | |
+| Q-03 | Play/Pause | Startet und pausiert sofort | PASS / FAIL | |
+| Q-04 | Speed +/- oder Eingabe | Wert aendert sich stabil | PASS / FAIL | |
+| Q-05 | Direction (up/down) | Richtung wechselt sichtbar | PASS / FAIL | |
+| Q-06 | Output-only URL (`?view=prompter&output=1`) | Nur Ausgabe, keine Controls | PASS / FAIL | |
+| Q-07 | Support-Ticket absenden | Ticket-ID wird angezeigt | PASS / FAIL | |
+| Q-08 | Lizenzstatus (falls enforce) | Gate/aktiv korrekt | PASS / FAIL | |
+
+### Ergebnis in 30 Sekunden
+
+| Feld | Eintrag |
+|------|---------|
+| Gesamtstatus | GRUEN / GELB / ROT |
+| Go/No-Go | GO / NO-GO |
+| Kritischster Befund | |
+| Sofortmassnahme | |
+
+### Mini-Bugliste (optional)
+
+| ID | Schweregrad | Kurztext |
+|----|-------------|----------|
+| BUG- | Kritisch / Hoch / Mittel / Niedrig | |
+
+---
+
+## Kurzprotokoll 5-Minuten-Live-Check - Beispielrunde (ausgefuellt)
+
+### Meta
+
+| Feld | Eintrag |
+|------|---------|
+| Datum / Uhrzeit (UTC) | 2026-07-06 09:15 |
+| Tester | LT-Team A / Operator 01 |
+| Umgebung | Browser (Chrome 127) |
+| Tier | expert |
+| Commit / Build | main / lokaler Build gruen |
+
+### Quick-Checks (max. 5 Minuten)
+
+| # | Pruefung | Erwartet | Status | Notiz |
+|---|----------|----------|--------|-------|
+| Q-01 | App startet | UI laedt ohne Blocker | PASS | Startzeit 2.1 s, keine Blocker sichtbar |
+| Q-02 | WS-Verbindung | Status zeigt verbunden | PASS | Nach 1-2 s auf connected |
+| Q-03 | Play/Pause | Startet und pausiert sofort | PASS | Umschaltung ohne Verzogerung |
+| Q-04 | Speed +/- oder Eingabe | Wert aendert sich stabil | PASS | 80 -> 85 -> 80, kein Ruecksprung |
+| Q-05 | Direction (up/down) | Richtung wechselt sichtbar | PASS | down -> up -> down korrekt |
+| Q-06 | Output-only URL (`?view=prompter&output=1`) | Nur Ausgabe, keine Controls | PASS | Header/Settings/Controls ausgeblendet |
+| Q-07 | Support-Ticket absenden | Ticket-ID wird angezeigt | PASS | Ticket-ID angezeigt: SWD-2026-000123 |
+| Q-08 | Lizenzstatus (falls enforce) | Gate/aktiv korrekt | PASS | Gueltiges Token aktiv, Status konsistent |
+
+### Ergebnis in 30 Sekunden
+
+| Feld | Eintrag |
+|------|---------|
+| Gesamtstatus | GRUEN |
+| Go/No-Go | GO |
+| Kritischster Befund | Kein kritischer Befund |
+| Sofortmassnahme | Keine, normaler Testlauf fortsetzen |
+
+### Mini-Bugliste (optional)
+
+| ID | Schweregrad | Kurztext |
+|----|-------------|----------|
+| BUG-024 | Niedrig | Tiptap Warnung "duplicate underline" in Konsole, ohne Funktionsverlust |

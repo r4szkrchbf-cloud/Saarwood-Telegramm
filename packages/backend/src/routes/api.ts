@@ -257,7 +257,11 @@ export function createRouter(
 
     try {
       const result = await supportService.createTicket(parsed.data);
-      res.status(201).json({ ok: true, ticketId: result.id, ...result });
+      res.status(201).json({
+        ok: true,
+        ticketId: result.id,
+        ...result,
+      });
     } catch {
       res.status(500).json({ ok: false, error: 'support-ticket-create-failed' });
     }

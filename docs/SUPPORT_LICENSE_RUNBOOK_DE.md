@@ -155,3 +155,27 @@ curl -sS -X POST "$BASE_URL/api/admin/license/create" \
     "features": []
   }'
 ```
+
+## 10. Support-Ticket Auto-E-Mail (Ticket-ID + Ticket-Kopie)
+
+Fuer jeden eingehenden Support-Fall kann der Absender automatisch eine Bestaetigungs-E-Mail erhalten.
+
+Pflicht/Empfehlung fuer Produktivbetrieb:
+
+```bash
+export SUPPORT_CONFIRMATION_MAIL_ENABLED=true
+export SUPPORT_CONFIRMATION_SUBJECT_PREFIX="[Saarwood Support]"
+export SUPPORT_SMTP_HOST="smtp.example.com"
+export SUPPORT_SMTP_PORT="587"
+export SUPPORT_SMTP_SECURE="false"
+export SUPPORT_SMTP_USER="support-smtp-user"
+export SUPPORT_SMTP_PASS="<secret>"
+export SUPPORT_MAIL_FROM="Saarwood Support <support@example.com>"
+export SUPPORT_MAIL_REPLY_TO="support@example.com"
+```
+
+Erwartetes Verhalten:
+
+1. Ticket wird erzeugt und mit ID gespeichert (z. B. `SWD-2026-000123`).
+2. App bestaetigt: "Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ...".
+3. Absender erhaelt automatisch eine E-Mail mit Ticket-ID und Ticket-Kopie (Name, Betreff, Nachricht, Kontext, Zeitstempel).

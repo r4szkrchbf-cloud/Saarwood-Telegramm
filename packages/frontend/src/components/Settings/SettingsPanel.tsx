@@ -391,8 +391,23 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         return;
       }
 
-      const payload = await response.json() as { ticketId?: string };
-      setSupportStatus(`Ticket erstellt: ${payload.ticketId ?? 'ok'}`);
+      const payload = await response.json() as {
+        ticketId?: string;
+        confirmationEmailSent?: boolean;
+      };
+
+      const ticketId = payload.ticketId ?? 'unbekannt';
+      if (payload.confirmationEmailSent === false) {
+        setSupportStatus(
+          `Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}. ` +
+          'Hinweis: Die automatische E-Mail mit der Ticket-Kopie konnte noch nicht versendet werden.',
+        );
+      } else {
+        setSupportStatus(
+          `Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}. ` +
+          'Sie haben eine automatische E-Mail mit einer Kopie Ihres Tickets erhalten.',
+        );
+      }
       setTicketSubject('');
       setTicketMessage('');
     } catch {

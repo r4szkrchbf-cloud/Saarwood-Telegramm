@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import nodemailer from 'nodemailer';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export interface SupportInfo {
   chatUrl: string | null;
@@ -21,6 +23,13 @@ export interface SupportTicketInput {
 interface SupportTicketRecord extends SupportTicketInput {
   id: string;
   createdAt: string;
+}
+
+interface SupportTicketCreateResult {
+  id: string;
+  stored: boolean;
+  forwarded: boolean;
+  confirmationEmailSent: boolean;
 }
 
 interface TicketSequenceState {
@@ -45,6 +54,28 @@ export class SupportService {
 
   private readonly testerFormUrl: string | null;
 
+  private readonly smtpHost: string | null;
+
+  private readonly smtpPort: number;
+
+  private readonly smtpSecure: boolean;
+
+  private readonly smtpUser: string | null;
+
+  private readonly smtpPass: string | null;
+
+  private readonly mailFrom: string | null;
+
+  private readonly mailReplyTo: string | null;
+
+  private readonly supportContactEmail: string | null;
+
+  private readonly confirmationMailEnabled: boolean;
+
+  private readonly confirmationSubjectPrefix: string;
+
+  private smtpTransporter: nodemailer.Transporter | null = null;
+
   constructor() {
     this.chatUrl = process.env.SUPPORT_CHAT_URL ?? null;
     this.chatLabel = process.env.SUPPORT_CHAT_LABEL ?? 'Support Chat';
@@ -56,6 +87,17 @@ export class SupportService {
     this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? null;
     this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? null;
     this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? null;
+    this.smtpHost = process.env.SUPPORT_SMTP_HOST ?? null;
+    this.smtpPort = parseInt(process.env.SUPPORT_SMTP_PORT ?? '587', 10);
+    this.smtpSecure = process.env.SUPPORT_SMTP_SECURE === 'true';
+    this.smtpUser = process.env.SUPPORT_SMTP_USER ?? null;
+    this.smtpPass = process.env.SUPPORT_SMTP_PASS ?? null;
+    this.mailFrom = process.env.SUPPORT_MAIL_FROM ?? null;
+    this.mailReplyTo = process.env.SUPPORT_MAIL_REPLY_TO ?? null;
+    this.supportContactEmail = process.env.SUPPORT_CONTACT_EMAIL ?? null;
+    this.confirmationMailEnabled = process.env.SUPPORT_CONFIRMATION_MAIL_ENABLED !== 'false';
+    this.confirmationSubjectPrefix = process.env.SUPPORT_CONFIRMATION_SUBJECT_PREFIX
+      ?? '[Saarwood Support]';
   }
 
   getInfo(): SupportInfo {
@@ -68,7 +110,7 @@ export class SupportService {
     };
   }
 
-  async createTicket(input: SupportTicketInput): Promise<{ id: string; stored: boolean; forwarded: boolean }> {
+  async createTicket(input: SupportTicketInput): Promise<SupportTicketCreateResult> {
     const id = this.nextTicketId();
     const record: SupportTicketRecord = {
       ...input,
@@ -79,7 +121,8 @@ export class SupportService {
     this.appendTicket(record);
 
     const forwarded = await this.forwardTicket(record);
-    return { id, stored: true, forwarded };
+    const confirmationEmailSent = await this.sendTicketConfirmationEmail(record);
+    return { id, stored: true, forwarded, confirmationEmailSent };
   }
 
   private appendTicket(record: SupportTicketRecord): void {
@@ -125,6 +168,69 @@ export class SupportService {
         body: JSON.stringify(record),
       });
       return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  private getTransporter(): nodemailer.Transporter | null {
+    if (this.smtpTransporter) return this.smtpTransporter;
+    if (!this.smtpHost || !this.mailFrom) return null;
+
+    const config: SMTPTransport.Options = {
+      host: this.smtpHost,
+      port: Number.isFinite(this.smtpPort) ? this.smtpPort : 587,
+      secure: this.smtpSecure,
+    };
+
+    if (this.smtpUser && this.smtpPass) {
+      config.auth = {
+        user: this.smtpUser,
+        pass: this.smtpPass,
+      };
+    }
+
+    this.smtpTransporter = nodemailer.createTransport(config);
+    return this.smtpTransporter;
+  }
+
+  private async sendTicketConfirmationEmail(record: SupportTicketRecord): Promise<boolean> {
+    if (!this.confirmationMailEnabled) return false;
+    const transporter = this.getTransporter();
+    if (!transporter || !this.mailFrom) return false;
+
+    const subject = `${this.confirmationSubjectPrefix} Ticket bestaetigt: ${record.id}`;
+    const text = [
+      'Guten Tag,',
+      '',
+      'vielen Dank fuer Ihre Nachricht an den Saarwood Support.',
+      '',
+      `Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${record.id}`,
+      '',
+      'Kopie Ihres Tickets:',
+      `Name: ${record.name}`,
+      `E-Mail: ${record.email}`,
+      `Betreff: ${record.subject}`,
+      `App-Version: ${record.appVersion}`,
+      `Kontext: ${record.context}`,
+      `Erstellt am (UTC): ${record.createdAt}`,
+      '',
+      'Nachricht:',
+      record.message,
+      '',
+      'Diese E-Mail wurde automatisch erstellt.',
+    ].join('\n');
+
+    try {
+      await transporter.sendMail({
+        from: this.mailFrom,
+        to: record.email,
+        ...(this.mailReplyTo ? { replyTo: this.mailReplyTo } : {}),
+        ...(this.supportContactEmail ? { bcc: this.supportContactEmail } : {}),
+        subject,
+        text,
+      });
+      return true;
     } catch {
       return false;
     }

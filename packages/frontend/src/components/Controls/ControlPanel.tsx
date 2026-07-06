@@ -51,6 +51,7 @@ export function ControlPanel({
   const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
   const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
+  const [isSpeedEditing, setIsSpeedEditing] = useState(false);
   const [restartPending, setRestartPending] = useState(false);
 
   useEffect(() => {
@@ -58,9 +59,6 @@ export function ControlPanel({
     const timer = window.setTimeout(() => setRestartPending(false), 5000);
     return () => window.clearTimeout(timer);
   }, [restartPending]);
-  useEffect(() => {
-    setSpeedInput(String(Math.round(speed)));
-  }, [speed]);
 
   const notifyManualControl = useCallback(() => {
     window.dispatchEvent(new Event('prompter:manual-control'));
@@ -134,6 +132,7 @@ export function ControlPanel({
   }, []);
 
   const handleSpeedInputBlur = useCallback(() => {
+    setIsSpeedEditing(false);
     if (speedInput.trim() === '') {
       setSpeedInput(String(Math.round(usePrompterStore.getState().scroll.speed)));
       return;
@@ -296,8 +295,9 @@ export function ControlPanel({
           max={400}
           step={1}
           inputMode="numeric"
-          value={speedInput}
+          value={isSpeedEditing ? speedInput : String(Math.round(speed))}
           onChange={handleSpeedInputChange}
+          onFocus={() => setIsSpeedEditing(true)}
           onBlur={handleSpeedInputBlur}
           onKeyDown={handleSpeedInputKeyDown}
           className="speed-input"
