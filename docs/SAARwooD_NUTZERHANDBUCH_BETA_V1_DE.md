@@ -223,6 +223,19 @@ Ab dem aktuellen Stand passt sich die Oberflaeche auf kleinen Displays besser an
 2. Control-Bar ist auf Tablet/Mobile kompakter und besser touchbar.
 3. Prompter-Schrift wird auf kleinen Viewports automatisch begrenzt, damit Text nicht uebergross startet.
 
+Neu fuer Desktop und Tablet:
+
+4. Die obere Bedienleiste (Header + Controls) kann ausgeblendet werden.
+5. Oben rechts `Leiste ausblenden` klicken, um mehr reine Prompterflaeche zu erhalten.
+6. Wieder einblenden per `Leiste einblenden`, per Klick auf den kleinen oberen Griff oder mit Wischgeste von oben nach unten.
+7. Ausblenden per Wischgeste von oben nach oben (kurzer vertikaler Swipe im oberen Bereich).
+
+Wichtig zur Browser-Leiste:
+
+- Die echte Browser-UI (Tabs/Adressleiste) kann die Web-App selbst nicht hart abschalten.
+- Fuer ein moeglichst cleanes Bild auf Tablet/Desktop: PWA installieren oder Vollbildmodus nutzen (`f`/`F`).
+- Auf Smartphones bleibt das bisherige Verhalten unveraendert.
+
 Empfehlung fuer den Live-Betrieb auf Mobilgeraeten:
 
 1. Ausgabe-Geraete immer mit `output=1` starten.

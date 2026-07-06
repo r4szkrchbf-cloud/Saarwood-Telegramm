@@ -507,6 +507,33 @@ Kontext: Lizenz-Haertung fuer Offline-Betrieb und operative Vollkontrolle (Ausga
 
 ## Vorlage fuer weitere Eintraege
 
+---
+
+## Eintrag 2026-07-07 00:00 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Produktionshaertung fuer Reverse-Proxy-Betrieb und Support-Logschreiben auf VPS.
+
+### Ausgangsproblem
+- Express-Rate-Limit meldete Warnung bei `X-Forwarded-For`, weil `trust proxy` nicht gesetzt war.
+- Support-Client-Logs konnten wegen fehlender Dateirechte unter `backend/data` nicht geschrieben werden (`EACCES`).
+
+### Durchgefuehrte Schritte
+- Backend angepasst: `trust proxy` konfigurierbar gemacht (`TRUST_PROXY`, Production-Default auf `1`).
+- VPS-Betriebsschritt festgelegt und ausgefuehrt: Besitz und Schreibrechte fuer `backend/data` auf Service-User korrigiert.
+- Rebuild und Service-Restart auf dem VPS durchgefuehrt.
+
+### Ergebnis
+- Backend laeuft hinter nginx ohne die bisherige `X-Forwarded-For`-RateLimit-Fehlwarnung.
+- Support-Logpfad ist wieder beschreibbar.
+- Health-Endpunkte auf Haupt- und Alias-Domain liefern `200 OK`.
+
+### Offene Punkte
+- Optional: `TRUST_PROXY` explizit in `.env.production` dokumentieren, falls Topologie kuenftig geaendert wird.
+
+### Lessons Learned
+- Reverse-Proxy-Setups brauchen konsistente Proxy-Vertrauenskonfiguration auf App-Ebene.
+- Schreibpfade fuer Laufzeitdaten muessen nach Deployments weiterhin dem Laufzeit-User gehoeren.
+
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)
 Name: <Name/Agent>
 Kontext: [kurze Lagebeschreibung]
