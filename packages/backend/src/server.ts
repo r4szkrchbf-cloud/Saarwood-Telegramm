@@ -16,8 +16,26 @@ const MOS_PORT = parseInt(process.env.MOS_PORT ?? '10540', 10);
 const ENABLE_MOS = process.env.ENABLE_MOS !== 'false';
 const ENABLE_NDI = process.env.ENABLE_NDI !== 'false';
 const APP_TIER = (process.env.APP_TIER ?? 'basic') as 'basic' | 'professional' | 'expert';
-const TRUST_PROXY = process.env.TRUST_PROXY
-  ?? (process.env.NODE_ENV === 'production' ? '1' : '0');
+function resolveTrustProxySetting(): boolean | number | string {
+  const raw = process.env.TRUST_PROXY?.trim();
+
+  if (!raw) {
+    return process.env.NODE_ENV === 'production' ? 1 : false;
+  }
+
+  const normalized = raw.toLowerCase();
+  if (normalized === 'true') return true;
+  if (normalized === 'false') return false;
+
+  const parsedNumber = Number(raw);
+  if (!Number.isNaN(parsedNumber) && Number.isInteger(parsedNumber)) {
+    return parsedNumber;
+  }
+
+  return raw;
+}
+
+const TRUST_PROXY = resolveTrustProxySetting();
 // FRONTEND_DIST can be overridden (e.g. by the Electron wrapper) so the backend
 // can serve the built frontend from an arbitrary absolute path.
 const FRONTEND_DIST = process.env.FRONTEND_DIST ?? '../frontend/dist';
