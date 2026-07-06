@@ -18,7 +18,7 @@ In einem 90-Minuten-Meeting alle Go-Live-Entscheidungen fixieren und Day-0 opera
 
 | Thema | Owner | Deadline | Vorschlag (Startwert) |
 | --- | --- | --- | --- |
-| URL-Modell (Subpath/Subdomain) | manuelangel | 10:15 | Subpath unter `https://beta.<domain>/apps/teleprompter/` |
+| URL-Modell (Subpath/Subdomain) | manuelangel | 10:15 | Subdomain `https://teleprompter.saarwood.ch/` |
 | Lizenzmodus (monitor/enforce) | manuelangel + GitHub Copilot | 10:15 | `monitor` fuer 7 Tage, danach Wechsel auf `enforce` |
 | Basic-Tier-Modell | manuelangel | 10:15 | Nur interne Upgrade-Hinweise, keine externen Ads zum Start |
 | Support-SLA/Servicezeiten | manuelangel | 10:15 | Erstreaktion <= 24h, Servicefenster 09:00-18:00 CET |

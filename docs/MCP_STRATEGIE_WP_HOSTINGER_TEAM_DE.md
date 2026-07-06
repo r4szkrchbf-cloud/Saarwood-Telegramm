@@ -66,7 +66,8 @@ Hinweis: Nur noetige Hostinger-Server aktivieren, damit Antworten fokussiert ble
 
 ## 5. WordPress API Basis + Bearer Token
 
-- Basis fuer Hostinger API ist bereits bekannt: `https://hpanel.hostinger.com/api`.
+- WordPress API Basis und Bearer-Token muessen WordPress-seitig definiert werden (getrennt von Hostinger).
+- Basis fuer Hostinger API ist bekannt: `https://hpanel.hostinger.com/api`.
 - Fuer WordPress API-Betrieb mit Bearer Token gilt dieselbe Regel: Token nur lokal setzen, nie committen.
 - Header-Muster:
 - `Authorization: Bearer <TOKEN>`

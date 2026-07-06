@@ -6,7 +6,7 @@ Ziel: Einmalige, saubere Inbetriebnahme auf Hostinger VPS mit reproduzierbaren C
 ## 0) Annahmen
 
 - OS: Ubuntu 24.04 LTS (oder 22.04 LTS)
-- Domain: `beta.example.com`
+- Domain: `teleprompter.saarwood.ch`
 - App-Pfad: `/srv/saarwood_telepromter`
 - Git-Remote: `git@github.com:r4szkrchbf-cloud/Saarwood-Telegramm.git`
 - Backend-Port intern: `4000`
@@ -88,7 +88,7 @@ sudo -u deploy -H nano /srv/saarwood_telepromter/.env.production
 
 Mindestens diese Werte korrekt setzen:
 
-- `CORS_ORIGIN=https://beta.example.com`
+- `CORS_ORIGIN=https://teleprompter.saarwood.ch`
 - `PORT=4000`
 - `FRONTEND_DIST=/srv/saarwood_telepromter/packages/frontend/dist`
 - `LICENSE_MODE=enforce` oder `monitor`
@@ -126,19 +126,19 @@ Config kopieren und Domain ersetzen:
 
 ```bash
 cp /srv/saarwood_telepromter/deploy/hostinger/nginx.teleprompter.conf /etc/nginx/sites-available/saarwood-teleprompter
-sed -i 's/beta.example.com/beta.example.com/g' /etc/nginx/sites-available/saarwood-teleprompter
+sed -i 's/beta.example.com/teleprompter.saarwood.ch/g' /etc/nginx/sites-available/saarwood-teleprompter
 ln -sf /etc/nginx/sites-available/saarwood-teleprompter /etc/nginx/sites-enabled/saarwood-teleprompter
 nginx -t
 systemctl reload nginx
 ```
 
-Hinweis: Wenn du eine echte Domain statt `beta.example.com` nutzt, ersetze sie in der Datei vor `nginx -t`.
+Hinweis: Falls sich die Domain spaeter aendert, ersetze sie in der Datei vor `nginx -t`.
 
 ## 7) TLS (Let's Encrypt)
 
 ```bash
 apt install -y certbot python3-certbot-nginx
-certbot --nginx -d beta.example.com --redirect -m admin@example.com --agree-tos -n
+certbot --nginx -d teleprompter.saarwood.ch --redirect -m admin@example.com --agree-tos -n
 systemctl reload nginx
 ```
 
@@ -159,20 +159,20 @@ apt install -y jq
 Oeffentliche Endpunkte testen:
 
 ```bash
-curl -fsS https://beta.example.com/apps/teleprompter/api/health | jq .
-curl -fsS https://beta.example.com/apps/teleprompter/api/support/info | jq .
+curl -fsS https://teleprompter.saarwood.ch/api/health | jq .
+curl -fsS https://teleprompter.saarwood.ch/api/support/info | jq .
 ```
 
 Projekt-Script nutzen:
 
 ```bash
 cd /srv/saarwood_telepromter
-ADMIN_API_KEY='<dein-admin-key>' bash deploy/hostinger/smoke-test.sh https://beta.example.com/apps/teleprompter
+ADMIN_API_KEY='<dein-admin-key>' bash deploy/hostinger/smoke-test.sh https://teleprompter.saarwood.ch
 ```
 
 ## 9) Go-Live-Checks (manuell im Browser)
 
-1. App laden: `https://beta.example.com/apps/teleprompter/`
+1. App laden: `https://teleprompter.saarwood.ch/`
 2. Output-only testen: `?view=prompter&output=1`
 3. Ticket-Flow testen (Settings > Support)
 4. Lizenzstatus testen (`/api/license/status`)
@@ -204,7 +204,7 @@ systemctl restart saarwood-teleprompter
 ## 12) Post-Go-Live Monitoring (erste 24h)
 
 ```bash
-watch -n 5 "curl -fsS https://beta.example.com/apps/teleprompter/api/health || echo HEALTH_FAIL"
+watch -n 5 "curl -fsS https://teleprompter.saarwood.ch/api/health || echo HEALTH_FAIL"
 ```
 
 ```bash
