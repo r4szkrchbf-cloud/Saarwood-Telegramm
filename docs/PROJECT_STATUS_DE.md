@@ -106,16 +106,16 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfue
 2. `recognition has already started`-Fehler untersuchen
 3. Nach Behebung erneut einen echten Langzeittest mit Nutzern laufen lassen
 
-1. Bundle-Groesse
+- Bundle-Groesse
 
 - Risiko: langsameres Initial-Load auf schwachen Clients.
 - Status: beobachtet, aber kein Blocker fuer MVP-LAN-Test.
 
-1. NDI produktiv noch nicht verifiziert
+- NDI produktiv noch nicht verifiziert
 
 - Risiko nur fuer Broadcast-Integrationsphase; fuer MVP-LAN nicht blockierend.
 
-1. UI-Editor Warnung (Tiptap Duplicate Extension)
+- UI-Editor Warnung (Tiptap Duplicate Extension)
 
 - Risiko: moegliche Inkonsistenzen in Editor-Funktionen bei spaeteren Erweiterungen.
 - Status: aktuell beobachtet, fuer MVP-LAN nicht blockierend.
