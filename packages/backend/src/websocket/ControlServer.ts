@@ -23,12 +23,13 @@ import type { WsMessage } from '../types';
 export class ControlServer {
   private wss: WebSocketServer;
   private clients = new Set<WebSocket>();
-  private state = {
-    isPlaying: false,
-    speed: 80,
-    position: 0,
-    direction: 'down' as 'down' | 'up',
-  };
+  private roomState = new Map<string, {
+    isPlaying: boolean;
+    speed: number;
+    position: number;
+    direction: 'down' | 'up';
+  }>();
+  private clientRoom = new Map<WebSocket, string>();
 
   constructor(httpServer: Server) {
     this.wss = new WebSocketServer({ server: httpServer, path: '/ws' });
@@ -38,13 +39,15 @@ export class ControlServer {
   private _init(): void {
     this.wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
       const clientIp = req.socket.remoteAddress ?? 'unknown';
-      console.log(`[WS] Client connected: ${clientIp}`);
+      const room = this._resolveRoom(req);
+      console.log(`[WS] Client connected: ${clientIp} (room=${room})`);
       this.clients.add(ws);
+      this.clientRoom.set(ws, room);
 
       // Send current state on connect
       this._send(ws, {
         type: 'SYNC_STATE',
-        payload: { ...this.state },
+        payload: { ...this._getRoomState(room) },
         timestamp: Date.now(),
       });
 
@@ -53,17 +56,20 @@ export class ControlServer {
       });
 
       ws.on('close', () => {
-        console.log(`[WS] Client disconnected: ${clientIp}`);
+        console.log(`[WS] Client disconnected: ${clientIp} (room=${room})`);
         this.clients.delete(ws);
+        this.clientRoom.delete(ws);
         this._broadcast(
           { type: 'CONTROLLER_DISCONNECTED', timestamp: Date.now() },
           ws,
+          room,
         );
       });
 
       ws.on('error', (err: Error) => {
         console.error('[WS] Client error:', err.message);
         this.clients.delete(ws);
+        this.clientRoom.delete(ws);
       });
     });
 
@@ -81,45 +87,48 @@ export class ControlServer {
       return;
     }
 
-    // Update server state for sync-on-connect
+    const room = this.clientRoom.get(sender) ?? 'global';
+    const state = this._getRoomState(room);
+
+    // Update per-room state for sync-on-connect
     switch (msg.type) {
       case 'PLAY':
-        this.state.isPlaying = true;
+        state.isPlaying = true;
         break;
       case 'PAUSE':
       case 'STOP':
-        this.state.isPlaying = false;
-        if (msg.type === 'STOP') this.state.position = 0;
+        state.isPlaying = false;
+        if (msg.type === 'STOP') state.position = 0;
         break;
       case 'SET_SPEED': {
         const p = msg.payload as { speed?: number } | undefined;
-        if (typeof p?.speed === 'number') this.state.speed = p.speed;
+        if (typeof p?.speed === 'number') state.speed = p.speed;
         break;
       }
       case 'SET_DIRECTION': {
         const p = msg.payload as { direction?: 'down' | 'up' } | undefined;
         if (p?.direction === 'down' || p?.direction === 'up') {
-          this.state.direction = p.direction;
+          state.direction = p.direction;
         }
         break;
       }
       case 'SET_POSITION': {
         const p = msg.payload as { position?: number } | undefined;
-        if (typeof p?.position === 'number') this.state.position = p.position;
+        if (typeof p?.position === 'number') state.position = p.position;
         break;
       }
       case 'HEARTBEAT':
         // Reply directly to sender with current state
         this._send(sender, {
           type: 'SYNC_STATE',
-          payload: { ...this.state },
+          payload: { ...state },
           timestamp: Date.now(),
         });
         return; // Do not broadcast heartbeats
     }
 
-    // Relay to all other clients
-    this._broadcast(msg, sender);
+    // Relay only within the same room
+    this._broadcast(msg, sender, room);
   }
 
   /** Broadcast a MOS update to all connected clients (called by MosHandler). */
@@ -135,14 +144,44 @@ export class ControlServer {
     this._broadcast({ type: 'SCRIPT_UPDATE', payload, timestamp: Date.now() });
   }
 
-  private _broadcast(msg: WsMessage, exclude?: WebSocket): void {
+  private _broadcast(msg: WsMessage, exclude?: WebSocket, room?: string): void {
     const data = JSON.stringify(msg);
     this.clients.forEach((client) => {
       if (client === exclude) return;
+      if (room && this.clientRoom.get(client) !== room) return;
       if (client.readyState === WebSocket.OPEN) {
         client.send(data);
       }
     });
+  }
+
+  private _resolveRoom(req: IncomingMessage): string {
+    try {
+      const parsed = new URL(req.url ?? '/ws', 'http://localhost');
+      const raw = (parsed.searchParams.get('room') ?? '').trim();
+      if (!raw) return 'global';
+      return raw.slice(0, 80);
+    } catch {
+      return 'global';
+    }
+  }
+
+  private _getRoomState(room: string): {
+    isPlaying: boolean;
+    speed: number;
+    position: number;
+    direction: 'down' | 'up';
+  } {
+    const existing = this.roomState.get(room);
+    if (existing) return existing;
+    const initial = {
+      isPlaying: false,
+      speed: 80,
+      position: 0,
+      direction: 'down' as 'down' | 'up',
+    };
+    this.roomState.set(room, initial);
+    return initial;
   }
 
   private _send(ws: WebSocket, msg: WsMessage): void {

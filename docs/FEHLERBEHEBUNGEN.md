@@ -440,6 +440,39 @@ Kontext: Vorbereitung der naechsten gemeinsamen Testsession inkl. frischer Gate-
 
 ---
 
+## Eintrag 2026-07-06 22:59 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Akutfix fuer Mehrnutzer-Kopplung und Scroll-Stottern im Livebetrieb.
+
+### Ausgangsproblem
+- Alle verbundenen Clients teilten dieselbe globale Teleprompter-Instanz (kein Session-Scope).
+- Hohe Sync-Frequenz und Echo-Traffic erhoehten Last/Jitter-Risiko.
+
+### Durchgefuehrte Schritte
+- Backend-WebSocket auf room-scoped Betrieb umgestellt (`?room=...`).
+- Serverzustand pro room isoliert (`SYNC_STATE` nicht mehr global).
+- Frontend-WebSocket um room/channel Steuerung erweitert.
+- App so angepasst, dass room in URL persistiert und Output-Fenster denselben room uebernimmt.
+- Output-only Clients von aktiver Ruecksynchronisierung entkoppelt (`SCRIPT_UPDATE`, `SETTINGS_UPDATE`, `SET_POSITION`).
+- Positions-Sync bei laufendem Scroll staerker gedrosselt.
+- Verifikation durch Build + Frontend-/Backend-Tests.
+
+### Ergebnis
+- Build: PASS
+- Frontend Tests: PASS (30/30)
+- Backend Tests: PASS (9/9)
+- Globales Cross-Session-Mirroring technisch aufgehoben.
+
+### Offene Punkte
+- Produktiver Live-Mehrclient-Smoke-Test mit zwei getrennten rooms steht als naechster Nachweis aus.
+- Optional: harte Controller-Only-Regel fuer `SET_POSITION` als zusaetzliche Sicherung.
+
+### Lessons Learned
+- Sessiongrenzen muessen explizit im Transportprotokoll und nicht nur im UI modelliert werden.
+- Output-/Viewer-Clients sollten passiv bleiben, um Steuerkanaele nicht unnötig zu belasten.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)

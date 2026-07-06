@@ -16,11 +16,13 @@ class WebSocketService {
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private reconnectDelay = 1000;   // ms – doubled on each failure (max 30 s)
   private readonly MAX_RECONNECT_DELAY = 30_000;
-  private url: string;
+  private baseUrl: string;
+  private channel: string;
   private _connected = false;
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(baseUrl: string, channel = 'global') {
+    this.baseUrl = baseUrl;
+    this.channel = channel;
   }
 
   // ─── Public API ────────────────────────────────────────────────────────────
@@ -43,6 +45,18 @@ class WebSocketService {
       this.ws = null;
     }
     this._connected = false;
+  }
+
+  setChannel(channel: string): void {
+    const next = channel.trim() || 'global';
+    if (next === this.channel) return;
+    this.channel = next;
+
+    // Reconnect immediately so socket isolation takes effect.
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.disconnect();
+      this.connect();
+    }
   }
 
   send<T>(type: WsMessageType, payload?: T): void {
@@ -74,7 +88,7 @@ class WebSocketService {
   private _openSocket(): void {
     if (this.ws && this.ws.readyState === WebSocket.CONNECTING) return;
 
-    const socket = new WebSocket(this.url);
+    const socket = new WebSocket(this._buildSocketUrl());
     this.ws = socket;
 
     try {
@@ -154,6 +168,16 @@ class WebSocketService {
       this.reconnectTimer = null;
     }
   }
+
+  private _buildSocketUrl(): string {
+    try {
+      const url = new URL(this.baseUrl);
+      url.searchParams.set('room', this.channel);
+      return url.toString();
+    } catch {
+      return `${this.baseUrl}?room=${encodeURIComponent(this.channel)}`;
+    }
+  }
 }
 
 // Derive backend WS URL from window.location so it works in any deployment
@@ -168,5 +192,13 @@ function buildWsUrl(): string {
   return `${proto}//${host}/ws`;
 }
 
-export const wsService = new WebSocketService(buildWsUrl());
+function resolveInitialRoom(): string {
+  if (typeof window === 'undefined') return 'global';
+  const params = new URLSearchParams(window.location.search);
+  const fromQuery = (params.get('room') ?? '').trim();
+  if (fromQuery) return fromQuery;
+  return 'global';
+}
+
+export const wsService = new WebSocketService(buildWsUrl(), resolveInitialRoom());
 export { WebSocketService };

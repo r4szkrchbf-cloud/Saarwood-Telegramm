@@ -1279,3 +1279,47 @@ Live-Tester-Runde fuer neue Features gemaess aktueller Beta-Tester-Checkliste do
 | ID | Schweregrad | Kurztext |
 |----|-------------|----------|
 | BUG-024 | Niedrig | Tiptap Warnung "duplicate underline" in Konsole, ohne Funktionsverlust |
+
+---
+
+## Runde 15 - 2026-07-06 20:59 UTC (Room-Isolation + Sync-Entlastung)
+
+### Ziel
+
+Akuten Live-Befund beheben und verifizieren:
+
+1. Keine globale Kopplung aller Nutzer mehr.
+2. Weniger Sync-Last zur Reduktion von Stottern/Jitter.
+
+### Durchgefuehrte technische Checks
+
+1. Build (Monorepo):
+	- `npm run build`
+	- Ergebnis: PASS
+
+2. Frontend-Tests:
+	- `npm run test --workspace=packages/frontend -- --run`
+	- Ergebnis: PASS (30/30)
+
+3. Backend-Tests:
+	- `npm run test --workspace=packages/backend -- --run`
+	- Ergebnis: PASS (9/9)
+
+### Umgesetzte Runtime-Fixes
+
+1. WebSocket-Routing ist jetzt room-scoped (`?room=...`).
+2. Backend-Zustand wird pro room gehalten (`SYNC_STATE` room-lokal).
+3. Output-only Clients senden keine Script-/Settings-/Positionsupdates.
+4. Positions-Sync bei laufendem Scroll wurde staerker gedrosselt.
+
+### Ergebnis Runde 15
+
+- Ergebnis: PASS (GRUEN)
+- Technischer Zielzustand fuer Isolation/Entlastung erreicht.
+- Naechster Pflichtschritt: Live-Mehrclient-Smoke-Test mit zwei getrennten rooms auf der Produktivdomain und Kurzprotokoll.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 15 | 2026-07-06 20:59 | Frontend 30/30, Backend 9/9 | PASS | GRUEN |

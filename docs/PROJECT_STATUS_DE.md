@@ -14,6 +14,13 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 
 ## 1.1 Delta-Update (neu)
 
+- Akuter Runtime-Fix umgesetzt (Mehrnutzer + Performance):
+  - WebSocket-Sync auf room-scoped Betrieb umgestellt (`?room=...`) statt globalem Shared-State.
+  - Zustandssynchronisierung (`SYNC_STATE`) erfolgt jetzt room-lokal.
+  - Output-only Clients senden keine Script-/Settings-/Positionsupdates mehr zurueck.
+  - Positions-Sync wurde staerker gedrosselt, um Lastspitzen und sichtbares Stottern zu reduzieren.
+  - Dokumentiert in `docs/STATUSBERICHT_MULTIROOM_PERFORMANCE_DE_2026-07-06.md`.
+
 - Live Public-MVP Basis erfolgreich umgesetzt:
   - VPS auf Linux-Basis neu aufgebaut und als Teleprompter-Ziel konfiguriert.
   - DNS fuer `teleprompter.saarwood.ch` auf produktive VPS-IP gesetzt.

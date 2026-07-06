@@ -150,25 +150,38 @@ function ensureUniqueSegmentIds(input: Script): Script {
 }
 
 export function App() {
-  const initialFlags = useMemo(() => {
+  const initialContext = useMemo(() => {
     if (typeof window === 'undefined') {
-      return { outputOnly: false, initialView: 'split' as ViewMode };
+      return { outputOnly: false, initialView: 'split' as ViewMode, room: 'global' };
     }
 
     const params = new URLSearchParams(window.location.search);
     const outputOnly = params.get('output') === '1';
+    let room = (params.get('room') ?? '').trim();
+    if (!room) {
+      room = `room-${Math.random().toString(36).slice(2, 10)}`;
+      params.set('room', room);
+      const nextQuery = params.toString();
+      const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash}`;
+      window.history.replaceState(null, '', nextUrl);
+    }
     const initialViewParam = params.get('view');
     const initialView: ViewMode =
       initialViewParam === 'editor' || initialViewParam === 'prompter' || initialViewParam === 'split'
         ? initialViewParam
         : 'split';
 
-    return { outputOnly, initialView: outputOnly ? 'prompter' : initialView };
+    return {
+      outputOnly,
+      initialView: outputOnly ? 'prompter' : initialView,
+      room,
+    };
   }, []);
 
-  const [viewMode, setViewMode] = useState<ViewMode>(initialFlags.initialView);
+  const [viewMode, setViewMode] = useState<ViewMode>(initialContext.initialView);
   const [showSettings, setShowSettings] = useState(false);
-  const isOutputOnly = initialFlags.outputOnly;
+  const isOutputOnly = initialContext.outputOnly;
+  const room = initialContext.room;
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -319,6 +332,7 @@ export function App() {
   // ─── WebSocket lifecycle ───────────────────────────────────────────────
 
   useEffect(() => {
+    wsService.setChannel(room);
     wsService.connect();
 
     const unsubPlay = wsService.on('PLAY', () => usePrompterStore.getState().play());
@@ -410,7 +424,7 @@ export function App() {
       clearInterval(pollTimer);
       wsService.disconnect();
     };
-  }, []);
+  }, [room]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -522,6 +536,7 @@ export function App() {
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 
   useEffect(() => {
+    if (isOutputOnly) return;
     // Skip if this exact lastModified was applied from a remote update
     if (script.lastModified === lastSyncedScriptModified.current) return;
     const timer = setTimeout(() => {
@@ -529,11 +544,12 @@ export function App() {
       lastSyncedScriptModified.current = script.lastModified;
     }, 500);
     return () => clearTimeout(timer);
-  }, [script]);
+  }, [script, isOutputOnly]);
 
   // ─── Broadcast display-settings changes to other WS clients (debounced) ──
 
   useEffect(() => {
+    if (isOutputOnly) return;
     const json = JSON.stringify(display);
     if (json === lastSyncedDisplayJson.current) return;
     const timer = setTimeout(() => {
@@ -541,7 +557,7 @@ export function App() {
       lastSyncedDisplayJson.current = json;
     }, 500);
     return () => clearTimeout(timer);
-  }, [display]);
+  }, [display, isOutputOnly]);
 
   // ─── Broadcast position changes to backend (throttled while playing) ─────
 
@@ -555,6 +571,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    if (isOutputOnly) return;
     if (!isPlaying) return;
     if (Math.abs(scrollPosition - lastSyncedPosition.current) < 1) return;
     if (positionSyncTimer.current) return;
@@ -564,15 +581,16 @@ export function App() {
       const latest = usePrompterStore.getState().scroll.position;
       wsService.send('SET_POSITION', { position: latest });
       lastSyncedPosition.current = latest;
-    }, 120);
-  }, [scrollPosition, isPlaying]);
+    }, 220);
+  }, [scrollPosition, isPlaying, isOutputOnly]);
 
   useEffect(() => {
+    if (isOutputOnly) return;
     if (isPlaying) return;
     if (Math.abs(scrollPosition - lastSyncedPosition.current) < 1) return;
     wsService.send('SET_POSITION', { position: scrollPosition });
     lastSyncedPosition.current = scrollPosition;
-  }, [scrollPosition, isPlaying]);
+  }, [scrollPosition, isPlaying, isOutputOnly]);
 
   // ─── Demo script initialisation ───────────────────────────────────────
 
@@ -608,7 +626,11 @@ export function App() {
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;
-    const url = `${window.location.origin}${window.location.pathname}?view=prompter&output=1`;
+    const params = new URLSearchParams();
+    params.set('view', 'prompter');
+    params.set('output', '1');
+    params.set('room', room);
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     window.open(url, 'saarwood-prompter-output', 'noopener,width=1400,height=900');
   };
 

@@ -81,6 +81,7 @@ All MVP features are fully unlocked for Beta testing.
 
 ### Added
 
+- New status report for runtime isolation/performance fixes: `docs/STATUSBERICHT_MULTIROOM_PERFORMANCE_DE_2026-07-06.md`.
 - Live-Setup Statusreport fuer Public-MVP-Betrieb auf Hostinger VPS: `docs/STATUSBERICHT_LIVE_SETUP_2026-07-06.md`.
 - Operationales Support-/Ticket-Runbook mit ClickUp- und Rollenmodell (Developer/Admin/Support): `docs/SUPPORT_TICKET_OPERATIONS_CLICKUP_DE.md`.
 - Voice diagnostics badge in prompter output with German runtime states (`AUS`, `Gemutet (Pause)`, `Startet`, `Hoert zu`, `Wartet`, `Keine Sprache`, `Fehler`).
@@ -95,6 +96,11 @@ All MVP features are fully unlocked for Beta testing.
 
 ### Changed
 
+- WebSocket synchronization is now room-scoped (`?room=...`) to prevent global cross-user coupling.
+- New output windows now inherit the same room identifier as the controller window.
+- `SYNC_STATE` behavior is room-local (state isolation per room).
+- Runtime sync traffic reduced: output-only clients no longer emit `SCRIPT_UPDATE`, `SETTINGS_UPDATE`, or `SET_POSITION`.
+- Position sync interval while playing was increased (more aggressive throttling) to reduce jitter and backend load.
 - Voice tracking execution is now transport-bound: ASR runs only while playback is active and is hard-muted during pause.
 - Prompter restart (`Prompter NeuStart`) now resets/reloads without forced autoplay.
 - Default demo content migrated to a German 4-segment speaker test script, including legacy English default-script detection.
@@ -107,6 +113,8 @@ All MVP features are fully unlocked for Beta testing.
 
 ### Fixed
 
+- Critical multi-client behavior: one user's teleprompter state no longer leaks into unrelated user sessions.
+- Runtime stutter risk reduced under multi-client load by lowering unnecessary WebSocket chatter.
 - `packages/electron`: added no-op `"test"` script so `npm test --workspaces` no longer fails with *"Missing script: test"*
 - Build blocker removed: invalid `ignoreDeprecations: "6.0"` entry removed from frontend/backend/electron TypeScript configs to restore reliable builds on the current toolchain.
 - Frontend test output noise reduced: Vitest now runs with a dedicated local storage file (`NODE_OPTIONS=--localstorage-file=./.vitest-localstorage`) so the Node localStorage experimental warning no longer appears in standard test runs.

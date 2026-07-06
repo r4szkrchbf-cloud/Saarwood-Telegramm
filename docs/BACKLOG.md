@@ -113,6 +113,32 @@ Referenz:
 - [ ] Datenschutz-/Consent-Bedarf fuer die gewaehlte Werbeform bewertet
 - [ ] Hostinger-Go-Live-Dokumentation verweist auf das finale Werbemodell
 
+### TICKET-028 · Teleprompter-Sessions isolieren (kein globales Shared State)
+
+**Prioritaet:** P0
+**Beschreibung:**
+Mehrere gleichzeitige Nutzer duerfen nicht dieselbe globale Teleprompter-Instanz teilen. Steuerbefehle, Script-Updates und Settings muessen pro Session/Room getrennt sein.
+
+**Akzeptanzkriterien:**
+- [ ] WebSocket-Verbindung nutzt Session-/Room-ID (z. B. Query-Parameter)
+- [ ] Backend broadcastet nur innerhalb derselben Session/Room
+- [ ] Neuer Client erhaelt nur den Zustand seiner Session/Room (kein fremder Zustand)
+- [ ] Output-Fenster uebernimmt beim Oeffnen dieselbe Session/Room wie Controller-Fenster
+- [ ] Manuelle 2-Client-Pruefung bestaetigt: Session A beeinflusst Session B nicht
+
+### TICKET-029 · Scroll-Stottern und Sync-Last im Livebetrieb reduzieren
+
+**Prioritaet:** P0
+**Beschreibung:**
+Das Scrollen stottert unter Last. Der Sync-Fluss muss entkoppelt und die Last reduziert werden, insbesondere bei mehreren verbundenen Clients.
+
+**Akzeptanzkriterien:**
+- [ ] Output-Only-Clients senden keine Script-/Settings-/Positions-Updates zurueck
+- [ ] Position-Sync wird gedrosselt (throttled/coalesced) und verursacht keine Echo-Schleifen
+- [ ] CPU-Last und Netzwerknachrichten sinken messbar in Mehrclient-Szenario
+- [ ] Scrollen bleibt visuell stabil bei mindestens 2 parallelen Session/Room-Instanzen
+- [ ] Kurztestprotokoll in `docs/TEST_MVP.md` ergaenzt (Szenario, Ergebnis, Auffaelligkeiten)
+
 ### TICKET-018 · Restproblem Speed-Slider-Sprung (nach Langzeittest beheben)
 
 **Prioritaet:** P0 (direkt nach Abschluss des Langzeittests)  
