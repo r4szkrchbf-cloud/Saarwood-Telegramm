@@ -6,6 +6,19 @@ Stand: 2026-07-06
 Team: manuelangel + GitHub Copilot (GPT-5.3-Codex)  
 Zweck: Sofort nutzbare Beispielbelegung fuer Brainstorming und Day-0.
 
+## 0. Konkreter Terminvorschlag (fix und sofort nutzbar)
+
+- Meeting-Termin (Vorschlag): 2026-07-07, 10:00-11:30
+- Format: 90 Minuten, Live-Call mit paralleler Doku-Pflege
+- Ziel am Ende: Verbindliche GO/NO-GO Entscheidung und Day-0 Termin
+
+### Timebox-Plan
+
+1. 10:00-10:15: Entscheide URL-Modell, Lizenzmodus, Basic-Modell.
+2. 10:15-10:45: Belege Day-0 Umsetzungscheckliste mit festen Deadlines.
+3. 10:45-11:10: Finalisiere Rollback- und Incident-Regeln.
+4. 11:10-11:30: Sign-off, GO/NO-GO und Kommunikation.
+
 ## 1. Rollenbelegung fuer 2 Personen
 
 | Rolle | Owner |
@@ -79,12 +92,12 @@ Regel: Wenn ein Punkt auf NEIN steht, kein Public Go-Live.
 - Entscheidung: GO / NO-GO
 - Offene Restpunkte: ____________________
 
-## 7. Empfohlener Ablauf fuer euch beide (90 Minuten)
+## 7. Meeting-Ablauf (fuer den vorgeschlagenen Termin)
 
-1. 0-15 min: Entscheidungen in Abschnitt 2 finalisieren.
-2. 15-45 min: Day-0 Umsetzungsschritte mit Terminen belegen.
-3. 45-70 min: Rollback und Incident-Regeln final beschliessen.
-4. 70-90 min: Go/No-Go Protokoll ausfuellen und naechsten Termin fixieren.
+1. 10:00-10:15: Entscheidungen in Abschnitt 2 finalisieren.
+2. 10:15-10:45: Day-0 Umsetzungsschritte mit festen Deadlines belegen.
+3. 10:45-11:10: Rollback und Incident-Regeln final beschliessen.
+4. 11:10-11:30: Go/No-Go Protokoll ausfuellen und Day-0 Startfenster fixieren.
 
 ## 8. Verknuepfte Dokumente
 
