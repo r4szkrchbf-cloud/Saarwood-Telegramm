@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback, type CSSProperties, type TouchEvent } from 'react';
+import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback, type CSSProperties } from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
 import { usePrompterStore } from './store/prompterStore';
@@ -247,12 +247,6 @@ export function App() {
   const [templateSearch, setTemplateSearch] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [newTemplateName, setNewTemplateName] = useState('');
-  const [isDesktopOrTabletLayout, setIsDesktopOrTabletLayout] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return window.matchMedia('(min-width: 681px)').matches;
-  });
-  const [chromeCollapsed, setChromeCollapsed] = useState(false);
-  const touchGestureStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
@@ -643,30 +637,6 @@ export function App() {
     }
   }, [licensePublicKeyPem, setLicensePublicKeyPem]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mediaQuery = window.matchMedia('(min-width: 681px)');
-    const handleChange = (event: MediaQueryListEvent) => {
-      setIsDesktopOrTabletLayout(event.matches);
-    };
-
-    setIsDesktopOrTabletLayout(mediaQuery.matches);
-
-    if (typeof mediaQuery.addEventListener === 'function') {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
-  }, []);
-
-  useEffect(() => {
-    if (!isDesktopOrTabletLayout) {
-      setChromeCollapsed(false);
-    }
-  }, [isDesktopOrTabletLayout]);
-
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 
   useEffect(() => {
@@ -755,47 +725,8 @@ export function App() {
     'app',
     display.darkMode ? 'dark-mode' : 'light-mode',
     `view-${viewMode}`,
-    chromeCollapsed && isDesktopOrTabletLayout ? 'ui-chrome-hidden' : '',
     isOutputOnly ? 'output-only' : '',
   ].join(' ');
-
-  const handleToggleChrome = useCallback(() => {
-    setChromeCollapsed((prev) => !prev);
-  }, []);
-
-  const handleWorkspaceTouchStart = useCallback((event: TouchEvent<HTMLElement>) => {
-    if (isOutputOnly || !isDesktopOrTabletLayout) return;
-    const touch = event.changedTouches[0];
-    if (!touch) return;
-    touchGestureStartRef.current = { x: touch.clientX, y: touch.clientY };
-  }, [isOutputOnly, isDesktopOrTabletLayout]);
-
-  const handleWorkspaceTouchEnd = useCallback((event: TouchEvent<HTMLElement>) => {
-    if (isOutputOnly || !isDesktopOrTabletLayout) return;
-
-    const start = touchGestureStartRef.current;
-    touchGestureStartRef.current = null;
-    if (!start) return;
-
-    const touch = event.changedTouches[0];
-    if (!touch) return;
-
-    const deltaX = touch.clientX - start.x;
-    const deltaY = touch.clientY - start.y;
-    const absX = Math.abs(deltaX);
-    const absY = Math.abs(deltaY);
-
-    if (absY < 44 || absY < absX) return;
-
-    if (!chromeCollapsed && start.y <= 120 && deltaY < -44) {
-      setChromeCollapsed(true);
-      return;
-    }
-
-    if (chromeCollapsed && start.y <= 90 && deltaY > 44) {
-      setChromeCollapsed(false);
-    }
-  }, [isOutputOnly, isDesktopOrTabletLayout, chromeCollapsed]);
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;
@@ -936,50 +867,18 @@ export function App() {
         </header>
       )}
 
-      {!isOutputOnly && isDesktopOrTabletLayout && (
-        <>
-          <button
-            type="button"
-            className={["chrome-toggle-btn", chromeCollapsed ? 'collapsed' : 'expanded'].join(' ')}
-            onClick={handleToggleChrome}
-            aria-label={chromeCollapsed ? 'Bedienleiste einblenden' : 'Bedienleiste ausblenden'}
-            title={chromeCollapsed ? 'Bedienleiste einblenden' : 'Bedienleiste ausblenden'}
-          >
-            {chromeCollapsed ? 'Leiste einblenden' : 'Leiste ausblenden'}
-          </button>
-
-          {chromeCollapsed && (
-            <button
-              type="button"
-              className="chrome-edge-handle"
-              onClick={() => setChromeCollapsed(false)}
-              aria-label="Bedienleiste per Wisch oder Klick einblenden"
-              title="Wischen nach unten oder klicken, um die Leiste einzublenden"
-            >
-              ⌄
-            </button>
-          )}
-        </>
-      )}
-
       {/* ─── Control bar ─────────────────────────────────────────────── */}
       {!isOutputOnly && (
-        <div className="app-control-row" aria-hidden={chromeCollapsed && isDesktopOrTabletLayout}>
-          <ControlPanel
-            viewMode={viewMode}
-            onOpenOutputWindow={handleOpenOutputWindow}
-            onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
-            isDesktopApp={isDesktopApp}
-          />
-        </div>
+        <ControlPanel
+          viewMode={viewMode}
+          onOpenOutputWindow={handleOpenOutputWindow}
+          onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
+          isDesktopApp={isDesktopApp}
+        />
       )}
 
       {/* ─── Main workspace ──────────────────────────────────────────── */}
-      <main
-        className="app-workspace"
-        onTouchStart={handleWorkspaceTouchStart}
-        onTouchEnd={handleWorkspaceTouchEnd}
-      >
+      <main className="app-workspace">
         {/* Editor pane */}
         {(viewMode === 'editor' || viewMode === 'split') && (
           <section className="editor-pane" aria-label="Script editor">

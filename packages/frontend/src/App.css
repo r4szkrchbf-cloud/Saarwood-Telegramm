@@ -9,7 +9,6 @@
   background: var(--bg);
   color: var(--text);
   position: relative;
-  transition: grid-template-rows 180ms ease;
 }
 
 .app.output-only {
@@ -32,77 +31,6 @@
   border-bottom: 1px solid #1a1a1a;
   color: #f3f3f3;
   height: 48px;
-  transition: max-height 180ms ease, opacity 160ms ease, padding 160ms ease, border-color 160ms ease;
-}
-
-.app-control-row {
-  grid-row: 2;
-  min-height: 0;
-  transition: max-height 180ms ease, opacity 160ms ease;
-}
-
-.app.ui-chrome-hidden {
-  grid-template-rows: 0 0 1fr;
-}
-
-.app.ui-chrome-hidden .app-header,
-.app.ui-chrome-hidden .app-control-row {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.app.ui-chrome-hidden .app-header {
-  padding-top: 0;
-  padding-bottom: 0;
-  border-bottom-color: transparent;
-}
-
-.chrome-toggle-btn {
-  position: fixed;
-  top: 8px;
-  right: 10px;
-  z-index: 120;
-  border: 1px solid #3a3a3a;
-  border-radius: 999px;
-  background: rgba(10, 10, 10, 0.92);
-  color: #f0f4ff;
-  padding: 0.25rem 0.62rem;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-}
-
-.chrome-toggle-btn:hover {
-  background: rgba(26, 31, 39, 0.96);
-}
-
-.chrome-toggle-btn.collapsed {
-  top: 10px;
-  background: rgba(19, 29, 43, 0.95);
-  border-color: #3f5167;
-}
-
-.chrome-edge-handle {
-  position: fixed;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 121;
-  border: 1px solid #34404f;
-  border-radius: 999px;
-  background: rgba(17, 22, 29, 0.96);
-  color: #e7edf8;
-  width: 36px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  line-height: 1;
 }
 
 .app-logo {
@@ -649,11 +577,6 @@
 }
 
 @media (max-width: 680px) {
-  .chrome-toggle-btn,
-  .chrome-edge-handle {
-    display: none;
-  }
-
   .app-workspace {
     min-height: 0;
   }

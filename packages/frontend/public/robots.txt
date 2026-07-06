@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teleprompter.saarwood.ch/sitemap.xml

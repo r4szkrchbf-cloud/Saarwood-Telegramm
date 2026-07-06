@@ -534,6 +534,31 @@ Kontext: Produktionshaertung fuer Reverse-Proxy-Betrieb und Support-Logschreiben
 - Reverse-Proxy-Setups brauchen konsistente Proxy-Vertrauenskonfiguration auf App-Ebene.
 - Schreibpfade fuer Laufzeitdaten muessen nach Deployments weiterhin dem Laufzeit-User gehoeren.
 
+---
+
+## Eintrag 2026-07-07 01:05 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Klarstellung zur angefragten Leistenoptimierung auf Tablet/Desktop.
+
+### Ausgangsproblem
+- Die zuvor implementierte einklappbare App-Leiste (Header/Controls) war ein Missverstaendnis.
+- Gewuenscht war die Browserleiste (Tabs/Adresszeile), nicht die interne App-Bedienleiste.
+
+### Durchgefuehrte Schritte
+- In-App-Einklappfunktion in Frontend-Layoutdateien vollstaendig rueckgaengig gemacht.
+- Nutzerdoku entsprechend korrigiert.
+- Browserleisten-Optimierung fuer Tablet und separates Smartphone-Layout als Backlog-Themen erfasst.
+
+### Ergebnis
+- UI-Verhalten ist wieder wie vor der missverstandenen Aenderung (stabiler letzter gewuenschter Stand).
+- Zukuenftige Layoutarbeit ist sauber als Folgeplanung dokumentiert.
+
+### Offene Punkte
+- Browser-UI kann in reiner Web-App technisch nicht hart ausgeblendet werden; fuer spaetere Versionen sind PWA-/Fullscreen-/Native-Strategien zu bewerten.
+
+### Lessons Learned
+- Bei "Leiste" immer explizit zwischen Browser-Chrome und App-UI unterscheiden, bevor UI-Verhalten geaendert wird.
+
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)
 Name: <Name/Agent>
 Kontext: [kurze Lagebeschreibung]

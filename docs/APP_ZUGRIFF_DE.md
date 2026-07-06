@@ -125,6 +125,11 @@ Phase-C Admin-API (nur mit `ADMIN_API_KEY`):
 - `POST /api/admin/license/unrevoke-generation` mit `{ "generation": "beta-v1" }`
 - `POST /api/admin/license/create` (mintet signierte Lizenz serverseitig)
 
+Hinweis Adminpanel:
+- Aktuell gibt es kein separates Web-Adminpanel mit eigener URL.
+- Der Admin-Zugriff erfolgt ueber die geschuetzten Admin-API-Endpunkte unter `/api/admin/license/*` mit `x-admin-api-key`.
+- Praxiszugriff fuer Produktion ist in `docs/ADMIN_LICENSE_CHEATSHEET_DE.md` dokumentiert.
+
 Support-API:
 - `GET /api/support/info`
 - `POST /api/support/tickets`

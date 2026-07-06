@@ -164,6 +164,8 @@ Automatische Anpassung des Prompter-Layouts an reale Bildschirmformate (Querform
 - [ ] Preset-Auswahl fuer definierte Zielgeraete in Settings verfuegbar
 - [ ] Presets speichern/verladen ueber bestehendes Profilsystem moeglich
 - [ ] Dokumentation mit empfohlenen Presets fuer Broadcast-Workflows vorhanden
+- [ ] Tablet-Strategie fuer mehr Nutzflaeche trotz Browser-UI bewertet (PWA-Install, Vollbild, optional Native-Wrapper) und als Bedienempfehlung dokumentiert
+- [ ] Separates Smartphone-Layoutkonzept fuer kommende Version definiert (kleinere Headerdichte, priorisierte Controls, schnellere Einhand-Bedienung)
 
 ### TICKET-020 · Tally-Schnittstelle (On-Air/Preview Status)
 
