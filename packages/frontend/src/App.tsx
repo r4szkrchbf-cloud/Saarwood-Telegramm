@@ -1,13 +1,21 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
-import { SettingsPanel } from './components/Settings/SettingsPanel';
-import { ScriptEditor } from './components/Editor/ScriptEditor';
 import { usePrompterStore } from './store/prompterStore';
 import { useHotkeyManager } from './hooks/useHotkeyManager';
 import { wsService } from './services/WebSocketService';
 import type { DisplaySettings, MosRunningOrder, PresenterProfile, ScrollState, Script, ScriptSegment } from './types';
 import './App.css';
+
+const SettingsPanel = lazy(async () => {
+  const module = await import('./components/Settings/SettingsPanel');
+  return { default: module.SettingsPanel };
+});
+
+const ScriptEditor = lazy(async () => {
+  const module = await import('./components/Editor/ScriptEditor');
+  return { default: module.ScriptEditor };
+});
 
 type ViewMode = 'editor' | 'prompter' | 'split';
 type LicenseMode = 'disabled' | 'monitor' | 'enforce';
@@ -766,15 +774,16 @@ export function App() {
             </div>
             <div className="editor-scroll">
               {script.segments.map((seg, idx) => (
-                <ScriptEditor
-                  key={`${seg.id}-${idx}`}
-                  segment={seg}
-                  isFirst={idx === 0}
-                  isLast={idx === script.segments.length - 1}
-                  onDelete={() => removeSegment(seg.id)}
-                  onMoveUp={() => reorderSegment(seg.id, 'up')}
-                  onMoveDown={() => reorderSegment(seg.id, 'down')}
-                />
+                <Suspense key={`${seg.id}-${idx}`} fallback={<div className="settings-loading">Editor wird geladen ...</div>}>
+                  <ScriptEditor
+                    segment={seg}
+                    isFirst={idx === 0}
+                    isLast={idx === script.segments.length - 1}
+                    onDelete={() => removeSegment(seg.id)}
+                    onMoveUp={() => reorderSegment(seg.id, 'up')}
+                    onMoveDown={() => reorderSegment(seg.id, 'down')}
+                  />
+                </Suspense>
               ))}
               <button
                 type="button"
@@ -806,7 +815,9 @@ export function App() {
       {/* ─── Settings drawer ─────────────────────────────────────────── */}
       {showSettings && !isOutputOnly && (
         <aside className="settings-drawer" aria-label="Settings">
-          <SettingsPanel onClose={() => setShowSettings(false)} />
+          <Suspense fallback={<div className="settings-loading">Settings werden geladen ...</div>}>
+            <SettingsPanel onClose={() => setShowSettings(false)} />
+          </Suspense>
         </aside>
       )}
     </div>

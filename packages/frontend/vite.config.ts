@@ -62,6 +62,22 @@ export default defineConfig({
       '/ws': { target: 'ws://localhost:4000', ws: true },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('/html2canvas/')) return 'html2canvas-vendor';
+          if (id.includes('/@tiptap/')) return 'tiptap';
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react-vendor';
+          if (id.includes('/zustand/')) return 'zustand-vendor';
+          if (id.includes('/dompurify/')) return 'dompurify-vendor';
+          if (id.includes('/jspdf/')) return 'jspdf-vendor';
+          return 'vendor';
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

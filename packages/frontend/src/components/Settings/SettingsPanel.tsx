@@ -8,7 +8,7 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
-type SettingsPage = 'settings' | 'io' | 'templates' | 'about';
+type SettingsPage = 'settings' | 'io' | 'templates' | 'support' | 'about';
 
 export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const display = usePrompterStore((s) => s.display);
@@ -654,7 +654,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   return (
     <div className="settings-panel" role="complementary" aria-label="Display settings">
       <div className="settings-header">
-        <h2 className="settings-title">Settings</h2>
+        <h2 className="settings-title">Einstellungsmenue</h2>
         <button
           type="button"
           className="settings-close-btn"
@@ -667,9 +667,10 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       </div>
 
       <div className="settings-page-switch" role="tablist" aria-label="Settings pages">
-        <button type="button" role="tab" aria-selected={activePage === 'settings'} className={['settings-page-btn', activePage === 'settings' ? 'active' : ''].join(' ')} onClick={() => setActivePage('settings')}>Einstellungen & Tier</button>
-        <button type="button" role="tab" aria-selected={activePage === 'io'} className={['settings-page-btn', activePage === 'io' ? 'active' : ''].join(' ')} onClick={() => setActivePage('io')}>Export & Import</button>
-        <button type="button" role="tab" aria-selected={activePage === 'templates'} className={['settings-page-btn', activePage === 'templates' ? 'active' : ''].join(' ')} onClick={() => setActivePage('templates')}>Telepromptervorlagen</button>
+        <button type="button" role="tab" aria-selected={activePage === 'settings'} className={['settings-page-btn', activePage === 'settings' ? 'active' : ''].join(' ')} onClick={() => setActivePage('settings')}>Einstellungen</button>
+        <button type="button" role="tab" aria-selected={activePage === 'io'} className={['settings-page-btn', activePage === 'io' ? 'active' : ''].join(' ')} onClick={() => setActivePage('io')}>Import / Export</button>
+        <button type="button" role="tab" aria-selected={activePage === 'templates'} className={['settings-page-btn', activePage === 'templates' ? 'active' : ''].join(' ')} onClick={() => setActivePage('templates')}>Vorlagen</button>
+        <button type="button" role="tab" aria-selected={activePage === 'support'} className={['settings-page-btn', activePage === 'support' ? 'active' : ''].join(' ')} onClick={() => setActivePage('support')}>Kontakt & Support</button>
         <button type="button" role="tab" aria-selected={activePage === 'about'} className={['settings-page-btn', activePage === 'about' ? 'active' : ''].join(' ')} onClick={() => setActivePage('about')}>Kurzbeschreibung</button>
       </div>
 
@@ -857,6 +858,134 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         </fieldset>
       )}
 
+      {activePage === 'support' && (
+        <section className="support-dashboard" aria-label="Kontakt und Support">
+          <div className="support-hero">
+            <div>
+              <h3>Kontakt & Support</h3>
+              <p>Ticket, Wissensquellen und Support-Logs an einem Ort, sauber nach Aufgaben getrennt.</p>
+            </div>
+            <div className="support-chip-row" aria-label="Support highlights">
+              <span className="support-chip">Ticket-ID per E-Mail</span>
+              <span className="support-chip">78h Log-Zugriff</span>
+              <span className="support-chip">Schnelle Doku-Links</span>
+            </div>
+          </div>
+
+          <div className="support-card-grid">
+            <article className="support-card support-card--contact">
+              <div className="support-card-head">
+                <div>
+                  <h4>Kontakt mit support. Ticketerstellung:</h4>
+                  <p>Wenn Chat nicht reicht, wird hier direkt ein Ticket mit Rueckmeldung erstellt.</p>
+                </div>
+                {supportInfo.chatUrl ? (
+                  <button type="button" className="support-ghost-btn" onClick={() => window.open(supportInfo.chatUrl as string, '_blank', 'noopener,noreferrer')}>
+                    {supportInfo.chatLabel}
+                  </button>
+                ) : (
+                  <span className="support-chip support-chip--muted">Chat nicht konfiguriert</span>
+                )}
+              </div>
+
+              <div className="settings-row support-form-row">
+                <label htmlFor="support-ticket-name">Name</label>
+                <input id="support-ticket-name" type="text" value={ticketName} onChange={(e) => setTicketName(e.target.value)} className="support-input" placeholder="Ihr Name" />
+              </div>
+              <div className="settings-row support-form-row">
+                <label htmlFor="support-ticket-email">E-Mail</label>
+                <input id="support-ticket-email" type="email" value={ticketEmail} onChange={(e) => setTicketEmail(e.target.value)} className="support-input" placeholder="name@domain.tld" />
+              </div>
+              <div className="settings-row support-form-row">
+                <label htmlFor="support-ticket-subject">Betreff</label>
+                <input id="support-ticket-subject" type="text" value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)} className="support-input" placeholder="Kurzer Betreff" />
+              </div>
+              <div className="settings-row support-form-row support-message-row">
+                <label htmlFor="support-ticket-message">Beschreibung</label>
+                <textarea id="support-ticket-message" value={ticketMessage} onChange={(e) => setTicketMessage(e.target.value)} className="support-textarea" placeholder="Was ist passiert?" rows={4} />
+              </div>
+              <div className="support-card-footer">
+                <button type="button" className="btn-small btn-small--primary" onClick={handleCreateSupportTicket} disabled={supportSending}>
+                  {supportSending ? 'Sende Ticket ...' : 'Support-Ticket erstellen'}
+                </button>
+                {supportStatus && <span className="support-status">{supportStatus}</span>}
+              </div>
+            </article>
+
+            <article className="support-card support-card--resources">
+              <div className="support-card-head">
+                <div>
+                  <h4>Hilfe & Unterlagen</h4>
+                  <p>Wichtige Links fuer Support, Tester und Betrieb.</p>
+                </div>
+              </div>
+
+              <div className="support-link-list">
+                {supportInfo.handbookUrl && (
+                  <a className="support-link-card" href={supportInfo.handbookUrl} target="_blank" rel="noreferrer">
+                    <span>Handbuch</span>
+                    <small>Technische Referenz und Abläufe</small>
+                  </a>
+                )}
+                {supportInfo.testerGuideUrl && (
+                  <a className="support-link-card" href={supportInfo.testerGuideUrl} target="_blank" rel="noreferrer">
+                    <span>Live-Tester Guide</span>
+                    <small>Checkliste fuer Beta-Feedback</small>
+                  </a>
+                )}
+                {supportInfo.testerFormUrl && (
+                  <a className="support-link-card" href={supportInfo.testerFormUrl} target="_blank" rel="noreferrer">
+                    <span>Testerformular</span>
+                    <small>Formular fuer Rueckmeldungen</small>
+                  </a>
+                )}
+              </div>
+            </article>
+
+            <article className="support-card support-card--logs">
+              <div className="support-card-head">
+                <div>
+                  <h4>Support-Logs</h4>
+                  <p>Nur fuer Support: letzte 78 Stunden Client-Logs abrufen.</p>
+                </div>
+                <span className="support-chip">Zugriff geschuetzt</span>
+              </div>
+
+              <div className="settings-row support-form-row">
+                <label htmlFor="support-access-key">Support-Key</label>
+                <input
+                  id="support-access-key"
+                  type="password"
+                  value={supportAccessKey}
+                  onChange={(e) => setSupportAccessKey(e.target.value)}
+                  className="support-input"
+                  placeholder="Support API Key"
+                />
+              </div>
+              <div className="support-card-footer">
+                <button type="button" className="btn-small btn-small--primary" onClick={handleLoadSupportLogs} disabled={supportLogsLoading}>
+                  {supportLogsLoading ? 'Lade ...' : 'Logs laden (78h)'}
+                </button>
+                <button type="button" className="btn-small" onClick={handleDownloadSupportLogs} disabled={supportLogs.length === 0}>
+                  Logs als TXT herunterladen
+                </button>
+              </div>
+              {supportLogsStatus && <p className="support-status support-status--block">{supportLogsStatus}</p>}
+              {supportLogs.length > 0 && (
+                <div className="support-log-view" role="region" aria-label="Support-Log Ausgabe">
+                  <pre>
+                    {supportLogs.map((log) => {
+                      const details = log.details ? ` | ${log.details}` : '';
+                      return `[${log.createdAt}] ${log.level.toUpperCase()} ${log.source}: ${log.message}${details}`;
+                    }).join('\n')}
+                  </pre>
+                </div>
+              )}
+            </article>
+          </div>
+        </section>
+      )}
+
       {activePage === 'about' && (
         <section className="settings-short-about" aria-label="Kurze App-Beschreibung">
           <h3>Kurzbeschreibung</h3>
@@ -882,81 +1011,6 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <li>F: Vollbild umschalten</li>
             <li>V: Voice ON (nur Expert), M: Voice OFF (nur Expert)</li>
           </ul>
-
-          <fieldset className="settings-group">
-            <legend>Kontakt mit support. Ticketerstellung:</legend>
-            <div className="settings-row support-row">
-              <span className="support-label">Direkt-Chat</span>
-              {supportInfo.chatUrl ? (
-                <button type="button" className="btn-small" onClick={() => window.open(supportInfo.chatUrl as string, '_blank', 'noopener,noreferrer')}>
-                  {supportInfo.chatLabel}
-                </button>
-              ) : (
-                <span className="settings-value support-muted">Chat aktuell nicht konfiguriert</span>
-              )}
-            </div>
-
-            <div className="settings-row support-form-row">
-              <label htmlFor="support-ticket-name">Name</label>
-              <input id="support-ticket-name" type="text" value={ticketName} onChange={(e) => setTicketName(e.target.value)} className="support-input" placeholder="Ihr Name" />
-            </div>
-            <div className="settings-row support-form-row">
-              <label htmlFor="support-ticket-email">E-Mail</label>
-              <input id="support-ticket-email" type="email" value={ticketEmail} onChange={(e) => setTicketEmail(e.target.value)} className="support-input" placeholder="name@domain.tld" />
-            </div>
-            <div className="settings-row support-form-row">
-              <label htmlFor="support-ticket-subject">Betreff</label>
-              <input id="support-ticket-subject" type="text" value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)} className="support-input" placeholder="Kurzer Betreff" />
-            </div>
-            <div className="settings-row support-form-row support-message-row">
-              <label htmlFor="support-ticket-message">Beschreibung</label>
-              <textarea id="support-ticket-message" value={ticketMessage} onChange={(e) => setTicketMessage(e.target.value)} className="support-textarea" placeholder="Was ist passiert?" rows={4} />
-            </div>
-            <div className="settings-row support-row">
-              <button type="button" className="btn-small" onClick={handleCreateSupportTicket} disabled={supportSending}>
-                {supportSending ? 'Sende Ticket ...' : 'Support-Ticket erstellen'}
-              </button>
-              {supportStatus && <span className="support-status">{supportStatus}</span>}
-            </div>
-          </fieldset>
-
-          <fieldset className="settings-group">
-            <legend>Support-Log Zugriff (nur Support, letzte 78 Stunden)</legend>
-            <div className="settings-row support-form-row">
-              <label htmlFor="support-access-key">Support-Key</label>
-              <input
-                id="support-access-key"
-                type="password"
-                value={supportAccessKey}
-                onChange={(e) => setSupportAccessKey(e.target.value)}
-                className="support-input"
-                placeholder="Support API Key"
-              />
-            </div>
-            <div className="settings-row segment-io-actions">
-              <button type="button" className="btn-small" onClick={handleLoadSupportLogs} disabled={supportLogsLoading}>
-                {supportLogsLoading ? 'Lade ...' : 'Logs laden (78h)'}
-              </button>
-              <button type="button" className="btn-small" onClick={handleDownloadSupportLogs} disabled={supportLogs.length === 0}>
-                Logs als TXT herunterladen
-              </button>
-            </div>
-            {supportLogsStatus && (
-              <div className="settings-row">
-                <span className="settings-value segment-io-status">{supportLogsStatus}</span>
-              </div>
-            )}
-            {supportLogs.length > 0 && (
-              <div className="support-log-view" role="region" aria-label="Support-Log Ausgabe">
-                <pre>
-                  {supportLogs.map((log) => {
-                    const details = log.details ? ` | ${log.details}` : '';
-                    return `[${log.createdAt}] ${log.level.toUpperCase()} ${log.source}: ${log.message}${details}`;
-                  }).join('\n')}
-                </pre>
-              </div>
-            )}
-          </fieldset>
         </section>
       )}
     </div>
