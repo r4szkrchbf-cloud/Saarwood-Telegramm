@@ -8,6 +8,7 @@ describe('prompterStore', () => {
       scroll: { isPlaying: false, speed: 80, position: 0, direction: 'down' },
       script: { id: 'test', title: 'Test', segments: [], lastModified: 0 },
       profiles: [],
+      projectTitlePresets: [],
       activeProfileId: null,
     });
   });
@@ -120,6 +121,8 @@ describe('prompterStore', () => {
         fontFamily: 'serif',
         textColor: '#fff',
         backgroundColor: '#000',
+        projectTitleFontSize: 18,
+        projectTitleTextColor: '#ffffff',
         lineHeight: 1.8,
         textAlign: 'center' as const,
         darkMode: true,
@@ -177,6 +180,25 @@ describe('prompterStore', () => {
       usePrompterStore.getState().saveProfile(mockProfile);
       usePrompterStore.getState().renameProfile('p1', 'New Name');
       expect(usePrompterStore.getState().profiles[0].name).toBe('New Name');
+    });
+  });
+
+  describe('project title presets', () => {
+    it('saves a project title preset', () => {
+      usePrompterStore.getState().saveProjectTitlePreset('Morgenmagazin');
+      expect(usePrompterStore.getState().projectTitlePresets).toHaveLength(1);
+    });
+
+    it('applies a project title preset to the script title', () => {
+      usePrompterStore.getState().saveProjectTitlePreset('Abendshow');
+      const presetId = usePrompterStore.getState().projectTitlePresets[0].id;
+      usePrompterStore.getState().applyProjectTitlePreset(presetId);
+      expect(usePrompterStore.getState().script.title).toBe('Abendshow');
+    });
+
+    it('imports a project title list without duplicates', () => {
+      usePrompterStore.getState().importProjectTitlePresets(['Tagesschau', 'Tagesschau', 'Sportstudio']);
+      expect(usePrompterStore.getState().projectTitlePresets).toHaveLength(2);
     });
   });
 });

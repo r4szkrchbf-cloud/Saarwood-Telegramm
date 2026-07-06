@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { usePrompterStore } from '../../store/prompterStore';
 import { speechService } from '../../services/SpeechRecognitionService';
-import type { PresenterProfile } from '../../types';
+import type { PresenterProfile, ProjectTitlePreset } from '../../types';
 import './SettingsPanel.css';
 
 interface SettingsPanelProps {
@@ -41,6 +41,8 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const speechInputId = useId();
   const speechSensitivityId = useId();
   const profileNameId = useId();
+  const projectTitleFontSizeId = useId();
+  const projectTitleTextColorId = useId();
 
   const [audioInputs, setAudioInputs] = useState<MediaDeviceInfo[]>([]);
   const [isCalibrating, setIsCalibrating] = useState(false);
@@ -65,6 +67,10 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [templateCreateName, setTemplateCreateName] = useState('');
   const [templateNameDrafts, setTemplateNameDrafts] = useState<Record<string, string>>({});
   const [templateIoInfo, setTemplateIoInfo] = useState('');
+  const [projectTitleCreateName, setProjectTitleCreateName] = useState('');
+  const [projectTitleSearch, setProjectTitleSearch] = useState('');
+  const [projectTitleDrafts, setProjectTitleDrafts] = useState<Record<string, string>>({});
+  const [projectTitleIoInfo, setProjectTitleIoInfo] = useState('');
   const [supportAccessKey, setSupportAccessKey] = useState('');
   const [supportLogs, setSupportLogs] = useState<Array<{ createdAt: string; level: string; source: string; message: string; details?: string }>>([]);
   const [supportLogsStatus, setSupportLogsStatus] = useState('');
@@ -72,10 +78,17 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [activePage, setActivePage] = useState<SettingsPage>('settings');
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const templateImportInputRef = useRef<HTMLInputElement | null>(null);
+  const projectTitleImportInputRef = useRef<HTMLInputElement | null>(null);
 
   const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
   const canManageTemplates = tier !== 'basic';
   const canUseExpertTemplateTools = tier === 'expert';
+  const projectTitlePresets = usePrompterStore((s) => s.projectTitlePresets);
+  const saveProjectTitlePreset = usePrompterStore((s) => s.saveProjectTitlePreset);
+  const renameProjectTitlePreset = usePrompterStore((s) => s.renameProjectTitlePreset);
+  const deleteProjectTitlePreset = usePrompterStore((s) => s.deleteProjectTitlePreset);
+  const applyProjectTitlePreset = usePrompterStore((s) => s.applyProjectTitlePreset);
+  const importProjectTitlePresets = usePrompterStore((s) => s.importProjectTitlePresets);
 
   const escapeHtmlText = useCallback((text: string): string => text
     .replaceAll('&', '&amp;')
@@ -218,6 +231,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     return profiles.filter((p) => p.name.toLowerCase().includes(q));
   }, [profiles, templateSearch]);
 
+  const filteredProjectTitlePresets = useMemo(() => {
+    const q = projectTitleSearch.trim().toLowerCase();
+    return [...projectTitlePresets]
+      .filter((preset) => !q || preset.name.toLowerCase().includes(q))
+      .sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
+  }, [projectTitlePresets, projectTitleSearch]);
+
   const htmlToPlain = useCallback((html: string): string => {
     if (typeof window === 'undefined') {
       return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -311,6 +331,84 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     setTemplateCreateName('');
     postClientLog({ level: 'info', source: 'template', message: `Template created: ${name}` });
   }, [canManageTemplates, display, script, saveProfile, templateCreateName, postClientLog]);
+
+  const handleCreateProjectTitlePreset = useCallback(() => {
+    if (!canUseExpertTemplateTools) return;
+    const nextName = projectTitleCreateName.trim() || script.title.trim();
+    if (!nextName) return;
+    saveProjectTitlePreset(nextName);
+    setProjectTitleCreateName('');
+    setProjectTitleIoInfo(`Projekt-/Sendungsname gespeichert: ${nextName}`);
+    postClientLog({ level: 'info', source: 'project-title', message: `Project title saved: ${nextName}` });
+  }, [canUseExpertTemplateTools, postClientLog, projectTitleCreateName, saveProjectTitlePreset, script.title]);
+
+  const handleRenameProjectTitlePreset = useCallback((id: string) => {
+    if (!canUseExpertTemplateTools) return;
+    const nextName = projectTitleDrafts[id]?.trim();
+    if (!nextName) return;
+    renameProjectTitlePreset(id, nextName);
+    setProjectTitleIoInfo(`Projekt-/Sendungsname umbenannt: ${nextName}`);
+  }, [canUseExpertTemplateTools, projectTitleDrafts, renameProjectTitlePreset]);
+
+  const handleDeleteProjectTitlePreset = useCallback((id: string) => {
+    if (!canUseExpertTemplateTools) return;
+    deleteProjectTitlePreset(id);
+    setProjectTitleIoInfo('Projekt-/Sendungsname geloescht.');
+  }, [canUseExpertTemplateTools, deleteProjectTitlePreset]);
+
+  const handleApplyProjectTitlePreset = useCallback((id: string) => {
+    if (!canUseExpertTemplateTools) return;
+    applyProjectTitlePreset(id);
+    setProjectTitleIoInfo('Projekt-/Sendungsname angewendet.');
+  }, [applyProjectTitlePreset, canUseExpertTemplateTools]);
+
+  const handleImportProjectTitleClick = useCallback(() => {
+    projectTitleImportInputRef.current?.click();
+  }, []);
+
+  const parseProjectTitleCsv = useCallback((raw: string) => {
+    const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    if (rows.length === 0) return [] as string[];
+    const values = rows.map((line) => line.match(/("(?:[^"]|"")*"|[^,;]+)/g)?.map((col) =>
+      col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
+    ) ?? []);
+
+    const header = values[0].map((value) => value.toLowerCase());
+    const titleIndex = header.findIndex((value) => value === 'title' || value === 'name' || value === 'projekt' || value === 'sendung');
+    const dataRows = titleIndex >= 0 ? values.slice(1) : values;
+    return dataRows
+      .map((cols) => {
+        if (titleIndex >= 0) return cols[titleIndex] ?? '';
+        return cols[0] ?? '';
+      })
+      .map((name) => name.trim())
+      .filter(Boolean);
+  }, []);
+
+  const handleImportProjectTitleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!canUseExpertTemplateTools) {
+      if (e.target) e.target.value = '';
+      return;
+    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const raw = await file.text();
+      const lowerName = file.name.toLowerCase();
+      const names = lowerName.endsWith('.csv')
+        ? parseProjectTitleCsv(raw)
+        : raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      if (names.length === 0) throw new Error('empty-project-title-import');
+      importProjectTitlePresets(names);
+      setProjectTitleIoInfo(`Projekt-/Sendungsnamen importiert: ${names.length}`);
+      postClientLog({ level: 'info', source: 'project-title', message: `Imported ${names.length} project titles` });
+    } catch {
+      setProjectTitleIoInfo('Projekt-/Sendungsnamen konnten nicht importiert werden. Bitte CSV oder TXT pruefen.');
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  }, [canUseExpertTemplateTools, importProjectTitlePresets, parseProjectTitleCsv, postClientLog]);
 
   const handleRenameTemplate = useCallback((id: string) => {
     if (!canManageTemplates) return;
@@ -992,6 +1090,26 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <div className="settings-row">
               <label><input type="checkbox" checked={display.darkMode} onChange={(e) => setDisplay({ darkMode: e.target.checked })} />Dark mode (Director UI)</label>
             </div>
+            {tier !== 'basic' && (
+              <>
+                <div className="settings-row">
+                  <label><input type="checkbox" checked={display.showProjectTitle} onChange={(e) => setDisplay({ showProjectTitle: e.target.checked })} />Projekt-/Sendungsname anzeigen</label>
+                </div>
+                {display.showProjectTitle && (
+                  <>
+                    <div className="settings-row">
+                      <label htmlFor={projectTitleFontSizeId}>Projektname Groesse</label>
+                      <input id={projectTitleFontSizeId} type="range" min={12} max={40} step={1} value={display.projectTitleFontSize} onChange={(e) => setDisplay({ projectTitleFontSize: Number(e.target.value) })} />
+                      <span className="settings-value">{display.projectTitleFontSize}px</span>
+                    </div>
+                    <div className="settings-row">
+                      <label htmlFor={projectTitleTextColorId}>Projektname Farbe</label>
+                      <input id={projectTitleTextColorId} type="color" value={display.projectTitleTextColor} onChange={(e) => setDisplay({ projectTitleTextColor: e.target.value })} />
+                    </div>
+                  </>
+                )}
+              </>
+            )}
             <div className="settings-row">
               {tier !== 'basic' ? (
                 <label><input type="checkbox" checked={display.cueMarkerEnabled} onChange={(e) => setDisplay({ cueMarkerEnabled: e.target.checked })} />Cue marker</label>
@@ -1183,6 +1301,69 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
               <div className="settings-row">
                 <button type="button" className="btn-small" onClick={handleLoadGermanTestScript}>Deutschen 4-Segment-Testtext laden</button>
               </div>
+              {canUseExpertTemplateTools && (
+                <>
+                  <h4 className="settings-subheading">Projekt- / Sendungsnamen</h4>
+                  <p className="settings-help-text">Expert: Titelbibliothek speichern, sortiert verwalten und per CSV/TXT importieren.</p>
+                  <div className="settings-row">
+                    <label htmlFor="project-title-create-name">Neu anlegen</label>
+                    <input
+                      id="project-title-create-name"
+                      type="text"
+                      className="profile-name-input"
+                      placeholder="Projekt- oder Sendungsname"
+                      value={projectTitleCreateName}
+                      onChange={(e) => setProjectTitleCreateName(e.target.value)}
+                    />
+                    <button type="button" className="btn-small btn-small--primary" onClick={handleCreateProjectTitlePreset} disabled={!(projectTitleCreateName.trim() || script.title.trim())}>
+                      Speichern
+                    </button>
+                  </div>
+                  <div className="settings-row">
+                    <label htmlFor="project-title-search">Suchen</label>
+                    <input id="project-title-search" type="search" className="profile-name-input" placeholder="Projekt-/Sendungsname durchsuchen" value={projectTitleSearch} onChange={(e) => setProjectTitleSearch(e.target.value)} />
+                  </div>
+                  <div className="settings-row template-import-row">
+                    <button type="button" className="btn-small" onClick={handleImportProjectTitleClick}>CSV/TXT Liste importieren</button>
+                    <input ref={projectTitleImportInputRef} type="file" accept="text/csv,text/plain,.csv,.txt" onChange={handleImportProjectTitleFile} className="segment-import-input" aria-label="Projekt- oder Sendungsnamen importieren" />
+                    {projectTitleIoInfo && <span className="settings-value segment-io-status">{projectTitleIoInfo}</span>}
+                  </div>
+                  <div className="template-table-wrap" role="region" aria-label="Liste Projekt- und Sendungsnamen">
+                    <table className="template-table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Status</th>
+                          <th>Aktionen</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredProjectTitlePresets.map((preset: ProjectTitlePreset) => (
+                          <tr key={preset.id} className={script.title === preset.name ? 'active' : ''}>
+                            <td>
+                              <input
+                                type="text"
+                                className="template-name-input"
+                                value={projectTitleDrafts[preset.id] ?? preset.name}
+                                onChange={(e) => setProjectTitleDrafts((current) => ({ ...current, [preset.id]: e.target.value }))}
+                                aria-label={`Projektname von ${preset.name}`}
+                              />
+                            </td>
+                            <td>{script.title === preset.name ? 'Aktiv' : '-'}</td>
+                            <td>
+                              <div className="template-actions">
+                                <button type="button" className="btn-small" onClick={() => handleApplyProjectTitlePreset(preset.id)}>Anwenden</button>
+                                <button type="button" className="btn-small" onClick={() => handleRenameProjectTitlePreset(preset.id)} disabled={!projectTitleDrafts[preset.id]?.trim() || projectTitleDrafts[preset.id] === preset.name}>Name speichern</button>
+                                <button type="button" className="btn-small btn-small--danger" onClick={() => handleDeleteProjectTitlePreset(preset.id)}>Loeschen</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <p className="settings-value">Vorlagenverwaltung ist im Basic-Tier deaktiviert.</p>

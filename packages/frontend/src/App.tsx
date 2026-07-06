@@ -194,6 +194,8 @@ export function App() {
   const textAlign = usePrompterStore((s) => s.display.textAlign);
   const darkMode = usePrompterStore((s) => s.display.darkMode);
   const showProjectTitle = usePrompterStore((s) => s.display.showProjectTitle);
+  const projectTitleFontSize = usePrompterStore((s) => s.display.projectTitleFontSize);
+  const projectTitleTextColor = usePrompterStore((s) => s.display.projectTitleTextColor);
   const cueMarkerEnabled = usePrompterStore((s) => s.display.cueMarkerEnabled);
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const display = useMemo<DisplaySettings>(() => ({
@@ -204,6 +206,8 @@ export function App() {
     fontFamily,
     textColor,
     backgroundColor,
+    projectTitleFontSize,
+    projectTitleTextColor,
     lineHeight,
     textAlign,
     darkMode,
@@ -218,6 +222,8 @@ export function App() {
     fontFamily,
     textColor,
     backgroundColor,
+    projectTitleFontSize,
+    projectTitleTextColor,
     lineHeight,
     textAlign,
     darkMode,
@@ -784,9 +790,9 @@ export function App() {
             {/* Script title */}
             <div className="editor-title-bar">
               {tier !== 'basic' && showProjectTitle && (
-                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige">
+                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={{ color: projectTitleTextColor }}>
                   <span className="project-title-banner-label">Projekt / Sendung</span>
-                  <span className="project-title-banner-value">{script.title || 'Unbenanntes Projekt'}</span>
+                  <span className="project-title-banner-value" style={{ fontSize: `${projectTitleFontSize}px` }}>{script.title || 'Unbenanntes Projekt'}</span>
                 </div>
               )}
               <input

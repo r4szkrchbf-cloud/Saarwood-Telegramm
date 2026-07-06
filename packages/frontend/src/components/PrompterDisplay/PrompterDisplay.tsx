@@ -41,6 +41,8 @@ export function PrompterDisplay() {
   const cueMarkerEnabled = usePrompterStore((s) => s.display.cueMarkerEnabled);
   const cueMarkerPosition = usePrompterStore((s) => s.display.cueMarkerPosition);
   const showProjectTitle = usePrompterStore((s) => s.display.showProjectTitle);
+  const projectTitleFontSize = usePrompterStore((s) => s.display.projectTitleFontSize);
+  const projectTitleTextColor = usePrompterStore((s) => s.display.projectTitleTextColor);
   const scriptTitle = usePrompterStore((s) => s.script.title);
   const scriptSegments = usePrompterStore((s) => s.script.segments);
   const tier = usePrompterStore((s) => s.tier);
@@ -312,9 +314,9 @@ export function PrompterDisplay() {
           </div>
 
           {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
-            <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname">
+            <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={{ color: projectTitleTextColor }}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
-              <strong>{scriptTitle}</strong>
+              <strong style={{ fontSize: `${projectTitleFontSize}px` }}>{scriptTitle}</strong>
             </div>
           )}
 

@@ -24,6 +24,8 @@ export interface DisplaySettings {
   fontFamily: string;
   textColor: string;
   backgroundColor: string;
+  projectTitleFontSize: number;
+  projectTitleTextColor: string;
   lineHeight: number;       // multiplier, e.g. 1.5
   textAlign: 'left' | 'center' | 'right';
   darkMode: boolean;        // director/editor UI
@@ -59,6 +61,12 @@ export interface PresenterProfile {
   name: string;
   displaySettings: DisplaySettings;
   scriptTemplate?: Script;
+}
+
+export interface ProjectTitlePreset {
+  id: string;
+  name: string;
+  createdAt: number;
 }
 
 // ─── WebSocket Messages ───────────────────────────────────────────────────────

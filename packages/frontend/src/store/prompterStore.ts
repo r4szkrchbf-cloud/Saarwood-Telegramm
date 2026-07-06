@@ -6,6 +6,7 @@ import type {
   Script,
   ScriptSegment,
   PresenterProfile,
+  ProjectTitlePreset,
   RedundancyState,
   NdiAdapterStatus,
   AppTier,
@@ -21,6 +22,8 @@ const DEFAULT_DISPLAY_SETTINGS: DisplaySettings = {
   fontFamily: 'sans-serif',
   textColor: '#ffffff',
   backgroundColor: '#000000',
+  projectTitleFontSize: 18,
+  projectTitleTextColor: '#f3f3f3',
   lineHeight: 1.6,
   textAlign: 'center',
   darkMode: true,
@@ -138,6 +141,14 @@ interface PrompterStore {
   addSegment: (segment: ScriptSegment) => void;
   removeSegment: (id: string) => void;
   reorderSegment: (id: string, direction: 'up' | 'down') => void;
+
+  // Project / show titles
+  projectTitlePresets: ProjectTitlePreset[];
+  saveProjectTitlePreset: (name: string) => void;
+  renameProjectTitlePreset: (id: string, name: string) => void;
+  deleteProjectTitlePreset: (id: string) => void;
+  applyProjectTitlePreset: (id: string) => void;
+  importProjectTitlePresets: (names: string[]) => void;
 
   // Presenter profiles
   profiles: PresenterProfile[];
@@ -257,6 +268,64 @@ export const usePrompterStore = create<PrompterStore>()(
           };
         }),
 
+      projectTitlePresets: [],
+      saveProjectTitlePreset: (name) =>
+        set((s) => {
+          const trimmed = name.trim();
+          if (!trimmed) return s;
+          const exists = s.projectTitlePresets.some((preset) => preset.name.toLowerCase() === trimmed.toLowerCase());
+          if (exists) return s;
+          return {
+            projectTitlePresets: [
+              ...s.projectTitlePresets,
+              { id: `project-title-${Date.now()}`, name: trimmed, createdAt: Date.now() },
+            ],
+          };
+        }),
+      renameProjectTitlePreset: (id, name) =>
+        set((s) => {
+          const trimmed = name.trim();
+          if (!trimmed) return s;
+          const duplicate = s.projectTitlePresets.some((preset) => preset.id !== id && preset.name.toLowerCase() === trimmed.toLowerCase());
+          if (duplicate) return s;
+          return {
+            projectTitlePresets: s.projectTitlePresets.map((preset) => (
+              preset.id === id ? { ...preset, name: trimmed } : preset
+            )),
+          };
+        }),
+      deleteProjectTitlePreset: (id) =>
+        set((s) => ({
+          projectTitlePresets: s.projectTitlePresets.filter((preset) => preset.id !== id),
+        })),
+      applyProjectTitlePreset: (id) => {
+        const preset = get().projectTitlePresets.find((entry) => entry.id === id);
+        if (!preset) return;
+        get().setScriptTitle(preset.name);
+      },
+      importProjectTitlePresets: (names) =>
+        set((s) => {
+          const seen = new Set(s.projectTitlePresets.map((preset) => preset.name.toLowerCase()));
+          const created = names
+            .map((name) => name.trim())
+            .filter(Boolean)
+            .filter((name) => {
+              const key = name.toLowerCase();
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            })
+            .map((name, idx) => ({
+              id: `project-title-${Date.now()}-${idx + 1}`,
+              name,
+              createdAt: Date.now(),
+            }));
+          if (created.length === 0) return s;
+          return {
+            projectTitlePresets: [...s.projectTitlePresets, ...created],
+          };
+        }),
+
       // Presenter profiles
       profiles: [],
       activeProfileId: null,
@@ -364,6 +433,7 @@ export const usePrompterStore = create<PrompterStore>()(
         speechInputDeviceId: state.speechInputDeviceId,
         speechSensitivity: state.speechSensitivity,
         licenseToken: state.licenseToken,
+        projectTitlePresets: state.projectTitlePresets,
         profiles: state.profiles,
         activeProfileId: state.activeProfileId,
         script: state.script,
