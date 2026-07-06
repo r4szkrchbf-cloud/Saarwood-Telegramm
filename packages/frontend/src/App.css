@@ -553,6 +553,25 @@
     row-gap: 0.22rem;
     max-width: 100%;
     white-space: normal;
+    gap: 0.55rem;
+    font-size: 1.06rem;
+  }
+
+  .logo-icon {
+    font-size: 1.38rem;
+  }
+
+  .beta-badge,
+  .beta-warning,
+  .restart-hint,
+  .license-hint,
+  .room-hint,
+  .room-copy-btn {
+    font-size: 0.7rem;
+  }
+
+  .room-copy-btn {
+    padding: 0.18rem 0.55rem;
   }
 
   .view-switcher {
@@ -560,11 +579,21 @@
     width: 100%;
     justify-content: flex-start;
     order: 2;
+    gap: 0.4rem;
+  }
+
+  .view-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.96rem;
+    min-height: 34px;
   }
 
   .settings-toggle {
     margin-left: auto;
     order: 1;
+    padding: 0.38rem 0.85rem;
+    font-size: 1.05rem;
+    min-height: 34px;
   }
 
   .editor-template-row {

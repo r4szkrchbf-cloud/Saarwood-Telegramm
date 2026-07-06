@@ -262,6 +262,20 @@ Die Plattform soll aus mehreren Apps bestehen, die zentral auf der Hauptwebsite 
 - [ ] Keine direkte DB-Kopplung zwischen Apps (nur API/Event)
 - [ ] Rollout-Schema fuer getrennte App-Server (www + app-subdomains/-paths) dokumentiert
 
+### TICKET-030 · Zentrales Saarwood Adminpanel + SEO/Impressum/DSGVO Plattformkonzept
+
+**Prioritaet:** P1
+**Beschreibung:**
+Saarwood soll als zentrale Plattform auf `saarwood.ch` auftreten. Dafuer wird ein einheitliches Adminpanel fuer alle aktuellen und kuenftigen Apps definiert, inklusive Branding-, Copy-, SEO-, Impressums- und DSGVO-Konzept.
+
+**Akzeptanzkriterien:**
+- [ ] Adminpanel-URL und Zielarchitektur beschlossen (`/admin` oder `admin.saarwood.ch`)
+- [ ] Gemeinsames Rollen-/Auth-Konzept fuer alle Saarwood-Apps dokumentiert
+- [ ] Search Console Setup und Sitemap-Prozess fuer Hauptdomain dokumentiert
+- [ ] Impressum- und Datenschutz-Hinweise fuer oeffentliche Seiten definiert
+- [ ] Copy-/Branding-Richtlinien fuer Saarwood zentral festgelegt
+- [ ] Plattform-Fahrplan fuer neue Apps und Subdomains erfasst
+
 ---
 
 ## Phase 1 — CI & Qualitätsgates (abgeschlossen)
