@@ -10,6 +10,9 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 - App-Shell in `packages/frontend/src/App.tsx` mit Editor, Split-View, Prompter-View und Settings-Drawer.
 - Teleprompter-Output als Output-only-Ansicht via `?view=prompter&output=1`.
 - Display-Steuerung: Scroll-Speed, Play/Pause, Reset, Richtungswechsel, Horizontal- und Vertikalspiegelung, Rotation.
+- Projekt-/Sendungsname als eigener Titelpfad mit Einblendung in Editor, Split und Prompter.
+- Professional: Groesse und Schriftfarbe der Titelanzeige konfigurierbar.
+- Expert: persistierte Projekt-/Sendungsnamen-Bibliothek mit CSV/TXT-Import.
 - Tiptap-Editor mit Segmentstruktur und synchroner Prompter-Vorschau.
 - Voice Tracking mit Web Speech API im Expert-Tier, inklusive Mikrofonwahl, Empfindlichkeit und Kalibrierungs-Assistent.
 - Settings-Panel mit Support-Tickets, Support-Links, Support-Logs und lokaler Client-Log-Erfassung.
@@ -34,6 +37,7 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 - Zustand-Store in `packages/frontend/src/store/prompterStore.ts` fuer Display, Script, Profile und Tier.
 - Telepromptervorlagen koennen gespeichert, umbenannt, dupliziert und angewendet werden.
 - `duplicateProfile()` und `renameProfile()` sind Teil des aktuellen Stores.
+- Projekt-/Sendungsnamen werden als eigene Bibliothek persistiert und sind getrennt von Telepromptervorlagen verwaltbar.
 
 ## 2. Was in den Benutzer-Dokumenten jetzt explizit mit abgedeckt sein muss
 

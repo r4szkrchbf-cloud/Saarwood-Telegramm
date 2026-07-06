@@ -32,6 +32,8 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Mehrserver-/Baukasten-Prinzip dokumentiert: Hauptwebsite kann getrennt vom Teleprompter-App-Server laufen; App-uebergreifender Datenaustausch erfolgt API-/Event-basiert statt direkter DB-Kopplung.
 - Telepromptervorlagen wurden im UI und in der Doku umbenannt; Support-Log-Zugriff und Import/Export-Regeln sind tierabhängig dokumentiert.
 - Projekt-/Sendungsname ist jetzt als eigener Titelpfad im Script vorhanden, in Vorlagenformaten enthalten und im Professional-Tier ein-/ausblendbar.
+- Projekt-/Sendungsname ist im Professional-Tier jetzt auch in Groesse und Schriftfarbe konfigurierbar.
+- Im Expert-Tier gibt es eine eigene, persistierte Projekt-/Sendungsnamen-Bibliothek mit CSV/TXT-Import fuer haeufig wechselnde Sendungen.
 - Werbekonzept fuer die kostenlose Basic-Version vor Hostinger-Go-Live als separates Konzept dokumentiert (`docs/BASIC_TIER_ADS_CONCEPT_DE.md`).
 
 ## 1.2 Code-/Doku-Abgleich (aktuell)

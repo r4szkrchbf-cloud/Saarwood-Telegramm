@@ -49,6 +49,7 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 - ✅ Cloak Text (Segment für Moderator ausblenden)
 - ✅ Director's Notes (ASR überspringt markierte Segmente)
 - ✅ Telepromptervorlagen (Named Presets speichern/anwenden/umbenennen/löschen)
+- ✅ Projekt-/Sendungsname als separate Einblendung mit einstellbarer Groesse und Schriftfarbe
 - ✅ Import/Export im Settings-Bereich: JSON, CSV, TXT, PDF sowie tierabhängige Importregeln
 
 ### Operations & Support
@@ -59,6 +60,7 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 ### Expert-Tier (Enterprise Broadcast)
 - ✅ Voice Tracking (Web Speech API, automatisches Scrollen zum gesprochenen Wort)
 - ✅ Mikrofonwahl, Empfindlichkeit und Kalibrierungs-Assistent
+- ✅ Projekt-/Sendungsnamen-Bibliothek mit persistierter Verwaltung und CSV/TXT-Listenimport
 - ✅ A/B-Redundanz-Architektur (Primary/Backup/Standalone mit SYNC_STATE)
 - ✅ NDI-Abstraktionsschicht (StubNdiAdapter + Shell für Native Addon)
 - ✅ SMPTE ST 2110 Bereitschaftshaken (Hardware-Schnittstelle offen)

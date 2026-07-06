@@ -96,7 +96,15 @@ Ab Professional kann der Script-Titel als Projekt- oder Sendungsname zusaetzlich
 - im Editor und Split-Modus als eigene, abgesetzte Titelbox
 - im Prompter als graue, transparente Einblendung
 - per Button ein- und ausblendbar
+- Groesse und Schriftfarbe sind in den Einstellungen anpassbar
 - in Telepromptervorlagen mitgespeichert, damit der Titel nicht jedes Mal neu eingegeben werden muss
+
+Ab Expert gibt es zusaetzlich eine eigene Projekt-/Sendungsnamen-Bibliothek.
+
+- Projekt- oder Sendungsnamen koennen gespeichert, umbenannt, geloescht und angewendet werden
+- die Liste wird alphabetisch sortiert angezeigt
+- CSV- oder TXT-Listen koennen importiert werden
+- CSV kann z. B. die Spalte `title`, `name`, `projekt` oder `sendung` verwenden
 
 ## 3. Prompter steuern
 
