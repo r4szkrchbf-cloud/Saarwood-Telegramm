@@ -84,6 +84,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;'), []);
 
+  const plainTextToHtml = useCallback((text: string, speaker?: string): string => {
+    const normalized = text.replace(/\r\n/g, '\n').trim();
+    const paragraphs = normalized
+      .split(/\n\s*\n+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+    const htmlBody = (paragraphs.length > 0 ? paragraphs : [normalized || ''])
+      .map((part) => `<p>${escapeHtmlText(part).replace(/\n/g, '<br />')}</p>`)
+      .join('');
+
+    if (!speaker?.trim()) return htmlBody;
+    return `<p><strong>${escapeHtmlText(speaker.trim())}:</strong></p>${htmlBody}`;
+  }, [escapeHtmlText]);
+
   const parsePlainTextSegments = useCallback((raw: string, now: number) => {
     const normalized = raw.replace(/\r\n/g, '\n').trim();
     const speakerBlocks = normalized
@@ -102,25 +116,15 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       const firstBodyLine = speakerMatch ? speakerMatch[2] : firstLine;
       const bodyLines = speakerMatch ? [firstBodyLine, ...lines.slice(1)] : lines;
       const body = bodyLines.join(' ').trim();
-      const paragraphs = body
-        .split(/\n\s*\n+/)
-        .map((part) => part.trim())
-        .filter(Boolean);
-      const htmlBody = paragraphs.length > 0
-        ? paragraphs.map((part) => `<p>${escapeHtmlText(part).replace(/\n/g, '<br />')}</p>`).join('')
-        : `<p>${escapeHtmlText(body || '')}</p>`;
-
       return {
         id: `imp-${now}-${idx + 1}`,
-        html: speaker
-          ? `<p><strong>${escapeHtmlText(speaker)}:</strong></p>${htmlBody}`
-          : htmlBody,
+        html: plainTextToHtml(body, speaker),
         direction: 'ltr' as const,
         isCloaked: false,
         isDirectorsNote: false,
       };
     });
-  }, [escapeHtmlText]);
+  }, [plainTextToHtml]);
 
   const postClientLog = useCallback((entry: { level: 'info' | 'warn' | 'error'; source: string; message: string; details?: string }) => {
     void fetch('/api/support/logs/client', {
@@ -587,9 +591,12 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
           ) ?? [];
           const text = cols[4] || '';
+          const speakerMatch = text.match(/^\[([^\]]+)\]:\s*(.*)$/);
+          const speaker = speakerMatch?.[1] ?? '';
+          const body = speakerMatch?.[2] ?? text;
           return {
             id: cols[1] || `imp-${now}-${idx + 1}`,
-            html: cols[5] || `<p>${text}</p>`,
+            html: cols[5] || plainTextToHtml(body, speaker),
             direction: 'ltr' as const,
             isCloaked: cols[2] === '1' || cols[2]?.toLowerCase() === 'true',
             isDirectorsNote: cols[3] === '1' || cols[3]?.toLowerCase() === 'true',
@@ -599,25 +606,57 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         if (tier === 'basic') throw new Error('basic-tier-json-import-blocked');
         const parsed = JSON.parse(raw) as {
           title?: string;
+          text?: string;
+          script?: string;
           segments?: Array<{
             id?: string;
             html?: string;
+            text?: string;
+            content?: string;
+            body?: string;
+            speaker?: string;
+            name?: string;
+            label?: string;
             direction?: 'ltr';
             isCloaked?: boolean;
             isDirectorsNote?: boolean;
-          }>;
+          }> | string[];
         };
-        if (!Array.isArray(parsed.segments)) throw new Error('invalid-json');
         title = parsed.title || script.title;
-        segments = parsed.segments
-          .filter((seg) => typeof seg?.html === 'string')
-          .map((seg, idx) => ({
-            id: seg.id || `imp-${now}-${idx + 1}`,
-            html: seg.html || '<p></p>',
-            direction: 'ltr' as const,
-            isCloaked: Boolean(seg.isCloaked),
-            isDirectorsNote: Boolean(seg.isDirectorsNote),
-          }));
+
+        if (typeof parsed.text === 'string' || typeof parsed.script === 'string') {
+          segments = parsePlainTextSegments(parsed.text ?? parsed.script ?? '', now);
+        } else if (Array.isArray(parsed.segments)) {
+          segments = parsed.segments
+            .map((seg, idx) => {
+              if (typeof seg === 'string') {
+                return {
+                  id: `imp-${now}-${idx + 1}`,
+                  html: plainTextToHtml(seg),
+                  direction: 'ltr' as const,
+                  isCloaked: false,
+                  isDirectorsNote: false,
+                };
+              }
+
+              const text = seg.text ?? seg.content ?? seg.body ?? '';
+              const speaker = seg.speaker ?? seg.name ?? seg.label ?? '';
+              const html = typeof seg.html === 'string' && seg.html.trim().length > 0
+                ? seg.html
+                : plainTextToHtml(text, speaker);
+
+              return {
+                id: seg.id || `imp-${now}-${idx + 1}`,
+                html,
+                direction: 'ltr' as const,
+                isCloaked: Boolean(seg.isCloaked),
+                isDirectorsNote: Boolean(seg.isDirectorsNote),
+              };
+            })
+            .filter((seg) => seg.html.trim().length > 0);
+        } else {
+          throw new Error('invalid-json');
+        }
       }
 
       if (segments.length === 0) throw new Error('empty');
@@ -638,7 +677,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     } finally {
       if (e.target) e.target.value = '';
     }
-  }, [parsePlainTextSegments, script, setScript, postClientLog, tier]);
+  }, [parsePlainTextSegments, plainTextToHtml, script, setScript, postClientLog, tier]);
 
   const handleDownloadJsonTemplate = useCallback(() => {
     const sample = {
@@ -646,15 +685,15 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       segments: [
         {
           id: 'sample-1',
-          html: '<p>[Sprecherin 1]: Willkommen zur Sendung.</p>',
-          direction: 'ltr',
+          speaker: 'Sprecherin 1',
+          text: 'Willkommen zur Sendung.',
           isCloaked: false,
           isDirectorsNote: false,
         },
         {
           id: 'sample-2',
-          html: '<p>[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.</p>',
-          direction: 'ltr',
+          speaker: 'Sprecher 2',
+          text: 'Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.',
           isCloaked: false,
           isDirectorsNote: false,
         },
@@ -1021,6 +1060,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
                 className="segment-import-input"
                 aria-label="Telepromptervorlagen importieren"
               />
+            </div>
+            <div className="segment-io-guide" aria-label="Formatbeschreibung fuer Import und Export">
+              <p className="segment-io-guide-title">Formate kurz erklaert</p>
+              <p className="segment-io-guide-text">TXT = einfacher Rohtext, CSV = Segmentliste, JSON = flexible Scriptdaten, PDF = Lesefassung oder Versand.</p>
+              <p className="segment-io-guide-title">Wichtige Felder</p>
+              <p className="segment-io-guide-text">`title` = Scripttitel, `speaker` = Sprecherzeile, `text` = Klartext, `html` = fertiger Formattext.</p>
+              <p className="segment-io-guide-text">`isCloaked` blendet ein Segment im Prompter fuer den Sprecher aus. `isDirectorsNote` markiert eine Regie-Notiz und wird vom Voice Tracking nicht als normaler Sprechtext behandelt.</p>
             </div>
             {scriptIoInfo && <div className="settings-row"><span className="settings-value segment-io-status">{scriptIoInfo}</span></div>}
           </fieldset>

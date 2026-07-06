@@ -35,6 +35,26 @@ Im Basic-Tier bleibt es weiterhin ausgeblendet, damit der Bedienumfang klein und
 - PWA-Betrieb auf Desktop und mobilen Geraeten
 - Desktop-Operator-Workflow: Prompter-Ausgabe auf zweiten Monitor im Vollbild starten
 
+## Kurzbeschreibung Import / Export
+
+Der Import- und Exportbereich dient dazu, Scripts, Vorlagen und Segmentlisten zwischen App, Redaktion und Support auszutauschen.
+
+- TXT: einfacher Rohtext; die App erstellt daraus beim Import automatisch HTML-Segmente
+- CSV: strukturierte Segmentliste fuer Tabellen- oder Redaktionsworkflows
+- JSON: flexible Script- oder Vorlagenstruktur fuer Integrationen und vorbereitete Daten
+- PDF: lesbare Fassung fuer Versand, Freigabe und Druck
+
+Wichtige Felder in Importdateien:
+
+- `title`: Titel des gesamten Scripts
+- `segments`: Liste aller Segmente
+- `id`: technische Segment-ID
+- `speaker`: optionaler Sprechername
+- `text`: normaler Klartext, wird beim Import automatisch in HTML umgewandelt
+- `html`: optional bereits fertig formatierter Inhalt
+- `isCloaked`: blendet ein Segment in der Prompter-Ausgabe fuer den Sprecher aus
+- `isDirectorsNote`: markiert ein Segment als Regie-Notiz; solche Segmente werden nicht als normaler Sprechtext fuer Voice Tracking behandelt
+
 ## Zielgruppe
 
 - Moderation

@@ -15,6 +15,75 @@
 3. Fuer Testbetrieb kann in Settings der deutsche 4-Segment-Testtext geladen werden.
 4. Import aus TXT ist im Basic-Tier vorgesehen; JSON/CSV/TXT sind in hoehren Tiers verfuegbar.
 
+## 2.1 Import und Export
+
+Im Settings-Bereich koennen Scriptvorlagen und Segmentlisten importiert und exportiert werden.
+
+- TXT eignet sich fuer einfache Manuskripte und Rohfassungen.
+- CSV eignet sich fuer strukturierte Segmentlisten aus Tabellen oder Redaktionssystemen.
+- JSON eignet sich fuer Vorlagen, Integrationen und vorbereitete Datensaetze.
+- PDF eignet sich fuer Lesefassungen, Versand und Druck.
+
+Tier-Regeln:
+
+- Basic: TXT-Import, CSV-Export und PDF-Export
+- Professional und Expert: JSON-, CSV- und TXT-Import sowie CSV-, JSON-, TXT- und PDF-Export
+- Drucken ist nur ausserhalb des Basic-Tiers verfuegbar
+
+## 2.2 Feldbedeutung bei Importdateien
+
+Je nach Format koennen folgende Felder vorkommen:
+
+| Feld | Bedeutung |
+|------|-----------|
+| `title` | Titel des gesamten Scripts |
+| `segments` | Liste aller Script-Segmente |
+| `id` | Technische Kennung eines Segments |
+| `speaker` | Optionaler Sprechername; wird als Sprecherzeile dargestellt |
+| `text` | Reiner Klartext; die App wandelt ihn beim Import automatisch in HTML um |
+| `html` | Bereits formatierter Textinhalt; kann direkt uebernommen werden |
+| `isCloaked` | Das Segment wird in der Prompter-Ausgabe fuer den Sprecher ausgeblendet |
+| `isDirectorsNote` | Das Segment ist eine Regie-Notiz; Voice Tracking behandelt es nicht als normalen Sprechtext |
+
+Wichtig:
+
+- `html` ist nicht zwingend erforderlich.
+- Wenn nur `text` vorhanden ist, erzeugt die App automatisch die benoetigte HTML-Struktur.
+- Bei JSON koennen einfache Vorlagen mit `speaker` + `text` verwendet werden.
+- Bei TXT koennen Sprecherzeilen direkt als `[Name]: Text` geschrieben werden.
+
+## 2.3 Praktische Beispiele
+
+Einfaches JSON-Beispiel:
+
+```json
+{
+	"title": "Abendnachrichten",
+	"segments": [
+		{
+			"speaker": "Sprecherin 1",
+			"text": "Guten Abend und herzlich willkommen.",
+			"isCloaked": false,
+			"isDirectorsNote": false
+		},
+		{
+			"speaker": "Regie",
+			"text": "Noch nicht freigeben.",
+			"isCloaked": true,
+			"isDirectorsNote": true
+		}
+	]
+}
+```
+
+Einfaches TXT-Beispiel:
+
+```text
+[Sprecherin 1]: Guten Abend und herzlich willkommen.
+
+[Sprecher 2]: Hier ist der zweite Abschnitt.
+```
+
 ## 3. Prompter steuern
 
 Wichtige Buttons:

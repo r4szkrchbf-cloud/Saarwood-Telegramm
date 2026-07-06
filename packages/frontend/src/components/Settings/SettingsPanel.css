@@ -439,6 +439,32 @@
   line-height: 1.35;
 }
 
+.segment-io-guide {
+  display: grid;
+  gap: 0.22rem;
+  margin: 0.15rem 0 0.45rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 92%, #000 8%);
+}
+
+.segment-io-guide-title {
+  margin: 0.1rem 0 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.segment-io-guide-text {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
 .template-table-wrap {
   max-height: 260px;
   overflow: auto;
