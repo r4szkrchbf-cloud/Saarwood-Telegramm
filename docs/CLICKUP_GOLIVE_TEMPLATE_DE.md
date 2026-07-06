@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD032 -->
+
 # ClickUp Go-Live Struktur (SAARwooD)
 
 Stand: 2026-07-06
