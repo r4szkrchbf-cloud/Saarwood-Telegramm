@@ -23,6 +23,12 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
   - Room-ID ist in der App sichtbar und per Klick kopierbar (Beta-Tester-Workflow).
   - Dokumentiert in `docs/STATUSBERICHT_MULTIROOM_PERFORMANCE_DE_2026-07-06.md`.
 
+- Lizenz-Haertung fuer Offline-Betrieb umgesetzt:
+  - Offline-Freigabe erfolgt nur noch nach kryptografischer Token-Pruefung (Ed25519), nicht mehr rein per Payload-Plausibilitaet.
+  - Public Key wird nach erfolgreicher Online-Pruefung im Client gecached und fuer Offline-Verifikation genutzt.
+  - Lizenz-Token + Public-Key-Cache werden persistiert, damit Offline-Neustarts stabil funktionieren.
+  - Operative Steuerung (Ausgabe/Ablauf/Sperrung) bleibt ueber bestehende Admin-API und `license:admin` CLI zentral verfuegbar.
+
 - Live Public-MVP Basis erfolgreich umgesetzt:
   - VPS auf Linux-Basis neu aufgebaut und als Teleprompter-Ziel konfiguriert.
   - DNS fuer `teleprompter.saarwood.ch` auf produktive VPS-IP gesetzt.

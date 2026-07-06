@@ -174,6 +174,8 @@ interface PrompterStore {
   // License token (Phase A)
   licenseToken: string | null;
   setLicenseToken: (token: string | null) => void;
+  licensePublicKeyPem: string | null;
+  setLicensePublicKeyPem: (pem: string | null) => void;
 }
 
 // ─── Store implementation ─────────────────────────────────────────────────────
@@ -421,6 +423,8 @@ export const usePrompterStore = create<PrompterStore>()(
       // License
       licenseToken: null,
       setLicenseToken: (licenseToken) => set({ licenseToken }),
+      licensePublicKeyPem: null,
+      setLicensePublicKeyPem: (licensePublicKeyPem) => set({ licensePublicKeyPem }),
     }),
     {
       name: 'saarwood-teleprompter-state-v3',
@@ -436,6 +440,8 @@ export const usePrompterStore = create<PrompterStore>()(
         profiles: state.profiles,
         activeProfileId: state.activeProfileId,
         script: state.script,
+        licenseToken: state.licenseToken,
+        licensePublicKeyPem: state.licensePublicKeyPem,
       }),
       onRehydrateStorage: () => (state, error) => {
         if (error) return;

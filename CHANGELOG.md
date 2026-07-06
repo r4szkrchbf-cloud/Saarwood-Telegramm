@@ -103,6 +103,8 @@ All MVP features are fully unlocked for Beta testing.
 - Controller-only position source guard: per room, only one client can drive `SET_POSITION` updates.
 - Runtime sync traffic reduced: output-only clients no longer emit `SCRIPT_UPDATE`, `SETTINGS_UPDATE`, or `SET_POSITION`.
 - Position sync interval while playing was increased (more aggressive throttling) to reduce jitter and backend load.
+- Offline licensing is hardened: browser now validates token signatures cryptographically (Ed25519) using cached public key material instead of payload-only plausibility checks.
+- License token and cached license public key are now persisted client-side to support reliable offline restarts.
 - Voice tracking execution is now transport-bound: ASR runs only while playback is active and is hard-muted during pause.
 - Prompter restart (`Prompter NeuStart`) now resets/reloads without forced autoplay.
 - Default demo content migrated to a German 4-segment speaker test script, including legacy English default-script detection.
@@ -117,6 +119,7 @@ All MVP features are fully unlocked for Beta testing.
 
 - Critical multi-client behavior: one user's teleprompter state no longer leaks into unrelated user sessions.
 - Runtime stutter risk reduced under multi-client load by lowering unnecessary WebSocket chatter.
+- Offline activation bug fixed: previously, entering a valid key while disconnected could fail permanently; now offline verification works after at least one successful online key fetch.
 - `packages/electron`: added no-op `"test"` script so `npm test --workspaces` no longer fails with *"Missing script: test"*
 - Build blocker removed: invalid `ignoreDeprecations: "6.0"` entry removed from frontend/backend/electron TypeScript configs to restore reliable builds on the current toolchain.
 - Frontend test output noise reduced: Vitest now runs with a dedicated local storage file (`NODE_OPTIONS=--localstorage-file=./.vitest-localstorage`) so the Node localStorage experimental warning no longer appears in standard test runs.

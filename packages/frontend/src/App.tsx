@@ -28,6 +28,20 @@ interface LicenseState {
   reason: string;
 }
 
+interface LicenseApiPayload {
+  ok?: boolean;
+  mode?: LicenseMode;
+  status?: LicenseStatus;
+  reason?: string;
+  publicKeyPem?: string;
+}
+
+interface OfflineTokenClaims {
+  exp?: number;
+  expires_at?: number;
+  grace_offline_until?: number;
+}
+
 const GERMAN_TEST_SEGMENTS: ScriptSegment[] = [
   {
     id: 'seg-1',
@@ -147,6 +161,43 @@ function ensureUniqueSegmentIds(input: Script): Script {
     segments,
     lastModified: Date.now(),
   };
+}
+
+async function verifyTokenOffline(
+  token: string,
+  publicKeyPem: string,
+  nowSec = Math.floor(Date.now() / 1000),
+): Promise<{ ok: boolean; reason: string }> {
+  try {
+    const { compactVerify, importSPKI } = await import('jose');
+    const publicKey = await importSPKI(publicKeyPem, 'EdDSA');
+    const verified = await compactVerify(token, publicKey, {
+      algorithms: ['EdDSA'],
+    });
+    const claims = JSON.parse(new TextDecoder().decode(verified.payload)) as OfflineTokenClaims;
+
+    if (typeof claims.grace_offline_until === 'number') {
+      return claims.grace_offline_until > nowSec
+        ? { ok: true, reason: 'offline-signature-grace' }
+        : { ok: false, reason: 'offline-grace-expired' };
+    }
+
+    if (typeof claims.expires_at === 'number') {
+      return claims.expires_at > nowSec
+        ? { ok: true, reason: 'offline-signature-expires-at' }
+        : { ok: false, reason: 'license-expired' };
+    }
+
+    if (typeof claims.exp === 'number') {
+      return claims.exp > nowSec
+        ? { ok: true, reason: 'offline-signature-exp' }
+        : { ok: false, reason: 'license-expired' };
+    }
+
+    return { ok: false, reason: 'token-no-expiry-claims' };
+  } catch {
+    return { ok: false, reason: 'signature-invalid-offline' };
+  }
 }
 
 export function App() {
@@ -271,6 +322,8 @@ export function App() {
   const tier = usePrompterStore((s) => s.tier);
   const licenseToken = usePrompterStore((s) => s.licenseToken);
   const setLicenseToken = usePrompterStore((s) => s.setLicenseToken);
+  const licensePublicKeyPem = usePrompterStore((s) => s.licensePublicKeyPem);
+  const setLicensePublicKeyPem = usePrompterStore((s) => s.setLicensePublicKeyPem);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   const filteredTemplates = useMemo(() => {
@@ -455,11 +508,11 @@ export function App() {
           throw new Error(`status-${response.status}`);
         }
 
-        const payload = await response.json() as {
-          mode?: LicenseMode;
-          status?: LicenseStatus;
-          reason?: string;
-        };
+        const payload = await response.json() as LicenseApiPayload;
+
+        if (typeof payload.publicKeyPem === 'string' && payload.publicKeyPem.trim()) {
+          setLicensePublicKeyPem(payload.publicKeyPem);
+        }
 
         if (!active) return;
         setLicenseState({
@@ -470,6 +523,31 @@ export function App() {
         });
       } catch {
         if (!active) return;
+
+        if (licenseToken && licensePublicKeyPem) {
+          const offline = await verifyTokenOffline(licenseToken, licensePublicKeyPem);
+          if (!active) return;
+          if (offline.ok) {
+            setLicenseState({
+              loading: false,
+              mode: 'enforce',
+              status: 'active',
+              reason: offline.reason,
+            });
+            return;
+          }
+        }
+
+        if (licenseToken && !licensePublicKeyPem) {
+          setLicenseState({
+            loading: false,
+            mode: 'enforce',
+            status: 'invalid',
+            reason: 'offline-verification-key-missing',
+          });
+          return;
+        }
+
         setLicenseState({
           loading: false,
           mode: 'enforce',
@@ -483,7 +561,7 @@ export function App() {
     return () => {
       active = false;
     };
-  }, [hydrated, licenseToken]);
+  }, [hydrated, licenseToken, licensePublicKeyPem, setLicensePublicKeyPem]);
 
   const activateLicense = async () => {
     const token = licenseInput.trim();
@@ -501,12 +579,11 @@ export function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
-      const payload = await response.json() as {
-        ok?: boolean;
-        mode?: LicenseMode;
-        status?: LicenseStatus;
-        reason?: string;
-      };
+      const payload = await response.json() as LicenseApiPayload;
+
+      if (typeof payload.publicKeyPem === 'string' && payload.publicKeyPem.trim()) {
+        setLicensePublicKeyPem(payload.publicKeyPem);
+      }
 
       if (payload.ok && payload.status === 'active') {
         setLicenseToken(token);
@@ -528,11 +605,37 @@ export function App() {
         }));
       }
     } catch {
-      setLicenseMessage('Aktivierung fehlgeschlagen (Netzwerk/Server).');
+      if (licensePublicKeyPem) {
+        const offline = await verifyTokenOffline(token, licensePublicKeyPem);
+        if (offline.ok) {
+          setLicenseToken(token);
+          setLicenseMessage('Lizenz offline kryptografisch verifiziert.');
+          setLicenseState({
+            loading: false,
+            mode: 'enforce',
+            status: 'active',
+            reason: offline.reason,
+          });
+          return;
+        }
+      }
+
+      if (!licensePublicKeyPem) {
+        setLicenseMessage('Offline-Aktivierung erst nach mindestens einer erfolgreichen Online-Pruefung moeglich.');
+      } else {
+        setLicenseMessage('Aktivierung fehlgeschlagen (Netzwerk/Server).');
+      }
     } finally {
       setLicenseSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (!licensePublicKeyPem) return;
+    if (!licensePublicKeyPem.includes('BEGIN PUBLIC KEY')) {
+      setLicensePublicKeyPem(null);
+    }
+  }, [licensePublicKeyPem, setLicensePublicKeyPem]);
 
   // ─── Broadcast script changes to other WS clients (debounced 500 ms) ──────
 

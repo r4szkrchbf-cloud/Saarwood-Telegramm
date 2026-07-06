@@ -223,3 +223,29 @@ Nach Aktivierung pruefen:
 2. `tier` ist `professional`.
 3. Professional-Funktionen vorhanden.
 4. Expert-Funktionen (z. B. Voice-Tracking) bleiben deaktiviert.
+
+## 12. Offline-Haertung (ab 2026-07-06)
+
+Ziel: Offline-Betrieb nur mit kryptografisch verifizierbaren Tokens, nicht mehr nur per Plausibilitaetscheck.
+
+### 12.1 Verhalten
+
+1. Die App cached nach erfolgreicher Online-Pruefung den Public Key lokal.
+2. Bei Offline-Betrieb wird der Lizenz-Token lokal per Ed25519-Signatur verifiziert.
+3. Ohne zuvor gecachten Public Key ist keine Erstaktivierung im Offline-Modus moeglich.
+4. Zeitlogik fuer Offline basiert auf `grace_offline_until` (fallback: `expires_at` / `exp`).
+
+### 12.2 Support-Hinweis fuer Nutzer
+
+Vor geplanter Offline-Nutzung immer mindestens einmal online aktivieren bzw. den Lizenzstatus erfolgreich abrufen, damit der Public Key lokal vorliegt.
+
+### 12.3 Kontrolle ueber verteilte Versionen
+
+Volle zentrale Kontrolle ist online sofort wirksam:
+
+- Lizenz sperren (`revoke-license`)
+- Generation sperren (`revoke-generation`)
+- Token mit kurzen Laufzeiten ausstellen (`--days`)
+- Offline-Fenster begrenzen (`--offline-grace-days`)
+
+Wichtig: Ein Geraet ohne Internet kann neue Sperrungen erst nach naechster Verbindung sehen. Fuer harte Kontrolle im Feld daher kurze `offlineGraceDays` nutzen.

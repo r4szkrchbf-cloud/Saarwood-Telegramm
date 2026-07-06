@@ -154,7 +154,10 @@ export function createRouter(
   router.get('/license/status', async (req, res) => {
     const token = getTokenFromRequest(req);
     const result = await licenseService.validateToken(token);
-    res.json(result);
+    res.json({
+      ...result,
+      publicKeyPem: licenseService.getPublicKeyPem() ?? undefined,
+    });
   });
 
   router.post('/license/activate', async (req, res) => {
@@ -173,7 +176,11 @@ export function createRouter(
 
     const result = await licenseService.validateToken(parsed.data.token);
     const ok = result.status === 'active';
-    res.status(ok ? 200 : 403).json({ ok, ...result });
+    res.status(ok ? 200 : 403).json({
+      ok,
+      ...result,
+      publicKeyPem: licenseService.getPublicKeyPem() ?? undefined,
+    });
   });
 
   // ─── Admin license API (Phase C) ───────────────────────────────────────

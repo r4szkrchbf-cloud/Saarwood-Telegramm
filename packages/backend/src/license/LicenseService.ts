@@ -72,6 +72,10 @@ export class LicenseService {
     return this.mode;
   }
 
+  getPublicKeyPem(): string | null {
+    return this.publicKeyPem;
+  }
+
   canSignTokens(): boolean {
     return Boolean(this.privateKeyPem);
   }
