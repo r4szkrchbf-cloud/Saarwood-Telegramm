@@ -81,6 +81,36 @@ Kontext: Build-Regression nach Vollscan beheben, Testausgabe beruhigen, Doku-Sta
 
 ---
 
+## Eintrag 2026-07-06 07:15 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Grosser Statuscheck angefordert (Code vs. Doku), inklusive Hostinger-Readiness und Brainstorming-Vorbereitung.
+
+### Ausgangsproblem
+- Technischer Zustand war gruen, aber es bestand das Risiko von Code-Doku-Drift vor Public-Beta.
+- Speziell `docs/APP_ZUGRIFF_DE.md` enthielt veraltete Angaben zu Repo-URL, Ports und WebSocket-Beispielen.
+
+### Durchgefuehrte Schritte
+- Voll-Gate-Lauf erneut verifiziert:
+  - `npm run lint`
+  - `npm run test`
+  - `npm run build`
+- `APP_ZUGRIFF_DE.md` auf aktuelle Laufzeitrealitaet korrigiert (3000/4000, Health/WS, Repo-URL, Testzaehler).
+- Neuer Hostinger-Readiness-Bericht mit Entscheidungsboard/Go-Live-Checkliste erstellt:
+  - `docs/STATUSBERICHT_HOSTINGER_READINESS_DE_2026-07-06.md`
+- Doku-Index (`docs/README.md`) um den neuen Bericht erweitert.
+
+### Ergebnis
+- Code und Kern-Doku sind fuer den aktuellen Public-Beta-Stand konsistent.
+- Hostinger-Go-Live ist als bedingtes GO eingeordnet (technisch bereit, betriebliche Entscheidungen/Secrets/TLS finalisieren).
+
+### Offene Punkte
+- Finale Produktionsentscheidungen im Brainstorming treffen (Routing, Lizenzmodus, Werbemodell Basic, Support-SLA).
+
+### Lessons Learned
+- Vor Public-Rollout ist ein Port-/URL-Abgleich zwischen Run-Config und Startdoku Pflicht, sonst entstehen reproduzierbare Fehlstarts trotz gruener Builds.
+
+---
+
 ## Eintrag 2026-07-05 02:15 (lokale Zeit)
 Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
 Kontext: Migration/Recovery von `saarnews/saarwood_telepromter` nach `r4szkrchbf-cloud/Saarwood-Telegramm`, Stabilisierung des Build-Status und Nachvollziehbarkeit der Fehlerbehebung.

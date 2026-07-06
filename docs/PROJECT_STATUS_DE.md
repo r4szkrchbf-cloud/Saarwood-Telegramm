@@ -14,6 +14,14 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 
 ## 1.1 Delta-Update (neu)
 
+- Grosser Statuscheck (Code + Doku + Hostinger) abgeschlossen:
+  - Voll-Gates (lint/test/build) fuer Frontend und Backend erneut gruen.
+  - Code-Doku-Drift in `APP_ZUGRIFF_DE.md` behoben (Repo-URL, Ports, WS/Health-Beispiele, Testzaehler).
+  - Neuer Brainstorming-/Readiness-Bericht angelegt: `docs/STATUSBERICHT_HOSTINGER_READINESS_DE_2026-07-06.md`.
+- Hostinger Public Beta: **bedingtes GO**
+  - Codebasis ist deployfaehig.
+  - Vor finalem Go-Live sind Betriebsentscheidungen und Produktionskonfiguration (Domain/TLS/Secrets/CORS) verbindlich abzuschliessen.
+
 - Build-Stabilitaet wiederhergestellt:
   - `TS5103` durch ungueltigen `ignoreDeprecations`-Wert in den Workspace-`tsconfig`-Dateien beseitigt.
   - Frontend-, Backend- und Root-Build laufen wieder konsistent gruen.

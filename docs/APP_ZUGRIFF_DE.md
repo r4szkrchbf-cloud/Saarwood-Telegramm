@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD031 MD032 MD036 MD060 -->
+
 # Saarwood Teleprompter — App starten & aufrufen
 
 _Stand: 2026-07-04 · Version: 1.0.0-beta.1_
@@ -26,7 +28,7 @@ npm -v
 
 ```bash
 # 1. Repository klonen (einmalig)
-git clone https://github.com/saarnews/saarwood_telepromter.git
+git clone git@github.com:r4szkrchbf-cloud/Saarwood-Telegramm.git
 cd saarwood_telepromter
 
 # 2. Alle Abhängigkeiten installieren (einmalig oder nach package.json-Änderungen)
@@ -40,11 +42,11 @@ Danach sind folgende URLs erreichbar:
 
 | Dienst | URL | Beschreibung |
 |--------|-----|--------------|
-| **Frontend (App)** | `http://localhost:5173` | Teleprompter-UI im Browser |
-| **Backend (API/WS)** | `http://localhost:3000` | REST-API + WebSocket-Control |
-| **Health-Check** | `http://localhost:3000/api/health` | Backend-Status prüfen |
+| **Frontend (App)** | `http://localhost:3000` | Teleprompter-UI im Browser |
+| **Backend (API/WS)** | `http://localhost:4000` | REST-API + WebSocket-Control |
+| **Health-Check** | `http://localhost:4000/api/health` | Backend-Status prüfen |
 
-> **Tipp:** Einfach `http://localhost:5173` im Browser öffnen — das ist die App.
+> **Tipp:** Einfach `http://localhost:3000` im Browser öffnen — das ist die App.
 
 ---
 
@@ -72,13 +74,13 @@ npm run build --workspaces
 node packages/backend/dist/server.js
 ```
 
-App dann unter `http://localhost:3000` erreichbar.
+App dann unter `http://localhost:4000` erreichbar.
 
 Umgebungsvariablen für das Backend:
 
 | Variable | Standard | Beschreibung |
 |----------|----------|--------------|
-| `PORT` | `3000` | Backend-Port |
+| `PORT` | `4000` | Backend-Port |
 | `APP_TIER` | `basic` | Feature-Tier: `basic` / `professional` / `expert` |
 | `NODE_ENV` | `development` | `production` für optimierte Ausgabe |
 | `ENABLE_MOS` | `false` | MOS-Protocol aktivieren |
@@ -179,7 +181,7 @@ Nach der Installation startet die App im Standalone-Modus ohne Browser-Rahmen.
 npm test --workspaces
 
 # Erwartetes Ergebnis:
-# ✓ packages/frontend — 25 Tests
+# ✓ packages/frontend — 30 Tests
 # ✓ packages/backend  —  9 Tests
 # ✓ packages/electron — (kein Test, No-op)
 ```
@@ -190,11 +192,11 @@ npm test --workspaces
 
 **Die App öffnet sich, aber der WebSocket verbindet nicht.**  
 Sicherstellen, dass das Backend ebenfalls läuft (`npm run dev` startet beides gleichzeitig).  
-Im Browser: DevTools → Console prüfen, ob `ws://localhost:3000/ws` erreichbar ist.
+Im Browser: DevTools → Console prüfen, ob `ws://localhost:4000/ws` erreichbar ist.
 
-**Port 5173 oder 3000 ist bereits belegt.**  
-Vite-Port anpassen: `packages/frontend/vite.config.ts` → `server: { port: 5174 }`.  
-Backend-Port: Umgebungsvariable `PORT=3001 npm run dev --workspace=packages/backend`.
+**Port 3000 oder 4000 ist bereits belegt.**  
+Vite-Port anpassen: `packages/frontend/vite.config.ts` → `server: { port: 3001 }`.  
+Backend-Port: Umgebungsvariable `PORT=4001 npm run dev --workspace=packages/backend`.
 
 **`npm run dev` gibt Fehler aus, obwohl `npm install` durchgelaufen ist.**  
 Node.js-Version prüfen: `node -v` (muss ≥ 20 sein). Ggf. via [nvm](https://github.com/nvm-sh/nvm) aktualisieren.
@@ -208,7 +210,7 @@ HOST=0.0.0.0 npm run dev --workspace=packages/backend
 # Frontend:
 npm run dev --workspace=packages/frontend -- --host
 ```
-App dann unter `http://<LAN-IP>:5173` auf allen Geräten im gleichen Netzwerk erreichbar.
+App dann unter `http://<LAN-IP>:3000` auf allen Geräten im gleichen Netzwerk erreichbar.
 
 ---
 
