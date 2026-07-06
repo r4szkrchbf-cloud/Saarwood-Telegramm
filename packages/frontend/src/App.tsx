@@ -810,14 +810,40 @@ export function App() {
                 placeholder="Projekt- oder Sendungsname"
               />
               {tier !== 'basic' && (
-                <button
-                  type="button"
-                  className="project-title-toggle-btn"
-                  onClick={handleToggleProjectTitle}
-                  aria-pressed={showProjectTitle}
-                >
-                  {showProjectTitle ? 'Projektname ausblenden' : 'Projektname einblenden'}
-                </button>
+                <div className="project-title-controls" role="group" aria-label="Projektname Darstellung">
+                  <button
+                    type="button"
+                    className="project-title-toggle-btn"
+                    onClick={handleToggleProjectTitle}
+                    aria-pressed={showProjectTitle}
+                  >
+                    {showProjectTitle ? 'Projektname ausblenden' : 'Projektname einblenden'}
+                  </button>
+                  <label className="project-title-inline-control">
+                    <span>Groesse</span>
+                    <input
+                      type="range"
+                      min={12}
+                      max={40}
+                      step={1}
+                      value={projectTitleFontSize}
+                      onChange={(e) => setDisplay({ projectTitleFontSize: Number(e.target.value) })}
+                      disabled={!showProjectTitle}
+                      aria-label="Projektname Groesse direkt einstellen"
+                    />
+                    <strong>{projectTitleFontSize}px</strong>
+                  </label>
+                  <label className="project-title-inline-control project-title-inline-color">
+                    <span>Farbe</span>
+                    <input
+                      type="color"
+                      value={projectTitleTextColor}
+                      onChange={(e) => setDisplay({ projectTitleTextColor: e.target.value })}
+                      disabled={!showProjectTitle}
+                      aria-label="Projektname Farbe direkt einstellen"
+                    />
+                  </label>
+                </div>
               )}
             </div>
             <div className="editor-scroll">
