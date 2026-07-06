@@ -93,12 +93,14 @@ All MVP features are fully unlocked for Beta testing.
 - Dedicated output-only view route `?view=prompter&output=1` (no header, no control panel, no settings drawer, no hotkeys).
 - New control action `Prompter Fenster` to open a separate browser output window.
 - Electron desktop bridge + operator action `Monitor 2 Vollbild` to open prompter output on a second display in fullscreen.
+- Room-ID hint + copy action in app header for easier beta tester pairing workflows.
 
 ### Changed
 
 - WebSocket synchronization is now room-scoped (`?room=...`) to prevent global cross-user coupling.
 - New output windows now inherit the same room identifier as the controller window.
 - `SYNC_STATE` behavior is room-local (state isolation per room).
+- Controller-only position source guard: per room, only one client can drive `SET_POSITION` updates.
 - Runtime sync traffic reduced: output-only clients no longer emit `SCRIPT_UPDATE`, `SETTINGS_UPDATE`, or `SET_POSITION`.
 - Position sync interval while playing was increased (more aggressive throttling) to reduce jitter and backend load.
 - Voice tracking execution is now transport-bound: ASR runs only while playback is active and is hard-muted during pause.

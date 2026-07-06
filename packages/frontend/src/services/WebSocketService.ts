@@ -18,11 +18,13 @@ class WebSocketService {
   private readonly MAX_RECONNECT_DELAY = 30_000;
   private baseUrl: string;
   private channel: string;
+  private readonly clientId: string;
   private _connected = false;
 
   constructor(baseUrl: string, channel = 'global') {
     this.baseUrl = baseUrl;
     this.channel = channel;
+    this.clientId = `client-${Math.random().toString(36).slice(2, 10)}`;
   }
 
   // ─── Public API ────────────────────────────────────────────────────────────
@@ -81,6 +83,10 @@ class WebSocketService {
 
   get connected(): boolean {
     return this._connected;
+  }
+
+  get clientIdentifier(): string {
+    return this.clientId;
   }
 
   // ─── Private helpers ──────────────────────────────────────────────────────
@@ -173,9 +179,10 @@ class WebSocketService {
     try {
       const url = new URL(this.baseUrl);
       url.searchParams.set('room', this.channel);
+      url.searchParams.set('client', this.clientId);
       return url.toString();
     } catch {
-      return `${this.baseUrl}?room=${encodeURIComponent(this.channel)}`;
+      return `${this.baseUrl}?room=${encodeURIComponent(this.channel)}&client=${encodeURIComponent(this.clientId)}`;
     }
   }
 }

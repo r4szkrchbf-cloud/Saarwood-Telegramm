@@ -19,6 +19,8 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
   - Zustandssynchronisierung (`SYNC_STATE`) erfolgt jetzt room-lokal.
   - Output-only Clients senden keine Script-/Settings-/Positionsupdates mehr zurueck.
   - Positions-Sync wurde staerker gedrosselt, um Lastspitzen und sichtbares Stottern zu reduzieren.
+  - Controller-Only-Absicherung fuer Position aktiviert: pro room wird nur eine Position-Quelle akzeptiert.
+  - Room-ID ist in der App sichtbar und per Klick kopierbar (Beta-Tester-Workflow).
   - Dokumentiert in `docs/STATUSBERICHT_MULTIROOM_PERFORMANCE_DE_2026-07-06.md`.
 
 - Live Public-MVP Basis erfolgreich umgesetzt:

@@ -30,6 +30,8 @@ export class ControlServer {
     direction: 'down' | 'up';
   }>();
   private clientRoom = new Map<WebSocket, string>();
+  private clientId = new Map<WebSocket, string>();
+  private roomPositionOwner = new Map<string, string>();
 
   constructor(httpServer: Server) {
     this.wss = new WebSocketServer({ server: httpServer, path: '/ws' });
@@ -40,9 +42,11 @@ export class ControlServer {
     this.wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
       const clientIp = req.socket.remoteAddress ?? 'unknown';
       const room = this._resolveRoom(req);
-      console.log(`[WS] Client connected: ${clientIp} (room=${room})`);
+      const client = this._resolveClientId(req);
+      console.log(`[WS] Client connected: ${clientIp} (room=${room}, client=${client})`);
       this.clients.add(ws);
       this.clientRoom.set(ws, room);
+      this.clientId.set(ws, client);
 
       // Send current state on connect
       this._send(ws, {
@@ -56,9 +60,14 @@ export class ControlServer {
       });
 
       ws.on('close', () => {
-        console.log(`[WS] Client disconnected: ${clientIp} (room=${room})`);
+        console.log(`[WS] Client disconnected: ${clientIp} (room=${room}, client=${client})`);
         this.clients.delete(ws);
         this.clientRoom.delete(ws);
+        this.clientId.delete(ws);
+        const owner = this.roomPositionOwner.get(room);
+        if (owner === client) {
+          this.roomPositionOwner.delete(room);
+        }
         this._broadcast(
           { type: 'CONTROLLER_DISCONNECTED', timestamp: Date.now() },
           ws,
@@ -68,8 +77,14 @@ export class ControlServer {
 
       ws.on('error', (err: Error) => {
         console.error('[WS] Client error:', err.message);
+        const errorRoom = this.clientRoom.get(ws);
+        const errorClient = this.clientId.get(ws);
+        if (errorRoom && errorClient && this.roomPositionOwner.get(errorRoom) === errorClient) {
+          this.roomPositionOwner.delete(errorRoom);
+        }
         this.clients.delete(ws);
         this.clientRoom.delete(ws);
+        this.clientId.delete(ws);
       });
     });
 
@@ -88,6 +103,7 @@ export class ControlServer {
     }
 
     const room = this.clientRoom.get(sender) ?? 'global';
+    const senderClientId = this.clientId.get(sender) ?? 'client-anon';
     const state = this._getRoomState(room);
 
     // Update per-room state for sync-on-connect
@@ -113,8 +129,19 @@ export class ControlServer {
         break;
       }
       case 'SET_POSITION': {
-        const p = msg.payload as { position?: number } | undefined;
-        if (typeof p?.position === 'number') state.position = p.position;
+        const p = msg.payload as { position?: number; ownerId?: string } | undefined;
+        if (typeof p?.position === 'number') {
+          const nextOwner = typeof p.ownerId === 'string' && p.ownerId.trim().length > 0
+            ? p.ownerId.trim()
+            : senderClientId;
+          const currentOwner = this.roomPositionOwner.get(room);
+          if (!currentOwner) {
+            this.roomPositionOwner.set(room, nextOwner);
+          } else if (currentOwner !== nextOwner) {
+            return; // Ignore position updates from non-owner clients.
+          }
+          state.position = p.position;
+        }
         break;
       }
       case 'HEARTBEAT':
@@ -163,6 +190,17 @@ export class ControlServer {
       return raw.slice(0, 80);
     } catch {
       return 'global';
+    }
+  }
+
+  private _resolveClientId(req: IncomingMessage): string {
+    try {
+      const parsed = new URL(req.url ?? '/ws', 'http://localhost');
+      const raw = (parsed.searchParams.get('client') ?? '').trim();
+      if (!raw) return 'client-anon';
+      return raw.slice(0, 80);
+    } catch {
+      return 'client-anon';
     }
   }
 

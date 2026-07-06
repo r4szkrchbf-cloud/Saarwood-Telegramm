@@ -182,6 +182,7 @@ export function App() {
   const [showSettings, setShowSettings] = useState(false);
   const isOutputOnly = initialContext.outputOnly;
   const room = initialContext.room;
+  const [roomCopied, setRoomCopied] = useState(false);
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -579,7 +580,7 @@ export function App() {
     positionSyncTimer.current = setTimeout(() => {
       positionSyncTimer.current = null;
       const latest = usePrompterStore.getState().scroll.position;
-      wsService.send('SET_POSITION', { position: latest });
+      wsService.send('SET_POSITION', { position: latest, ownerId: wsService.clientIdentifier });
       lastSyncedPosition.current = latest;
     }, 220);
   }, [scrollPosition, isPlaying, isOutputOnly]);
@@ -588,7 +589,7 @@ export function App() {
     if (isOutputOnly) return;
     if (isPlaying) return;
     if (Math.abs(scrollPosition - lastSyncedPosition.current) < 1) return;
-    wsService.send('SET_POSITION', { position: scrollPosition });
+    wsService.send('SET_POSITION', { position: scrollPosition, ownerId: wsService.clientIdentifier });
     lastSyncedPosition.current = scrollPosition;
   }, [scrollPosition, isPlaying, isOutputOnly]);
 
@@ -632,6 +633,17 @@ export function App() {
     params.set('room', room);
     const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     window.open(url, 'saarwood-prompter-output', 'noopener,width=1400,height=900');
+  };
+
+  const handleCopyRoom = async () => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) return;
+    try {
+      await navigator.clipboard.writeText(room);
+      setRoomCopied(true);
+      window.setTimeout(() => setRoomCopied(false), 1200);
+    } catch {
+      setRoomCopied(false);
+    }
   };
 
   const handleOpenSecondMonitorOutput = async () => {
@@ -711,6 +723,18 @@ export function App() {
               Lizenz: {licenseState.status}
             </span>
           )}
+          <span className="room-hint" aria-label={`Room ${room}`}>
+            Room: {room}
+          </span>
+          <button
+            type="button"
+            className="room-copy-btn"
+            onClick={handleCopyRoom}
+            aria-label="Room-ID kopieren"
+            title="Room-ID kopieren"
+          >
+            {roomCopied ? 'Kopiert' : 'Room kopieren'}
+          </button>
         </div>
 
         {/* View mode switcher */}

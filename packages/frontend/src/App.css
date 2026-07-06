@@ -114,6 +114,35 @@
   user-select: none;
 }
 
+.room-hint {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background: #1c2533;
+  color: #d3e7ff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  user-select: text;
+}
+
+.room-copy-btn {
+  border: 1px solid #334154;
+  border-radius: 3px;
+  background: #152131;
+  color: #d3e7ff;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.room-copy-btn:hover {
+  background: #1c2c41;
+}
+
 .license-gate {
   position: fixed;
   inset: 0;

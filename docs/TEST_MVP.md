@@ -1282,6 +1282,44 @@ Live-Tester-Runde fuer neue Features gemaess aktueller Beta-Tester-Checkliste do
 
 ---
 
+## Runde 16 - 2026-07-06 21:13 UTC (Live-Mehrclient-Smoke mit 2 Rooms)
+
+### Ziel
+
+Produktionsnachweis fuer room-basierte Session-Isolation auf `teleprompter.saarwood.ch`.
+
+### Testaufbau
+
+1. Drei WebSocket-Clients gegen Live-Domain aufgebaut.
+2. Client A1 und A2 in Room A.
+3. Client B1 in Room B.
+4. A1 sendet `SET_SPEED`.
+
+### Erwartung
+
+- A2 (gleicher Room) muss `SET_SPEED` erhalten.
+- B1 (anderer Room) darf `SET_SPEED` nicht erhalten.
+
+### Beobachtung
+
+- A2 Events: `SYNC_STATE`, `SET_SPEED`.
+- B1 Events: nur `SYNC_STATE`.
+- Cross-Room-Leak nicht aufgetreten.
+
+### Ergebnis Runde 16
+
+- Ergebnis: PASS (GRUEN)
+- Room-Isolation auf produktiver Domain technisch bestaetigt.
+- Naechster Schritt: manueller Browser-Mehrclienttest inkl. Bedienfluss und Sichttest auf Stottern.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 16 | 2026-07-06 21:13 | Live WS-Smoketest mit 2 Rooms | n/a | GRUEN |
+
+---
+
 ## Runde 15 - 2026-07-06 20:59 UTC (Room-Isolation + Sync-Entlastung)
 
 ### Ziel
