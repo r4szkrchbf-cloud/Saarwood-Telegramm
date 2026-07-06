@@ -992,13 +992,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           <p>SAARwooD Teleprompter Beta V1 ist eine Teleprompter-App fuer Editor, Split und Prompter-Ausgabe.</p>
           <p>Sie bietet manuelle Steuerung, Cue-Marker, Spiegelung, Rotation und WebSocket-Sync.</p>
           <p>Desktop-Betrieb: Mit Monitor 2 Vollbild kann die Prompter-Ausgabe direkt auf den zweiten Bildschirm gelegt werden.</p>
-          <p>
-            Links:
-            {' '}
-            {supportInfo.handbookUrl && <a className="support-link" href={supportInfo.handbookUrl} target="_blank" rel="noreferrer">Handbuch</a>}
-            {' '}
-            {supportInfo.testerFormUrl && <a className="support-link" href={supportInfo.testerFormUrl} target="_blank" rel="noreferrer">Testerformular</a>}
-          </p>
+          <h4 className="settings-subheading">Tastenbelegung</h4>
           <ul className="settings-short-about-hotkeys" aria-label="Tastaturbelegungen">
             <li>Leertaste: Play/Pause</li>
             <li>R: Text auf Anfang (Reset/Stop), Escape: Stop</li>
@@ -1011,6 +1005,33 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <li>F: Vollbild umschalten</li>
             <li>V: Voice ON (nur Expert), M: Voice OFF (nur Expert)</li>
           </ul>
+          <h4 className="settings-subheading">Links</h4>
+          <div className="settings-link-grid">
+            {supportInfo.chatUrl && (
+              <a className="support-link-card" href={supportInfo.chatUrl} target="_blank" rel="noreferrer">
+                <span>{supportInfo.chatLabel}</span>
+                <small>Direkter Support-Kontakt</small>
+              </a>
+            )}
+            {supportInfo.handbookUrl && (
+              <a className="support-link-card" href={supportInfo.handbookUrl} target="_blank" rel="noreferrer">
+                <span>Handbuch</span>
+                <small>Technische Referenz und Abläufe</small>
+              </a>
+            )}
+            {supportInfo.testerGuideUrl && (
+              <a className="support-link-card" href={supportInfo.testerGuideUrl} target="_blank" rel="noreferrer">
+                <span>Live-Tester Guide</span>
+                <small>Checkliste fuer Beta-Feedback</small>
+              </a>
+            )}
+            {supportInfo.testerFormUrl && (
+              <a className="support-link-card" href={supportInfo.testerFormUrl} target="_blank" rel="noreferrer">
+                <span>Testerformular</span>
+                <small>Formular fuer Rueckmeldungen</small>
+              </a>
+            )}
+          </div>
         </section>
       )}
     </div>

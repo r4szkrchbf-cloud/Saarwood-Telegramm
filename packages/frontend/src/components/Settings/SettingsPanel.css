@@ -244,6 +244,14 @@
   color: var(--text-muted);
 }
 
+.settings-subheading {
+  margin: 0.8rem 0 0.45rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 .settings-short-about p {
   margin: 0 0 0.4rem;
   font-size: 0.82rem;
@@ -262,6 +270,12 @@
   font-size: 0.8rem;
   line-height: 1.35;
   color: var(--text-muted);
+}
+
+.settings-link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem;
 }
 
 /* ─── Groups ──────────────────────────────────────────────────────────────── */
