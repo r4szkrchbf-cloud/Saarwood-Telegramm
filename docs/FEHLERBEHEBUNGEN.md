@@ -473,6 +473,38 @@ Kontext: Akutfix fuer Mehrnutzer-Kopplung und Scroll-Stottern im Livebetrieb.
 
 ---
 
+## Eintrag 2026-07-06 23:58 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Lizenz-Haertung fuer Offline-Betrieb und operative Vollkontrolle (Ausgabe/Ablauf/Sperrung).
+
+### Ausgangsproblem
+- Offline-Aktivierung war bislang nur payload-basiert plausibilisiert und nicht kryptografisch verifiziert.
+- Nach Offline-Neustart konnte der Lizenzfluss inkonsistent sein, weil relevante Lizenzdaten nicht persistiert waren.
+
+### Durchgefuehrte Schritte
+- Frontend: kryptografische Offline-Pruefung implementiert (Ed25519-Signatur via `jose`).
+- Frontend: Lizenz-Token und gecachter Public Key in Persist-Store aufgenommen.
+- Backend: `publicKeyPem` in `/api/license/status` und `/api/license/activate` auslieferbar gemacht.
+- Deploy auf VPS inkl. Rebuild/Restart.
+- Live-E2E geprueft (Controller + Output mit identischem room, Titel-Sync sichtbar).
+
+### Ergebnis
+- Frontend Tests: PASS (30/30)
+- Backend Tests: PASS (9/9)
+- Monorepo Build: PASS
+- Live Health: PASS (`/api/health`)
+- Offline-Modus akzeptiert nur noch kryptografisch verifizierbare Tokens (bei vorhandenem gecachtem Public Key).
+
+### Offene Punkte
+- Erstaktivierung im komplett internetlosen Zustand bleibt absichtlich gesperrt, bis einmal online Public-Key-Cache aufgebaut wurde.
+- Harte Revocations greifen offline naturgemaess erst bei naechster Online-Verbindung.
+
+### Lessons Learned
+- Offline-Lizenznutzung braucht explizite Vertrauenskette (Signatur + Key-Cache), sonst entsteht Schein-Sicherheit.
+- Fuer Feldkontrolle von "im Markt" befindlichen Instanzen ist die Kombination aus kurzer Token-Laufzeit und kurzer Offline-Gnadenfrist entscheidend.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)

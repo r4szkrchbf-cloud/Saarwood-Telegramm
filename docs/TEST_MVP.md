@@ -1361,3 +1361,47 @@ Akuten Live-Befund beheben und verifizieren:
 | Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
 |-------|------------------------|-------|-------|----------|
 | 15 | 2026-07-06 20:59 | Frontend 30/30, Backend 9/9 | PASS | GRUEN |
+
+---
+
+## Runde 17 - 2026-07-06 22:58 UTC (Manueller Browser-E2E mit 2 Fenstern)
+
+### Ziel
+
+Kurzer Live-E2E-Check auf Produktivdomain mit sichtbarem Bedienfluss:
+
+1. Room-ID sichtbar/kopierbar im Controller.
+2. Output-Fenster mit identischem room.
+3. Live-Sync zwischen Controller und Output nachweisbar.
+
+### Testaufbau
+
+1. Controller-Fenster geoeffnet:
+	- `https://teleprompter.saarwood.ch/?room=room-r37apu31`
+2. Output-Fenster geoeffnet:
+	- `https://teleprompter.saarwood.ch/?view=prompter&output=1&room=room-r37apu31`
+
+### Durchgefuehrte Schritte
+
+1. Sichtpruefung Header im Controller:
+	- Room-Hinweis sichtbar (`Room: room-r37apu31`)
+	- Button `Room kopieren` verfuegbar
+2. Klick auf `Room kopieren`:
+	- Button-Zustand wechselte auf `Kopiert`
+3. Script-Titel im Controller geaendert auf:
+	- `Runde17 E2E Live Titel`
+4. Output-Fenster geprueft:
+	- Titel wurde live uebernommen
+	- Verbindungsstatus `Remote control connected`
+
+### Ergebnis Runde 17
+
+- Ergebnis: PASS (GRUEN)
+- Bedienfluss fuer Room-Sharing und Output-Sync im Live-Betrieb bestaetigt.
+- Keine Cross-Room-Auffaelligkeit innerhalb dieses E2E-Kurztests.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 17 | 2026-07-06 22:58 | Manueller Browser-E2E (Controller + Output, gleicher room) | n/a | GRUEN |
