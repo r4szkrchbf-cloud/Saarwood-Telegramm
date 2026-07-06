@@ -19,6 +19,12 @@ Markenstil:
 - Admin-Lizenzfunktionen sind bereits ueber geschuetzte API-Endpunkte verfuegbar.
 - Die Support- und Lizenz-Runbooks sind dokumentiert.
 
+## Aktueller Public-Status
+
+- `teleprompter.saarwood.ch` zeigt auf die produktive Teleprompter-App.
+- `saarwood.ch` ist aktuell noch als Hostinger-Parkseite sichtbar und muss fuer die Marken-Landingpage noch auf die neue Zielarchitektur umgestellt werden.
+- Fuer die eigentliche Marken-/SEO-Seite reicht der Frontend-Code alleine nicht; DNS/Hosting/Forwarding fuer die Hauptdomain muessen separat angepasst werden.
+
 ## Was der Nutzer erreichen will
 
 - Google soll die App finden und indexieren.

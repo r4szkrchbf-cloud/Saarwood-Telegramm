@@ -142,6 +142,9 @@ Domain-Rollen:
 - `teleprompter.saarwood.ch` bleibt die operative Teleprompter-App.
 - `saarwood.ch` und `www.saarwood.ch` sind die Marken-/SEO-Hauptseite mit Landingpage-Konzept.
 
+Hinweis zum Live-Betrieb:
+- Solange `saarwood.ch` noch auf eine geparkte Hostinger-Seite zeigt, muss die Hauptdomain erst per DNS/Hosting/Forwarding auf die Saarwood-Landingpage umgestellt werden.
+
 Deploy-Set fuer Hostinger:
 - `deploy/hostinger/nginx.teleprompter.conf`
 - `deploy/hostinger/ecosystem.config.cjs`
