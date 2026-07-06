@@ -376,7 +376,7 @@ Kontext: Vorbereitung der naechsten gemeinsamen Testsession inkl. frischer Gate-
 
 ## Eintrag YYYY-MM-DD HH:MM (lokale Zeit)
 Name: <Name/Agent>
-Kontext: <kurze Lagebeschreibung>
+Kontext: [kurze Lagebeschreibung]
 
 ### Ausgangsproblem
 - ...
