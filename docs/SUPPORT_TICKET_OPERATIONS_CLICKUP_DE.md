@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD029 MD032 -->
+
 # Support- und Ticket-Operations (Dev/Admin/Support)
 
 Stand: 2026-07-06

@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD029 MD032 -->
+
 # Statusbericht Live Setup (VPS + Domain + TLS)
 
 Stand: 2026-07-06
