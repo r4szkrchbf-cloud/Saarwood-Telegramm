@@ -31,28 +31,28 @@ interface LicenseState {
 const GERMAN_TEST_SEGMENTS: ScriptSegment[] = [
   {
     id: 'seg-1',
-    html: '<p>Guten Abend und herzlich willkommen zu unserer Sendung. In den naechsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verstaendlich zusammen.</p>',
+    html: '<p><strong>SPRECHER 1:</strong></p><p>Guten Abend und herzlich willkommen zu unserer Sendung.</p><p>In den nächsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verständlich zusammen.</p>',
     direction: 'ltr',
     isCloaked: false,
     isDirectorsNote: false,
   },
   {
     id: 'seg-2',
-    html: '<p>Im ersten Themenblock geht es um die Verkehrslage im Saarland. Der Berufsverkehr bleibt auf den Hauptachsen dicht, auf der A sechs kommt es weiterhin zu zoegerlichem Vorankommen.</p>',
+    html: '<p>Im ersten Themenblock geht es um die Verkehrslage im Saarland.</p><p>Der Berufsverkehr bleibt auf den Hauptachsen dicht, auf der A sechs kommt es weiterhin zu zögerlichem Vorankommen.</p>',
     direction: 'ltr',
     isCloaked: false,
     isDirectorsNote: false,
   },
   {
     id: 'seg-3',
-    html: '<p>Danach schauen wir auf das Wetter: In der Nacht bleibt es weitgehend trocken, lokal kann sich Nebel bilden. Morgen starten wir freundlich, spaeter ziehen Wolken auf.</p>',
+    html: '<p>Danach schauen wir auf das Wetter:</p><p>In der Nacht bleibt es weitgehend trocken, lokal kann sich Nebel bilden.</p><p>Morgen starten wir freundlich, später ziehen Wolken auf.</p>',
     direction: 'ltr',
     isCloaked: false,
     isDirectorsNote: false,
   },
   {
     id: 'seg-4',
-    html: '<p>Zum Abschluss noch der Sport: Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins. Das Team zeigt eine stabile Defensive und bleibt damit auf Playoff-Kurs.</p>',
+    html: '<p>Zum Abschluss noch der Sport:</p><p>Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins.</p><p>Das Team zeigt eine stabile Defensive und bleibt damit auf Playoff-Kurs.</p>',
     direction: 'ltr',
     isCloaked: false,
     isDirectorsNote: false,
@@ -245,6 +245,7 @@ export function App() {
   const activeProfileId = usePrompterStore((s) => s.activeProfileId);
   const saveProfile = usePrompterStore((s) => s.saveProfile);
   const applyProfile = usePrompterStore((s) => s.applyProfile);
+  const tier = usePrompterStore((s) => s.tier);
   const licenseToken = usePrompterStore((s) => s.licenseToken);
   const setLicenseToken = usePrompterStore((s) => s.setLicenseToken);
 
@@ -255,6 +256,7 @@ export function App() {
   }, [profiles, templateSearch]);
 
   const handleCreateTemplateFromEditor = useCallback(() => {
+    if (tier === 'basic') return;
     const name = newTemplateName.trim();
     if (!name) return;
 
@@ -270,7 +272,7 @@ export function App() {
     saveProfile(profile);
     setSelectedTemplateId(profile.id);
     setNewTemplateName('');
-  }, [newTemplateName, display, script, saveProfile]);
+  }, [tier, newTemplateName, display, script, saveProfile]);
 
   const handleApplySelectedTemplate = useCallback(() => {
     const targetId = selectedTemplateId || activeProfileId;
@@ -710,56 +712,65 @@ export function App() {
         {/* Editor pane */}
         {(viewMode === 'editor' || viewMode === 'split') && (
           <section className="editor-pane" aria-label="Script editor">
-            <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
-              <span className="editor-template-label">Telepromptervorlagen</span>
-              <input
-                type="search"
-                className="editor-template-search"
-                placeholder="Vorlage durchsuchen"
-                value={templateSearch}
-                onChange={(e) => setTemplateSearch(e.target.value)}
-                aria-label="Telepromptervorlage durchsuchen"
-              />
-              <select
-                className="editor-template-select"
-                value={selectedTemplateId || activeProfileId || ''}
-                onChange={(e) => setSelectedTemplateId(e.target.value)}
-                aria-label="Telepromptervorlage auswaehlen"
-              >
-                <option value="">Vorlage waehlen</option>
-                {filteredTemplates.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="editor-template-btn"
-                onClick={handleApplySelectedTemplate}
-                disabled={!(selectedTemplateId || activeProfileId)}
-              >
-                Anwenden
-              </button>
-            </div>
+            {tier === 'basic' ? (
+              <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
+                <span className="editor-template-label">Telepromptervorlagen</span>
+                <span className="settings-help-text">Vorlagenverwaltung ab Professional.</span>
+              </div>
+            ) : (
+              <>
+                <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
+                  <span className="editor-template-label">Telepromptervorlagen</span>
+                  <input
+                    type="search"
+                    className="editor-template-search"
+                    placeholder="Vorlage durchsuchen"
+                    value={templateSearch}
+                    onChange={(e) => setTemplateSearch(e.target.value)}
+                    aria-label="Telepromptervorlage durchsuchen"
+                  />
+                  <select
+                    className="editor-template-select"
+                    value={selectedTemplateId || activeProfileId || ''}
+                    onChange={(e) => setSelectedTemplateId(e.target.value)}
+                    aria-label="Telepromptervorlage auswaehlen"
+                  >
+                    <option value="">Vorlage waehlen</option>
+                    {filteredTemplates.map((p) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="editor-template-btn"
+                    onClick={handleApplySelectedTemplate}
+                    disabled={!(selectedTemplateId || activeProfileId)}
+                  >
+                    Anwenden
+                  </button>
+                </div>
 
-            <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
-              <span className="editor-template-label">Telepromptervorlage anlegen</span>
-              <input
-                type="text"
-                className="editor-template-search"
-                placeholder="Name der Vorlage"
-                value={newTemplateName}
-                onChange={(e) => setNewTemplateName(e.target.value)}
-                aria-label="Name der neuen Telepromptervorlage"
-              />
-              <button
-                type="button"
-                className="editor-template-btn"
-                onClick={handleCreateTemplateFromEditor}
-                disabled={!newTemplateName.trim()}
-              >
-                Aus aktuellem Editor speichern
-              </button>
-            </div>
+                <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
+                  <span className="editor-template-label">Telepromptervorlage anlegen</span>
+                  <input
+                    type="text"
+                    className="editor-template-search"
+                    placeholder="Name der Vorlage"
+                    value={newTemplateName}
+                    onChange={(e) => setNewTemplateName(e.target.value)}
+                    aria-label="Name der neuen Telepromptervorlage"
+                  />
+                  <button
+                    type="button"
+                    className="editor-template-btn"
+                    onClick={handleCreateTemplateFromEditor}
+                    disabled={!newTemplateName.trim()}
+                  >
+                    Aus aktuellem Editor speichern
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* Script title */}
             <div className="editor-title-bar">

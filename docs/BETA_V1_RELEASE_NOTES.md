@@ -10,7 +10,7 @@
 
 Die Beta V1 ist die erste offiziell benannte und nach außen freigebbare Version des **Saarwood Teleprompters**.
 
-Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert) in einer einzigen, vollständig freigeschalteten Version. Ziel ist ein ausgiebiger **Langzeittest mit echten Nutzern** unter realen Sendebedingungen, um Fehler, Usability-Probleme und Performance-Engpässe zu identifizieren.
+Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert) in einer einzigen Beta. Die UI schaltet je nach Tier passende Werkzeuge frei. Ziel ist ein ausgiebiger **Langzeittest mit echten Nutzern** unter realen Sendebedingungen, um Fehler, Usability-Probleme und Performance-Engpässe zu identifizieren.
 
 ---
 
@@ -19,7 +19,7 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 | Feature | Status |
 |---------|--------|
 | **BETA V1 Badge** im App-Header | ✅ Neu |
-| **Alle Tiers vollständig freigeschaltet** (Expert als Standard) | ✅ Neu |
+| **Tier-UI im Code vorhanden** (Basic / Professional / Expert, Expert als Standard) | ✅ Neu |
 | App-Titel: `Saarwood Teleprompter — Beta V1` | ✅ Neu |
 | PWA-Name: `Saarwood Teleprompter Beta` | ✅ Neu |
 | Version 1.0.0-beta.1 in allen Paketen | ✅ Neu |
@@ -39,19 +39,26 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 - ✅ Hardware-beschleunigte Rotation 0°/90°/180°/270° (GPU Compositor)
 - ✅ Dark Mode (Director/Editor-UI)
 - ✅ WebSocket Remote Control (Smartphone, Tablet, Bluetooth-Pedal-Relay)
-- ✅ Voice Tracking (Web Speech API, automatisches Scrollen zum gesprochenen Wort)
-- ✅ Einstellbarer Cue-Marker
 - ✅ Tastaturkürzel: Space=Play/Pause, Esc=Stop, ↑/↓=Speed, [/]=Rotation
 - ✅ Moderator-Einstellungen (Schriftgröße, Familie, Farben, Zeilenhöhe) mit localStorage-Persistenz
 
 ### Professional-Tier (Regionaler Broadcast)
 - ✅ MOS Protocol v2.8.5 (TCP/XML, Profile 0 Heartbeat + Profile 2 Running Order)
 - ✅ Hot-Update während Scrollen (Tiptap → Zustand → rAF, kein Scroll-Unterbruch)
+- ✅ Einstellbarer Cue-Marker und Cue-Position
 - ✅ Cloak Text (Segment für Moderator ausblenden)
 - ✅ Director's Notes (ASR überspringt markierte Segmente)
-- ✅ Moderator-Profile (Named Presets speichern/anwenden/löschen)
+- ✅ Telepromptervorlagen (Named Presets speichern/anwenden/umbenennen/löschen)
+- ✅ Import/Export im Settings-Bereich: JSON, CSV, TXT, PDF sowie tierabhängige Importregeln
+
+### Operations & Support
+- ✅ Support-Tickets mit Bestätigungs-E-Mail an den Absender
+- ✅ Support-Logs für die letzten 78 Stunden im Settings-Panel abrufbar
+- ✅ Support-Links / Handbuch / Tester-Ressourcen im selben Bereich
 
 ### Expert-Tier (Enterprise Broadcast)
+- ✅ Voice Tracking (Web Speech API, automatisches Scrollen zum gesprochenen Wort)
+- ✅ Mikrofonwahl, Empfindlichkeit und Kalibrierungs-Assistent
 - ✅ A/B-Redundanz-Architektur (Primary/Backup/Standalone mit SYNC_STATE)
 - ✅ NDI-Abstraktionsschicht (StubNdiAdapter + Shell für Native Addon)
 - ✅ SMPTE ST 2110 Bereitschaftshaken (Hardware-Schnittstelle offen)

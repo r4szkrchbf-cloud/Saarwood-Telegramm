@@ -13,6 +13,7 @@
 1. Titel oben im Editor setzen.
 2. Segmente bearbeiten oder neue Segmente mit Add segment hinzufuegen.
 3. Fuer Testbetrieb kann in Settings der deutsche 4-Segment-Testtext geladen werden.
+4. Import aus TXT ist im Basic-Tier vorgesehen; JSON/CSV/TXT sind in hoehren Tiers verfuegbar.
 
 ## 3. Prompter steuern
 
@@ -46,11 +47,13 @@ Im Settings-Bereich:
 - Text-/Hintergrundfarbe
 - Cue-Marker und Cue-Position
 - Spiegelung/Rotation ueber Controls
+- Telepromptervorlagen speichern/umbenennen/anwenden je nach Tier
+- Support-Bereich mit Ticket, Support-Links und 78h Logzugriff
 
 ## 6. Voice-Hinweis fuer Beta V1
 
-Voice Tracking ist in dieser Beta-Version nicht als produktionsreifes Feature enthalten.
-Bitte den Teleprompter-Betrieb ueber manuelle Steuerung durchfuehren.
+Voice Tracking ist im Expert-Tier verfuegbar und kann im passenden Browser aktiviert werden.
+Wenn kein Unterstuetzungs-Browser vorhanden ist oder das Feature bewusst klein gehalten werden soll, bleibt die manuelle Steuerung der Default.
 
 ## 7. Betriebsempfehlung fuer Live-Einsatz
 
@@ -68,3 +71,4 @@ Bitte den Teleprompter-Betrieb ueber manuelle Steuerung durchfuehren.
 ## 9. Support-Notiz
 
 Fuer Pilotbetrieb alle Auffaelligkeiten mit Zeitstempel dokumentieren und in die Projektdoku uebernehmen.
+Support-Tickets und Client-Logs gehoeren in den Support-Prozess, nicht in den Prompter-Workflow.

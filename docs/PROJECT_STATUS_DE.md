@@ -1,6 +1,6 @@
 # Projektstand Saarwood Teleprompter
 
-_Stand: 2026-07-05 05:10 UTC (Voice-Tracking Stabilisierung, Kalibrierungs-Assistent und Testtext-Update)_
+_Stand: 2026-07-06 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support- und Import/Export-Stand)_
 
 ## 1. Kurzfazit
 
@@ -10,6 +10,7 @@ Der MVP ist fuer den LAN-Einsatz brauchbar, aber wir befinden uns weiterhin in d
 Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfuehrung von A bis Z ebenfalls.
 ASR / Voice Tracking wurde in den Kernablaeufen stabilisiert (Play/Pause-Kopplung, sichtbare Laufzeitdiagnose, Sensitivity, Kalibrierung).
 Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser bedienbar.
+Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Support-Logs, TXT-Import und tierabhängige UI-Regeln sind im Code und in der Doku abgebildet.
 
 ## 1.1 Delta-Update (neu)
 
@@ -29,6 +30,25 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 - Hostinger-Konzept fuer Public Beta + Support erstellt (`docs/HOSTINGER_PUBLIC_BETA_SUPPORT_CONCEPT_DE.md`), inkl. Trennung Support-UI vs. Prompter-Output.
 - Erweiterte Hostinger-Anforderung dokumentiert: zentrale Hauptseite fuer mehrere Apps plus App-Unterseiten (`/apps/<name>/...`) und Teleprompter-Dokumente/Formular direkt verlinkbar aus App und Website.
 - Mehrserver-/Baukasten-Prinzip dokumentiert: Hauptwebsite kann getrennt vom Teleprompter-App-Server laufen; App-uebergreifender Datenaustausch erfolgt API-/Event-basiert statt direkter DB-Kopplung.
+- Telepromptervorlagen wurden im UI und in der Doku umbenannt; Support-Log-Zugriff und Import/Export-Regeln sind tierabhängig dokumentiert.
+
+## 1.2 Code-/Doku-Abgleich (aktuell)
+
+Folgende Codebereiche sind derzeit in der Dokumentation abgedeckt und sollen bei Aenderungen zuerst nachgezogen werden:
+
+- `packages/frontend/src/App.tsx`: App-Shell, License-Gate, View-Modi, Output-only View.
+- `packages/frontend/src/components/Settings/SettingsPanel.tsx`: Support, Vorlagenverwaltung, Import/Export, Voice-Kalibrierung.
+- `packages/frontend/src/store/prompterStore.ts`: Tier, Profile, Script, Display, duplicate/rename support.
+- `packages/backend/src/support/SupportService.ts`: Ticketpersistenz, Bestaetigungs-E-Mails, 78h Logs.
+- `packages/backend/src/routes/api.ts`: Support- und Lizenz-Endpoints.
+
+Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
+
+- VPS/Public-MVP-Rollout
+- Lizenz-Kill-Switch / Revocation-Runbook
+- Tally / On-Air-Preview-Schnittstelle
+- Screen-Presets und weitere Layout-Automation
+- Weiterer ASR-/Voice-Tracking-Feinschliff
 
 ## 2. Aktueller technischer Ist-Stand
 
@@ -49,7 +69,7 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 |------|--------|---------|
 | Frontend Build | PASS | Vite Build inkl. PWA-Dateien erfolgreich |
 | Backend Build | PASS | TypeScript Build erfolgreich |
-| Frontend Tests | PASS | 25/25 Tests bestanden (P0-Fix aktiv) |
+| Frontend Tests | PASS | 27/27 Tests bestanden (P0-Fix aktiv) |
 | Backend Tests | PASS | 9/9 Tests gruen |
 
 ## 4. MVP-Readiness fuer realen Langzeittest

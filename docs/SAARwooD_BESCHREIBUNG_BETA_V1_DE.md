@@ -9,7 +9,9 @@ Die Anwendung kombiniert:
 - Getrennte Prompter-Ausgabe als eigenes Output-Fenster (`?view=prompter&output=1`)
 - Fernsteuerung via WebSocket
 - Laufende Anpassung von Geschwindigkeit, Richtung, Spiegelung und Rotation
-- Profile und Anzeigeeinstellungen fuer verschiedene Sprecher
+- Telepromptervorlagen und Anzeigeeinstellungen fuer verschiedene Sprecher
+- Support-Tab mit Ticket-Erstellung, Support-Links und 78h Support-Logs
+- Import/Export fuer JSON, CSV, TXT und PDF mit tierabhängigen Regeln
 - Electron-Operatorfunktion fuer `Monitor 2 Vollbild` (Studio-Betrieb)
 
 ## Ziel der Beta V1
@@ -18,8 +20,8 @@ Die Beta V1 dient dem produktionsnahen Feldtest. Fokus ist die Stabilisierung de
 
 ## Wichtiger Beta-Hinweis
 
-Voice Tracking ist in der aktuellen Beta-Version als nicht enthalten markiert.
-Grund ist ein noch nicht stabiler Lauf im realen Betrieb. Bis zur finalen Stabilisierung darf Voice Tracking nicht als verlaessliches Produktionsfeature eingeplant werden.
+Voice Tracking ist im aktuellen Code als Expert-Funktion verfuegbar und kann im Browser mit passender Unterstuetzung aktiviert werden.
+Im Basic-Tier bleibt es weiterhin ausgeblendet, damit der Bedienumfang klein und stabil bleibt.
 
 ## Kernfunktionen (Beta V1)
 

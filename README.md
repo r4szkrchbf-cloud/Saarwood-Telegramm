@@ -50,19 +50,21 @@ The teleprompter output uses a **GPU-composited CSS transform** strategy:
 - ✅ Hardware-accelerated rotation (0°/90°/180°/270°) for physical teleprompter glass mounting angles (GPU compositor CSS transform)
 - ✅ Dark mode (Director UI)
 - ✅ WebSocket remote control (smartphone, tablet)
-- ✅ Voice tracking via Web Speech API (auto-scroll to spoken word)
-- ✅ Adjustable cue marker
 - ✅ Keyboard shortcuts (Space=play/pause, Esc=stop, ↑/↓=speed)
 - ✅ Presenter preferences (font size, family, colours, line height) with localStorage persistence
 
 ### Professional (Regional Broadcast)
 - ✅ **MOS Protocol v2.8.5** (TCP/XML, Profile 0 heartbeat + Profile 2 running order) — backend `MosHandler`
 - ✅ **Hot-update while scrolling**: Tiptap editor writes to Zustand store; PrompterDisplay reads on next rAF frame — zero scroll interruption
+- ✅ **Cue marker** and cue position controls
 - ✅ **Cloak Text**: per-segment toggle hides unconfirmed text from the presenter view
 - ✅ **Director's Notes**: segments marked as notes are dimmed and skipped by ASR auto-scroll
-- ✅ **Presenter Profiles**: named presets (font size/colour/line-height) with save/apply/delete
+- ✅ **Telepromptervorlagen**: named presets (font size/colour/line-height) with save/apply/rename/delete
+- ✅ **Support dashboard**: ticket creation, support links, and 78h support log access in Settings
+- ✅ **Import/Export**: JSON, CSV, TXT, PDF plus tier-aware import rules
 
 ### Expert (Enterprise Broadcast)
+- ✅ **Voice tracking** via Web Speech API with microphone selection, sensitivity and calibration
 - ✅ **A/B Redundancy architecture**: `RedundancyState` (primary/backup/standalone) in store; WebSocket `SYNC_STATE` messages keep peers in sync. Hitless failover logic connects in the backend control server.
 - ✅ **NDI abstraction layer**: `NdiAdapter` interface + `StubNdiAdapter` (development) + `NativeNdiAdapter` shell that loads an optional native addon. **Real NDI output requires the NDI SDK C++ native addon** — see `packages/backend/src/ndi/NdiAdapter.ts` for integration notes.
 - ✅ **SMPTE ST 2110 readiness**: architecture cleanly separates the render/control plane from the transport plane. ST 2110 (PTP-synchronised, unkompressed video multicast) must be handled by a hardware/middleware layer (e.g., Mellanox ConnectX NIC + dedicated ST 2110 daemon); the backend provides the hook point.

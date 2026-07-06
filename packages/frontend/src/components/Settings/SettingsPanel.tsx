@@ -74,6 +74,53 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const templateImportInputRef = useRef<HTMLInputElement | null>(null);
 
   const CALIBRATION_PHRASE = 'Heute testen wir das Voice Tracking fuer den Saarwood Teleprompter.';
+  const canManageTemplates = tier !== 'basic';
+  const canUseExpertTemplateTools = tier === 'expert';
+
+  const escapeHtmlText = useCallback((text: string): string => text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;'), []);
+
+  const parsePlainTextSegments = useCallback((raw: string, now: number) => {
+    const normalized = raw.replace(/\r\n/g, '\n').trim();
+    const speakerBlocks = normalized
+      .split(/(?=^\[[^\]]+\]:)/gm)
+      .map((block) => block.trim())
+      .filter(Boolean);
+    const blocks = speakerBlocks.length > 1
+      ? speakerBlocks
+      : normalized.split(/\n\s*\n+/).map((block) => block.trim()).filter(Boolean);
+
+    return blocks.map((block, idx) => {
+      const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+      const firstLine = lines[0] ?? '';
+      const speakerMatch = firstLine.match(/^\[([^\]]+)\]:\s*(.*)$/);
+      const speaker = speakerMatch?.[1]?.trim() ?? '';
+      const firstBodyLine = speakerMatch ? speakerMatch[2] : firstLine;
+      const bodyLines = speakerMatch ? [firstBodyLine, ...lines.slice(1)] : lines;
+      const body = bodyLines.join(' ').trim();
+      const paragraphs = body
+        .split(/\n\s*\n+/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+      const htmlBody = paragraphs.length > 0
+        ? paragraphs.map((part) => `<p>${escapeHtmlText(part).replace(/\n/g, '<br />')}</p>`).join('')
+        : `<p>${escapeHtmlText(body || '')}</p>`;
+
+      return {
+        id: `imp-${now}-${idx + 1}`,
+        html: speaker
+          ? `<p><strong>${escapeHtmlText(speaker)}:</strong></p>${htmlBody}`
+          : htmlBody,
+        direction: 'ltr' as const,
+        isCloaked: false,
+        isDirectorsNote: false,
+      };
+    });
+  }, [escapeHtmlText]);
 
   const postClientLog = useCallback((entry: { level: 'info' | 'warn' | 'error'; source: string; message: string; details?: string }) => {
     void fetch('/api/support/logs/client', {
@@ -231,6 +278,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   }, [display, profileName, saveProfile, script, postClientLog]);
 
   const handleCreateTemplate = useCallback(() => {
+    if (!canManageTemplates) return;
     const name = templateCreateName.trim();
     if (!name) return;
 
@@ -247,21 +295,24 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     saveProfile(profile);
     setTemplateCreateName('');
     postClientLog({ level: 'info', source: 'template', message: `Template created: ${name}` });
-  }, [display, script, saveProfile, templateCreateName, postClientLog]);
+  }, [canManageTemplates, display, script, saveProfile, templateCreateName, postClientLog]);
 
   const handleRenameTemplate = useCallback((id: string) => {
+    if (!canManageTemplates) return;
     const nextName = templateNameDrafts[id]?.trim();
     if (!nextName) return;
     renameProfile(id, nextName);
     postClientLog({ level: 'info', source: 'template', message: `Template renamed: ${nextName}` });
-  }, [renameProfile, templateNameDrafts, postClientLog]);
+  }, [canManageTemplates, renameProfile, templateNameDrafts, postClientLog]);
 
   const handleDuplicateTemplate = useCallback((id: string) => {
+    if (!canUseExpertTemplateTools) return;
     duplicateProfile(id);
     postClientLog({ level: 'info', source: 'template', message: `Template duplicated: ${id}` });
-  }, [duplicateProfile, postClientLog]);
+  }, [canUseExpertTemplateTools, duplicateProfile, postClientLog]);
 
   const handleExportTemplate = useCallback((id: string) => {
+    if (!canUseExpertTemplateTools) return;
     const profile = profiles.find((entry) => entry.id === id);
     if (!profile) return;
 
@@ -277,13 +328,18 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       makeTemplateFilename(profile.name),
     );
     postClientLog({ level: 'info', source: 'template', message: `Template exported: ${profile.name}` });
-  }, [downloadBlob, makeTemplateFilename, postClientLog, profiles]);
+  }, [canUseExpertTemplateTools, downloadBlob, makeTemplateFilename, postClientLog, profiles]);
 
   const handleImportTemplateClick = useCallback(() => {
     templateImportInputRef.current?.click();
   }, []);
 
   const handleImportTemplateFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!canUseExpertTemplateTools) {
+      setTemplateIoInfo('Vorlagenimport ist nur im Expert-Tier verfuegbar.');
+      if (e.target) e.target.value = '';
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -331,7 +387,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     } finally {
       if (e.target) e.target.value = '';
     }
-  }, [postClientLog, saveProfile]);
+  }, [canUseExpertTemplateTools, postClientLog, saveProfile]);
 
   const handleLoadGermanTestScript = useCallback(() => {
     const now = Date.now();
@@ -341,28 +397,28 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       segments: [
         {
           id: `seg-${now}-1`,
-          html: '<p>Guten Abend und herzlich willkommen zu unserer Sendung. In den naechsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verstaendlich zusammen.</p>',
+          html: '<p>[Sprecherin 1]: Guten Abend und herzlich willkommen zu unserer Sendung.</p>',
           direction: 'ltr',
           isCloaked: false,
           isDirectorsNote: false,
         },
         {
           id: `seg-${now}-2`,
-          html: '<p>Im ersten Themenblock geht es um die Verkehrslage im Saarland. Der Berufsverkehr bleibt auf den Hauptachsen dicht, auf der A sechs kommt es weiterhin zu zoegerlichem Vorankommen.</p>',
+          html: '<p>[Sprecher 2]: In den naechsten Minuten fassen wir die wichtigsten Meldungen des Tages kompakt und verstaendlich zusammen.</p>',
           direction: 'ltr',
           isCloaked: false,
           isDirectorsNote: false,
         },
         {
           id: `seg-${now}-3`,
-          html: '<p>Danach schauen wir auf das Wetter: In der Nacht bleibt es weitgehend trocken, lokal kann sich Nebel bilden. Morgen starten wir freundlich, spaeter ziehen Wolken auf.</p>',
+          html: '<p>[Sprecherin 1]: Im ersten Themenblock geht es um die Verkehrslage im Saarland. Der Berufsverkehr bleibt auf den Hauptachsen dicht.</p>',
           direction: 'ltr',
           isCloaked: false,
           isDirectorsNote: false,
         },
         {
           id: `seg-${now}-4`,
-          html: '<p>Zum Abschluss noch der Sport: Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins. Das Team zeigt eine stabile Defensive und bleibt damit auf Playoff-Kurs.</p>',
+          html: '<p>[Sprecher 2]: Zum Abschluss noch der Sport: Die Saarwood Falcons gewinnen ihr Heimspiel mit zwei zu eins.</p>',
           direction: 'ltr',
           isCloaked: false,
           isDirectorsNote: false,
@@ -518,7 +574,12 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         isDirectorsNote: boolean;
       }> = [];
 
-      if (file.name.toLowerCase().endsWith('.csv')) {
+      const lowerName = file.name.toLowerCase();
+      if (lowerName.endsWith('.txt')) {
+        segments = parsePlainTextSegments(raw, now);
+        title = lowerName.replace(/\.txt$/i, '') || script.title;
+      } else if (lowerName.endsWith('.csv')) {
+        if (tier === 'basic') throw new Error('basic-tier-csv-import-blocked');
         const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
         const dataRows = rows.slice(1);
         segments = dataRows.map((line, idx) => {
@@ -535,6 +596,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           };
         });
       } else {
+        if (tier === 'basic') throw new Error('basic-tier-json-import-blocked');
         const parsed = JSON.parse(raw) as {
           title?: string;
           segments?: Array<{
@@ -569,12 +631,14 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       setScriptIoInfo(`Import erfolgreich: ${segments.length} Segmente geladen (${file.name}).`);
       postClientLog({ level: 'info', source: 'import', message: `Imported ${segments.length} segments from ${file.name}` });
     } catch {
-      setScriptIoInfo('Import fehlgeschlagen. Bitte gueltige JSON- oder CSV-Datei verwenden.');
+      setScriptIoInfo(tier === 'basic'
+        ? 'Import fehlgeschlagen. Im Basic-Tier bitte eine gueltige TXT-Datei verwenden.'
+        : 'Import fehlgeschlagen. Bitte gueltige JSON-, CSV- oder TXT-Datei verwenden.');
       postClientLog({ level: 'warn', source: 'import', message: 'Import failed' });
     } finally {
       if (e.target) e.target.value = '';
     }
-  }, [script, setScript, postClientLog]);
+  }, [parsePlainTextSegments, script, setScript, postClientLog, tier]);
 
   const handleDownloadJsonTemplate = useCallback(() => {
     const sample = {
@@ -582,7 +646,14 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       segments: [
         {
           id: 'sample-1',
-          html: '<p>Willkommen zur Sendung.</p>',
+          html: '<p>[Sprecherin 1]: Willkommen zur Sendung.</p>',
+          direction: 'ltr',
+          isCloaked: false,
+          isDirectorsNote: false,
+        },
+        {
+          id: 'sample-2',
+          html: '<p>[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.</p>',
           direction: 'ltr',
           isCloaked: false,
           isDirectorsNote: false,
@@ -595,9 +666,21 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const handleDownloadCsvTemplate = useCallback(() => {
     const sample = [
       '"index","id","isCloaked","isDirectorsNote","text","html"',
-      '"1","sample-1","0","0","Willkommen zur Sendung.","<p>Willkommen zur Sendung.</p>"',
+      '"1","sample-1","0","0","[Sprecherin 1]: Willkommen zur Sendung.","<p>[Sprecherin 1]: Willkommen zur Sendung.</p>"',
+      '"2","sample-2","0","0","[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.","<p>[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.</p>"',
     ].join('\n');
     downloadBlob(sample, 'text/csv;charset=utf-8', 'import-vorlage.csv');
+  }, [downloadBlob]);
+
+  const handleDownloadTxtTemplate = useCallback(() => {
+    const sample = [
+      '[Sprecherin 1]: Willkommen zur Sendung.',
+      '',
+      '[Sprecher 2]: Wir zeigen heute einen kompakten Mehrsegment-Test fuer Import und Export.',
+      '',
+      '[Sprecherin 1]: Damit pruefen wir Textimport, Segmentaufteilung und Formatierung.',
+    ].join('\n');
+    downloadBlob(sample, 'text/plain;charset=utf-8', 'import-vorlage.txt');
   }, [downloadBlob]);
 
   const handleRunCalibration = useCallback(async () => {
@@ -902,7 +985,11 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <div className="settings-row">
               <label htmlFor={profileNameId}>Telepromptervorlage</label>
               <input id={profileNameId} type="text" className="profile-name-input" placeholder="z. B. Abendnachrichten" value={profileName} onChange={(e) => setProfileName(e.target.value)} />
-              <button type="button" className="btn-small" onClick={handleSaveProfile} disabled={!profileName.trim()}>Speichern</button>
+              {canManageTemplates ? (
+                <button type="button" className="btn-small" onClick={handleSaveProfile} disabled={!profileName.trim()}>Speichern</button>
+              ) : (
+                <span className="settings-value">Vorlagenspeichern ab Professional verfuegbar.</span>
+              )}
             </div>
           </fieldset>
         </>
@@ -912,17 +999,28 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         <>
           <fieldset className="settings-group">
             <legend>Export und Import</legend>
-            <p className="settings-help-text">Exportiere Telepromptervorlagen als CSV, JSON, PDF oder TXT. Import unterstuetzt JSON und CSV.</p>
+            <p className="settings-help-text">
+              {tier === 'basic'
+                ? 'Basic: Export als CSV oder PDF. Import nur aus TXT-Dateien.'
+                : 'Professional und Expert: Export als CSV, JSON, PDF oder TXT. Import unterstuetzt JSON, CSV und TXT.'}
+            </p>
             <div className="settings-row segment-io-actions">
-              <button type="button" className="btn-small" onClick={handleExportSegmentsJson}>JSON Export</button>
               <button type="button" className="btn-small" onClick={handleExportSegmentsCsv}>CSV Export</button>
               <button type="button" className="btn-small" onClick={handleExportSegmentsPdf}>PDF Export</button>
-              <button type="button" className="btn-small" onClick={handleExportSegmentsTxt}>TXT Export</button>
-              <button type="button" className="btn-small" onClick={handlePrintSegments}>Klassisch drucken</button>
+              {tier !== 'basic' && <button type="button" className="btn-small" onClick={handleExportSegmentsJson}>JSON Export</button>}
+              {tier !== 'basic' && <button type="button" className="btn-small" onClick={handleExportSegmentsTxt}>TXT Export</button>}
+              {tier !== 'basic' && <button type="button" className="btn-small" onClick={handlePrintSegments}>Klassisch drucken</button>}
             </div>
             <div className="settings-row segment-io-actions">
-              <button type="button" className="btn-small" onClick={handleImportSegmentsClick}>Import JSON/CSV</button>
-              <input ref={importInputRef} type="file" accept="application/json,text/csv,.csv" onChange={handleImportSegmentsFile} className="segment-import-input" aria-label="Telepromptervorlagen importieren" />
+              <button type="button" className="btn-small" onClick={handleImportSegmentsClick}>{tier === 'basic' ? 'Import TXT' : 'Import JSON/CSV/TXT'}</button>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept={tier === 'basic' ? 'text/plain,.txt' : 'application/json,text/csv,text/plain,.json,.csv,.txt'}
+                onChange={handleImportSegmentsFile}
+                className="segment-import-input"
+                aria-label="Telepromptervorlagen importieren"
+              />
             </div>
             {scriptIoInfo && <div className="settings-row"><span className="settings-value segment-io-status">{scriptIoInfo}</span></div>}
           </fieldset>
@@ -930,8 +1028,9 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           <fieldset className="settings-group">
             <legend>Downloads fuer Importbeispiele</legend>
             <div className="settings-row segment-io-actions">
-              <button type="button" className="btn-small" onClick={handleDownloadJsonTemplate}>JSON Importvorlage</button>
-              <button type="button" className="btn-small" onClick={handleDownloadCsvTemplate}>CSV Importvorlage</button>
+              <button type="button" className="btn-small" onClick={handleDownloadTxtTemplate}>TXT Importvorlage</button>
+              {tier !== 'basic' && <button type="button" className="btn-small" onClick={handleDownloadJsonTemplate}>JSON Importvorlage</button>}
+              {tier !== 'basic' && <button type="button" className="btn-small" onClick={handleDownloadCsvTemplate}>CSV Importvorlage</button>}
             </div>
           </fieldset>
         </>
@@ -940,70 +1039,87 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       {activePage === 'templates' && (
         <fieldset className="settings-group">
           <legend>Telepromptervorlagen</legend>
-          <div className="settings-row">
-            <label htmlFor="template-create-name">Neu anlegen</label>
-            <input
-              id="template-create-name"
-              type="text"
-              className="profile-name-input"
-              placeholder="Neuer Vorlagenname"
-              value={templateCreateName}
-              onChange={(e) => setTemplateCreateName(e.target.value)}
-            />
-            <button type="button" className="btn-small btn-small--primary" onClick={handleCreateTemplate} disabled={!templateCreateName.trim()}>
-              Vorlage anlegen
-            </button>
-          </div>
-          <div className="settings-row">
-            <label htmlFor="template-search">Suchen</label>
-            <input id="template-search" type="search" className="profile-name-input" placeholder="Telepromptervorlage durchsuchen" value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} />
-          </div>
-          <div className="settings-row template-import-row">
-            <button type="button" className="btn-small" onClick={handleImportTemplateClick}>Vorlage importieren</button>
-            <input ref={templateImportInputRef} type="file" accept="application/json,.json" onChange={handleImportTemplateFile} className="segment-import-input" aria-label="Vorlage importieren" />
-            {templateIoInfo && <span className="settings-value segment-io-status">{templateIoInfo}</span>}
-          </div>
-          <div className="template-table-wrap" role="region" aria-label="Liste Telepromptervorlagen">
-            <table className="template-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Segmente</th>
-                  <th>Aktionen</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProfiles.map((p) => (
-                  <tr key={p.id} className={activeProfileId === p.id ? 'active' : ''}>
-                    <td>
-                      <input
-                        type="text"
-                        className="template-name-input"
-                        value={templateNameDrafts[p.id] ?? p.name}
-                        onChange={(e) => setTemplateNameDrafts((current) => ({ ...current, [p.id]: e.target.value }))}
-                        aria-label={`Vorlagenname von ${p.name}`}
-                      />
-                    </td>
-                    <td>{activeProfileId === p.id ? 'Aktiv' : '-'}</td>
-                    <td>{p.scriptTemplate?.segments.length ?? 0}</td>
-                    <td>
-                      <div className="template-actions">
-                        <button type="button" className="btn-small" onClick={() => applyProfile(p.id)}>Anwenden</button>
-                        <button type="button" className="btn-small" onClick={() => handleDuplicateTemplate(p.id)}>Duplizieren</button>
-                        <button type="button" className="btn-small" onClick={() => handleExportTemplate(p.id)}>Export</button>
-                        <button type="button" className="btn-small" onClick={() => handleRenameTemplate(p.id)} disabled={!templateNameDrafts[p.id]?.trim() || templateNameDrafts[p.id] === p.name}>Name speichern</button>
-                        <button type="button" className="btn-small btn-small--danger" onClick={() => deleteProfile(p.id)}>Loeschen</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="settings-row">
-            <button type="button" className="btn-small" onClick={handleLoadGermanTestScript}>Deutschen 4-Segment-Testtext laden</button>
-          </div>
+          {tier === 'basic' ? (
+            <p className="settings-help-text">Im Basic-Tier sind Vorlagenverwaltung und Vorlagenspeichern deaktiviert. Nutze den Import/Export-Tab fuer Dateien.</p>
+          ) : (
+            <p className="settings-help-text">
+              {tier === 'expert'
+                ? 'Expert-Modus: Vorlagen anlegen, umbenennen, duplizieren, exportieren und importieren.'
+                : 'Professional-Modus: Vorlagen anlegen, umbenennen und anwenden.'}
+            </p>
+          )}
+          {canManageTemplates ? (
+            <>
+              <div className="settings-row">
+                <label htmlFor="template-create-name">Neu anlegen</label>
+                <input
+                  id="template-create-name"
+                  type="text"
+                  className="profile-name-input"
+                  placeholder="Neuer Vorlagenname"
+                  value={templateCreateName}
+                  onChange={(e) => setTemplateCreateName(e.target.value)}
+                />
+                <button type="button" className="btn-small btn-small--primary" onClick={handleCreateTemplate} disabled={!templateCreateName.trim()}>
+                  Vorlage anlegen
+                </button>
+              </div>
+              <div className="settings-row">
+                <label htmlFor="template-search">Suchen</label>
+                <input id="template-search" type="search" className="profile-name-input" placeholder="Telepromptervorlage durchsuchen" value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} />
+              </div>
+              {canUseExpertTemplateTools && (
+                <div className="settings-row template-import-row">
+                  <button type="button" className="btn-small" onClick={handleImportTemplateClick}>Vorlage importieren</button>
+                  <input ref={templateImportInputRef} type="file" accept="application/json,.json" onChange={handleImportTemplateFile} className="segment-import-input" aria-label="Vorlage importieren" />
+                  {templateIoInfo && <span className="settings-value segment-io-status">{templateIoInfo}</span>}
+                </div>
+              )}
+              <div className="template-table-wrap" role="region" aria-label="Liste Telepromptervorlagen">
+                <table className="template-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Status</th>
+                      <th>Segmente</th>
+                      <th>Aktionen</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProfiles.map((p) => (
+                      <tr key={p.id} className={activeProfileId === p.id ? 'active' : ''}>
+                        <td>
+                          <input
+                            type="text"
+                            className="template-name-input"
+                            value={templateNameDrafts[p.id] ?? p.name}
+                            onChange={(e) => setTemplateNameDrafts((current) => ({ ...current, [p.id]: e.target.value }))}
+                            aria-label={`Vorlagenname von ${p.name}`}
+                          />
+                        </td>
+                        <td>{activeProfileId === p.id ? 'Aktiv' : '-'}</td>
+                        <td>{p.scriptTemplate?.segments.length ?? 0}</td>
+                        <td>
+                          <div className="template-actions">
+                            <button type="button" className="btn-small" onClick={() => applyProfile(p.id)}>Anwenden</button>
+                            {canUseExpertTemplateTools && <button type="button" className="btn-small" onClick={() => handleDuplicateTemplate(p.id)}>Duplizieren</button>}
+                            {canUseExpertTemplateTools && <button type="button" className="btn-small" onClick={() => handleExportTemplate(p.id)}>Export</button>}
+                            <button type="button" className="btn-small" onClick={() => handleRenameTemplate(p.id)} disabled={!templateNameDrafts[p.id]?.trim() || templateNameDrafts[p.id] === p.name}>Name speichern</button>
+                            <button type="button" className="btn-small btn-small--danger" onClick={() => deleteProfile(p.id)}>Loeschen</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="settings-row">
+                <button type="button" className="btn-small" onClick={handleLoadGermanTestScript}>Deutschen 4-Segment-Testtext laden</button>
+              </div>
+            </>
+          ) : (
+            <p className="settings-value">Vorlagenverwaltung ist im Basic-Tier deaktiviert.</p>
+          )}
         </fieldset>
       )}
 
