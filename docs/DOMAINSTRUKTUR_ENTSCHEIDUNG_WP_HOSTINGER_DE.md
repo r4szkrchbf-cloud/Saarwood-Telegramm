@@ -36,10 +36,9 @@ Subdomain-Architektur nutzen, nicht Subpath.
 ### Apps/Software (Hostinger)
 
 - `apps.saarwood.ch` -> App-Hub
-- `teleprompter.saarwood.ch` -> Teleprompter App (empfohlen)
+- `teleprompter.saarwood.ch` -> SAARwooD-Teleprompter (final beschlossen)
 
-Alternative, wenn nur ein Einstiegspunkt gewuenscht ist:
-- `apps.saarwood.ch/teleprompter` (intern trotzdem getrennte App-Runtime)
+Hinweis: Die Subpath-Variante `apps.saarwood.ch/teleprompter` wird fuer den Start nicht verwendet.
 
 ## 4. Integrationsregeln zwischen beiden Welten
 
@@ -56,6 +55,6 @@ Alternative, wenn nur ein Einstiegspunkt gewuenscht ist:
 4. In der App Support-/Guide-Ruecklinks auf `www.saarwood.de` setzen.
 5. End-to-End Smoke-Test fahren (Health, WS, Ticketflow, Output-only).
 
-## 6. Offene Entscheidungsfrage (nur eine)
+## 6. Beschluss (fix)
 
-Soll Teleprompter direkt auf `teleprompter.saarwood.ch` laufen (empfohlen) oder unter `apps.saarwood.ch/teleprompter`?
+Teleprompter laeuft direkt auf `teleprompter.saarwood.ch`.

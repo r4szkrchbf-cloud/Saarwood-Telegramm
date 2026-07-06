@@ -21,6 +21,8 @@ Ziel: Sofort umsetzbare Reihenfolge fuer Integrationen und Public-Beta-Betrieb.
 4. Hostinger API Basis: `https://hpanel.hostinger.com/api`.
 5. Hostinger Auth: Bearer Token (`Authorization: Bearer <TOKEN>`).
 6. Hostinger MCP-Modell in VS Code: `npx --package=hostinger-api-mcp@latest ...`.
+7. Teleprompter-Zieldomain: `teleprompter.saarwood.ch` (final).
+8. WordPress API-Basis/Authentifizierung gewuenscht: REST + Bearer Token.
 
 ## Phase 0 - Zielbild festziehen (15-30 min)
 
@@ -172,7 +174,8 @@ Sobald du die Hostinger-Infos hast, gib mir bitte genau diese Punkte:
 
 Status 2026-07-06:
 - URL/Typ/Auth sind vorhanden.
-- Als naechstes fehlt nur noch die finale Domain-Zielentscheidung fuer die App (`teleprompter.saarwood.ch` vs. `apps.saarwood.ch/teleprompter`).
+- Domain-Zielentscheidung ist getroffen: `teleprompter.saarwood.ch`.
+- Als naechstes: Auth-/Scope-Feinschnitt fuer WordPress API und Hostinger MCP festziehen.
 
 Dann baue ich dir sofort die getrennte Hostinger-MCP-Konfiguration und den sicheren Betriebsablauf ohne Vermischung mit WordPress oder Teleprompter-Featurelogik.
 
