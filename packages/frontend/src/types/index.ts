@@ -57,6 +57,7 @@ export interface PresenterProfile {
   id: string;
   name: string;
   displaySettings: DisplaySettings;
+  scriptTemplate?: Script;
 }
 
 // ─── WebSocket Messages ───────────────────────────────────────────────────────

@@ -250,6 +250,43 @@
   min-width: auto;
 }
 
+.settings-help-text {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.template-table-wrap {
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.template-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.template-table th,
+.template-table td {
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  padding: 0.38rem 0.42rem;
+}
+
+.template-table tbody tr.active {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.template-actions {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
 /* ─── Tier Selector ───────────────────────────────────────────────────────── */
 
 .tier-radio-group {
@@ -405,4 +442,53 @@
 .support-status {
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+.support-log-view {
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface) 90%, black 10%);
+  padding: 0.45rem;
+}
+
+.support-log-view pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.74rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .settings-panel {
+    padding: 0.75rem;
+  }
+
+  .settings-page-switch {
+    flex-wrap: wrap;
+  }
+
+  .tier-radio-group {
+    flex-wrap: wrap;
+  }
+
+  .settings-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .settings-row label,
+  .support-label {
+    min-width: 100%;
+  }
+
+  .support-input,
+  .support-textarea,
+  .profile-name-input,
+  .settings-row select,
+  .settings-row input[type='range'] {
+    width: 100%;
+  }
 }

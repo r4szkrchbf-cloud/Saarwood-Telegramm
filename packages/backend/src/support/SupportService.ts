@@ -32,6 +32,17 @@ interface SupportTicketCreateResult {
   confirmationEmailSent: boolean;
 }
 
+export interface SupportClientLogInput {
+  level: 'info' | 'warn' | 'error';
+  source: string;
+  message: string;
+  details?: string;
+}
+
+interface SupportClientLogRecord extends SupportClientLogInput {
+  createdAt: string;
+}
+
 interface TicketSequenceState {
   year: number;
   seq: number;
@@ -53,6 +64,8 @@ export class SupportService {
   private readonly testerGuideUrl: string | null;
 
   private readonly testerFormUrl: string | null;
+
+  private readonly clientLogFilePath: string;
 
   private readonly smtpHost: string | null;
 
@@ -87,6 +100,8 @@ export class SupportService {
     this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? null;
     this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? null;
     this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? null;
+    this.clientLogFilePath = process.env.SUPPORT_CLIENT_LOG_FILE
+      ?? path.resolve(__dirname, '../../data/support-client-logs.ndjson');
     this.smtpHost = process.env.SUPPORT_SMTP_HOST ?? null;
     this.smtpPort = parseInt(process.env.SUPPORT_SMTP_PORT ?? '587', 10);
     this.smtpSecure = process.env.SUPPORT_SMTP_SECURE === 'true';
@@ -123,6 +138,40 @@ export class SupportService {
     const forwarded = await this.forwardTicket(record);
     const confirmationEmailSent = await this.sendTicketConfirmationEmail(record);
     return { id, stored: true, forwarded, confirmationEmailSent };
+  }
+
+  storeClientLog(input: SupportClientLogInput): void {
+    const record: SupportClientLogRecord = {
+      level: input.level,
+      source: input.source,
+      message: input.message,
+      details: input.details,
+      createdAt: new Date().toISOString(),
+    };
+    fs.mkdirSync(path.dirname(this.clientLogFilePath), { recursive: true });
+    fs.appendFileSync(this.clientLogFilePath, `${JSON.stringify(record)}\n`, 'utf-8');
+  }
+
+  getClientLogsWithinHours(hours: number, limit = 2000): SupportClientLogRecord[] {
+    try {
+      const raw = fs.readFileSync(this.clientLogFilePath, 'utf-8');
+      const lines = raw.split(/\r?\n/).filter(Boolean);
+      const threshold = Date.now() - hours * 60 * 60 * 1000;
+      const parsed = lines
+        .map((line) => {
+          try {
+            return JSON.parse(line) as SupportClientLogRecord;
+          } catch {
+            return null;
+          }
+        })
+        .filter((entry): entry is SupportClientLogRecord => Boolean(entry))
+        .filter((entry) => Date.parse(entry.createdAt) >= threshold)
+        .slice(-Math.max(1, limit));
+      return parsed;
+    } catch {
+      return [];
+    }
   }
 
   private appendTicket(record: SupportTicketRecord): void {

@@ -76,6 +76,13 @@ export function createRouter(
     context: z.enum(['editor', 'split', 'prompter', 'unknown']).default('unknown'),
   });
 
+  const supportClientLogSchema = z.object({
+    level: z.enum(['info', 'warn', 'error']).default('info'),
+    source: z.string().min(1).max(120),
+    message: z.string().min(1).max(2000),
+    details: z.string().max(4000).optional(),
+  });
+
   const getTokenFromRequest = (req: Request): string | null => {
     const fromHeader = req.headers['x-license-token'];
     if (typeof fromHeader === 'string' && fromHeader.trim()) return fromHeader.trim();
@@ -265,6 +272,26 @@ export function createRouter(
     } catch {
       res.status(500).json({ ok: false, error: 'support-ticket-create-failed' });
     }
+  });
+
+  router.post('/support/logs/client', (req, res) => {
+    const parsed = supportClientLogSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+    supportService.storeClientLog(parsed.data);
+    res.status(201).json({ ok: true });
+  });
+
+  router.get('/support/logs', (req, res) => {
+    if (!enforceAdminAccess(req, res)) return;
+    const rawHours = Number(req.query.hours ?? 78);
+    const rawLimit = Number(req.query.limit ?? 2000);
+    const hours = Number.isFinite(rawHours) ? Math.max(1, Math.min(240, rawHours)) : 78;
+    const limit = Number.isFinite(rawLimit) ? Math.max(10, Math.min(10000, rawLimit)) : 2000;
+    const logs = supportService.getClientLogsWithinHours(hours, limit);
+    res.json({ ok: true, hours, count: logs.length, logs });
   });
 
   // ─── Content Ingest (n8n / ClickUp webhook target) ───────────────────────

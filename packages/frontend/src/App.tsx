@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
 import { SettingsPanel } from './components/Settings/SettingsPanel';
@@ -6,7 +6,7 @@ import { ScriptEditor } from './components/Editor/ScriptEditor';
 import { usePrompterStore } from './store/prompterStore';
 import { useHotkeyManager } from './hooks/useHotkeyManager';
 import { wsService } from './services/WebSocketService';
-import type { DisplaySettings, MosRunningOrder, ScrollState, Script, ScriptSegment } from './types';
+import type { DisplaySettings, MosRunningOrder, PresenterProfile, ScrollState, Script, ScriptSegment } from './types';
 import './App.css';
 
 type ViewMode = 'editor' | 'prompter' | 'split';
@@ -171,6 +171,9 @@ export function App() {
   const [licenseInput, setLicenseInput] = useState('');
   const [licenseMessage, setLicenseMessage] = useState('');
   const [licenseSubmitting, setLicenseSubmitting] = useState(false);
+  const [templateSearch, setTemplateSearch] = useState('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [newTemplateName, setNewTemplateName] = useState('');
 
   const mirrorHorizontal = usePrompterStore((s) => s.display.mirrorHorizontal);
   const mirrorVertical = usePrompterStore((s) => s.display.mirrorVertical);
@@ -230,8 +233,42 @@ export function App() {
   const addSegment = usePrompterStore((s) => s.addSegment);
   const removeSegment = usePrompterStore((s) => s.removeSegment);
   const reorderSegment = usePrompterStore((s) => s.reorderSegment);
+  const profiles = usePrompterStore((s) => s.profiles);
+  const activeProfileId = usePrompterStore((s) => s.activeProfileId);
+  const saveProfile = usePrompterStore((s) => s.saveProfile);
+  const applyProfile = usePrompterStore((s) => s.applyProfile);
   const licenseToken = usePrompterStore((s) => s.licenseToken);
   const setLicenseToken = usePrompterStore((s) => s.setLicenseToken);
+
+  const filteredTemplates = useMemo(() => {
+    const q = templateSearch.trim().toLowerCase();
+    if (!q) return profiles;
+    return profiles.filter((p) => p.name.toLowerCase().includes(q));
+  }, [profiles, templateSearch]);
+
+  const handleCreateTemplateFromEditor = useCallback(() => {
+    const name = newTemplateName.trim();
+    if (!name) return;
+
+    const profile: PresenterProfile = {
+      id: `profile-${Date.now()}`,
+      name,
+      displaySettings: { ...display },
+      scriptTemplate: {
+        ...script,
+        segments: script.segments.map((seg) => ({ ...seg })),
+      },
+    };
+    saveProfile(profile);
+    setSelectedTemplateId(profile.id);
+    setNewTemplateName('');
+  }, [newTemplateName, display, script, saveProfile]);
+
+  const handleApplySelectedTemplate = useCallback(() => {
+    const targetId = selectedTemplateId || activeProfileId;
+    if (!targetId) return;
+    applyProfile(targetId);
+  }, [applyProfile, selectedTemplateId, activeProfileId]);
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
   useHotkeyManager(!isOutputOnly);
@@ -665,6 +702,57 @@ export function App() {
         {/* Editor pane */}
         {(viewMode === 'editor' || viewMode === 'split') && (
           <section className="editor-pane" aria-label="Script editor">
+            <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
+              <span className="editor-template-label">Telepromptervorlagen</span>
+              <input
+                type="search"
+                className="editor-template-search"
+                placeholder="Vorlage durchsuchen"
+                value={templateSearch}
+                onChange={(e) => setTemplateSearch(e.target.value)}
+                aria-label="Telepromptervorlage durchsuchen"
+              />
+              <select
+                className="editor-template-select"
+                value={selectedTemplateId || activeProfileId || ''}
+                onChange={(e) => setSelectedTemplateId(e.target.value)}
+                aria-label="Telepromptervorlage auswaehlen"
+              >
+                <option value="">Vorlage waehlen</option>
+                {filteredTemplates.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="editor-template-btn"
+                onClick={handleApplySelectedTemplate}
+                disabled={!(selectedTemplateId || activeProfileId)}
+              >
+                Anwenden
+              </button>
+            </div>
+
+            <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
+              <span className="editor-template-label">Telepromptervorlage anlegen</span>
+              <input
+                type="text"
+                className="editor-template-search"
+                placeholder="Name der Vorlage"
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
+                aria-label="Name der neuen Telepromptervorlage"
+              />
+              <button
+                type="button"
+                className="editor-template-btn"
+                onClick={handleCreateTemplateFromEditor}
+                disabled={!newTemplateName.trim()}
+              >
+                Aus aktuellem Editor speichern
+              </button>
+            </div>
+
             {/* Script title */}
             <div className="editor-title-bar">
               <input

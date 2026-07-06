@@ -273,6 +273,14 @@ export const usePrompterStore = create<PrompterStore>()(
       applyProfile: (id) => {
         const profile = get().profiles.find((p) => p.id === id);
         if (profile) {
+          if (profile.scriptTemplate) {
+            set({
+              display: profile.displaySettings,
+              activeProfileId: id,
+              script: normalizeUniqueSegmentIds(profile.scriptTemplate),
+            });
+            return;
+          }
           set({
             display: profile.displaySettings,
             activeProfileId: id,

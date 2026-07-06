@@ -33,3 +33,6 @@ npm-debug.log*
 # PWA generated assets
 packages/frontend/public/sw.js
 packages/frontend/public/workbox-*.js
+
+# Backend runtime support data
+packages/backend/data/
