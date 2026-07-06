@@ -252,6 +252,12 @@ export function PrompterDisplay() {
     return '8%';
   }, [isQuarterTurn, portraitEdgeGap]);
 
+  const projectTitleOverlayStyle = useMemo<CSSProperties>(() => ({
+    color: projectTitleTextColor,
+    padding: `${Math.max(7, Math.round(projectTitleFontSize * 0.34))}px ${Math.max(14, Math.round(projectTitleFontSize * 0.72))}px`,
+    borderColor: 'rgba(255, 255, 255, 0.34)',
+  }), [projectTitleFontSize, projectTitleTextColor]);
+
   const contentStyle: CSSProperties = {
     fontSize: `${fontSize}px`,
     fontFamily,
@@ -314,7 +320,7 @@ export function PrompterDisplay() {
           </div>
 
           {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
-            <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={{ color: projectTitleTextColor }}>
+            <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={projectTitleOverlayStyle}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
               <strong style={{ fontSize: `${projectTitleFontSize}px` }}>{scriptTitle}</strong>
             </div>

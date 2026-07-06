@@ -106,11 +106,13 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 22;
-  min-width: min(42vw, 420px);
+  width: fit-content;
+  min-width: min(24vw, 220px);
   max-width: calc(100% - 3rem);
   padding: 0.42rem 0.8rem;
   border-radius: 10px;
   background: rgba(96, 96, 96, 0.91);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
   color: #f3f3f3;
   text-align: center;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
@@ -129,6 +131,7 @@
   display: block;
   font-size: 0.88rem;
   line-height: 1.25;
+  word-break: break-word;
 }
 
 /* ─── Scrollable Content ──────────────────────────────────────────────────── */

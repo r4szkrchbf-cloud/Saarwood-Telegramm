@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback, type CSSProperties } from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
 import { usePrompterStore } from './store/prompterStore';
@@ -294,6 +294,12 @@ export function App() {
     if (tier === 'basic') return;
     setDisplay({ showProjectTitle: !showProjectTitle });
   }, [setDisplay, showProjectTitle, tier]);
+
+  const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({
+    color: projectTitleTextColor,
+    padding: `${Math.max(6, Math.round(projectTitleFontSize * 0.34))}px ${Math.max(12, Math.round(projectTitleFontSize * 0.66))}px`,
+    borderColor: 'rgba(255, 255, 255, 0.32)',
+  }), [projectTitleFontSize, projectTitleTextColor]);
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
   useHotkeyManager(!isOutputOnly);
@@ -790,7 +796,7 @@ export function App() {
             {/* Script title */}
             <div className="editor-title-bar">
               {tier !== 'basic' && showProjectTitle && (
-                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={{ color: projectTitleTextColor }}>
+                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={editorProjectTitleStyle}>
                   <span className="project-title-banner-label">Projekt / Sendung</span>
                   <span className="project-title-banner-value" style={{ fontSize: `${projectTitleFontSize}px` }}>{script.title || 'Unbenanntes Projekt'}</span>
                 </div>

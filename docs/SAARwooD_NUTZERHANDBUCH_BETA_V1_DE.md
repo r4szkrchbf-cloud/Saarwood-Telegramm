@@ -96,7 +96,9 @@ Ab Professional kann der Script-Titel als Projekt- oder Sendungsname zusaetzlich
 - im Editor und Split-Modus als eigene, abgesetzte Titelbox
 - im Prompter als graue, transparente Einblendung
 - per Button ein- und ausblendbar
-- Groesse und Schriftfarbe sind in den Einstellungen anpassbar
+- Groesse und Schriftfarbe sind in `Einstellungen` anpassbar
+- die graue Titelbox passt sich automatisch an die Textlaenge und die eingestellte Titelgroesse an
+- die Titelbox besitzt einen kleinen, aber sichtbar abgesetzten Rand
 - in Telepromptervorlagen mitgespeichert, damit der Titel nicht jedes Mal neu eingegeben werden muss
 
 Ab Expert gibt es zusaetzlich eine eigene Projekt-/Sendungsnamen-Bibliothek.

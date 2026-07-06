@@ -324,15 +324,19 @@
 }
 
 .project-title-banner {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  width: fit-content;
+  max-width: 100%;
+  align-self: start;
   padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(180, 180, 180, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
   border-radius: 8px;
   background: rgba(96, 96, 96, 0.91);
   color: #f3f3f3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
 .project-title-banner-label {
@@ -345,7 +349,9 @@
 .project-title-banner-value {
   font-size: 0.86rem;
   font-weight: 700;
-  text-align: right;
+  text-align: left;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .project-title-toggle-btn {
