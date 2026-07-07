@@ -83,6 +83,7 @@ export function createRouter(
     subject: z.string().min(3).max(200),
     message: z.string().min(10).max(8000),
     appVersion: z.string().max(64).default('unknown'),
+    sourceApp: z.string().min(2).max(120).default('teleprompter-web'),
     context: z.enum(['editor', 'split', 'prompter', 'unknown']).default('unknown'),
   });
 

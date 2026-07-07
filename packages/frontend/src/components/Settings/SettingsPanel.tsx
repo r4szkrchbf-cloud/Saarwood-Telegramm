@@ -940,6 +940,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           subject: ticketSubject.trim(),
           message: ticketMessage.trim(),
           appVersion: '1.0.0-beta.1',
+          sourceApp: 'teleprompter-web',
           context: 'split',
         }),
       });

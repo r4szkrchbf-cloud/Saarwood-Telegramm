@@ -17,6 +17,7 @@ export interface SupportTicketInput {
   subject: string;
   message: string;
   appVersion: string;
+  sourceApp: string;
   context: 'editor' | 'split' | 'prompter' | 'unknown';
 }
 
@@ -263,6 +264,7 @@ export class SupportService {
               subject: String(parsed.subject ?? ''),
               message: String(parsed.message ?? ''),
               appVersion: String(parsed.appVersion ?? 'unknown'),
+              sourceApp: typeof parsed.sourceApp === 'string' ? parsed.sourceApp : 'teleprompter-legacy',
               context: (parsed.context ?? 'unknown') as SupportTicketRecord['context'],
               createdAt,
               updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : createdAt,
