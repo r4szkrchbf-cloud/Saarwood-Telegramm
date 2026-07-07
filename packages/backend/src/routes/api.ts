@@ -86,6 +86,14 @@ export function createRouter(
     context: z.enum(['editor', 'split', 'prompter', 'unknown']).default('unknown'),
   });
 
+  const supportTicketStatusSchema = z.enum(['open', 'in_progress', 'resolved', 'closed']);
+
+  const updateSupportTicketSchema = z.object({
+    status: supportTicketStatusSchema.optional(),
+    assignedTo: z.string().max(120).optional().nullable(),
+    internalNote: z.string().max(4000).optional().nullable(),
+  });
+
   const supportClientLogSchema = z.object({
     level: z.enum(['info', 'warn', 'error']).default('info'),
     source: z.string().min(1).max(120).regex(/^[a-z0-9._-]+$/i),
@@ -140,6 +148,26 @@ export function createRouter(
     }
 
     return true;
+  };
+
+  const enforceAdminSessionOrApiKey = async (req: Request, res: Response): Promise<{ actor: string } | null> => {
+    if (adminApiKey && hasAdminAccess(req)) {
+      return { actor: 'admin-api-key' };
+    }
+
+    const token = getAccessTokenFromRequest(req);
+    if (!token) {
+      res.status(401).json({ ok: false, error: 'admin-unauthorized' });
+      return null;
+    }
+
+    const session = await authService.verifyToken(token);
+    if (!session) {
+      res.status(401).json({ ok: false, error: 'admin-unauthorized' });
+      return null;
+    }
+
+    return { actor: session.displayName || session.email || session.adminId };
   };
 
   // ─── Health check ────────────────────────────────────────────────────────
@@ -365,6 +393,45 @@ export function createRouter(
     const limit = Number.isFinite(rawLimit) ? Math.max(10, Math.min(10000, rawLimit)) : 2000;
     const logs = supportService.getClientLogsWithinHours(hours, limit);
     res.json({ ok: true, hours, count: logs.length, logs });
+  });
+
+  router.get('/admin/support/tickets', async (req, res) => {
+    const access = await enforceAdminSessionOrApiKey(req, res);
+    if (!access) return;
+
+    const rawLimit = Number(req.query.limit ?? 300);
+    const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(2000, rawLimit)) : 300;
+    const tickets = supportService.listTickets(limit);
+    res.json({ ok: true, count: tickets.length, tickets });
+  });
+
+  router.patch('/admin/support/tickets/:ticketId', async (req, res) => {
+    const access = await enforceAdminSessionOrApiKey(req, res);
+    if (!access) return;
+
+    const ticketId = String(req.params.ticketId ?? '').trim();
+    if (!ticketId) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+
+    const parsed = updateSupportTicketSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+
+    const updated = supportService.updateTicket(ticketId, {
+      ...parsed.data,
+      actor: access.actor,
+    });
+
+    if (!updated) {
+      res.status(404).json({ ok: false, error: 'ticket-not-found' });
+      return;
+    }
+
+    res.json({ ok: true, ticket: updated });
   });
 
   // ─── Content Ingest (n8n / ClickUp webhook target) ───────────────────────

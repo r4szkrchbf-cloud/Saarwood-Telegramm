@@ -20,9 +20,16 @@ export interface SupportTicketInput {
   context: 'editor' | 'split' | 'prompter' | 'unknown';
 }
 
-interface SupportTicketRecord extends SupportTicketInput {
+export type SupportTicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
+
+export interface SupportTicketRecord extends SupportTicketInput {
   id: string;
   createdAt: string;
+  updatedAt: string;
+  status: SupportTicketStatus;
+  assignedTo: string | null;
+  internalNote: string | null;
+  resolvedAt: string | null;
 }
 
 interface SupportTicketCreateResult {
@@ -37,6 +44,13 @@ export interface SupportClientLogInput {
   source: string;
   message: string;
   details?: string;
+}
+
+export interface SupportTicketUpdateInput {
+  status?: SupportTicketStatus;
+  assignedTo?: string | null;
+  internalNote?: string | null;
+  actor?: string;
 }
 
 interface SupportClientLogRecord extends SupportClientLogInput {
@@ -130,10 +144,16 @@ export class SupportService {
 
   async createTicket(input: SupportTicketInput): Promise<SupportTicketCreateResult> {
     const id = this.nextTicketId();
+    const nowIso = new Date().toISOString();
     const record: SupportTicketRecord = {
       ...input,
       id,
-      createdAt: new Date().toISOString(),
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      status: 'open',
+      assignedTo: null,
+      internalNote: null,
+      resolvedAt: null,
     };
 
     this.appendTicket(record);
@@ -141,6 +161,49 @@ export class SupportService {
     const forwarded = await this.forwardTicket(record);
     const confirmationEmailSent = await this.sendTicketConfirmationEmail(record);
     return { id, stored: true, forwarded, confirmationEmailSent };
+  }
+
+  listTickets(limit = 300): SupportTicketRecord[] {
+    const boundedLimit = Math.max(1, Math.min(2000, limit));
+    const records = this.readTickets();
+    return records
+      .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+      .slice(0, boundedLimit);
+  }
+
+  updateTicket(ticketId: string, patch: SupportTicketUpdateInput): SupportTicketRecord | null {
+    const records = this.readTickets();
+    const index = records.findIndex((ticket) => ticket.id === ticketId);
+    if (index < 0) return null;
+
+    const nowIso = new Date().toISOString();
+    const current = records[index];
+    const nextStatus = patch.status ?? current.status;
+
+    const actorNote = patch.actor ? `[${nowIso}] ${patch.actor}` : `[${nowIso}] system`;
+    const noteParts: string[] = [];
+    if (typeof patch.internalNote === 'string' && patch.internalNote.trim()) {
+      noteParts.push(`${actorNote}: ${patch.internalNote.trim()}`);
+    }
+
+    const mergedNote = [current.internalNote, ...noteParts]
+      .filter((entry): entry is string => Boolean(entry && entry.trim()))
+      .join('\n');
+
+    const updated: SupportTicketRecord = {
+      ...current,
+      status: nextStatus,
+      assignedTo: typeof patch.assignedTo !== 'undefined' ? (patch.assignedTo?.trim() || null) : current.assignedTo,
+      internalNote: mergedNote || null,
+      updatedAt: nowIso,
+      resolvedAt: nextStatus === 'resolved' || nextStatus === 'closed'
+        ? (current.resolvedAt ?? nowIso)
+        : null,
+    };
+
+    records[index] = updated;
+    this.writeTickets(records);
+    return updated;
   }
 
   storeClientLog(input: SupportClientLogInput): void {
@@ -181,6 +244,47 @@ export class SupportService {
   private appendTicket(record: SupportTicketRecord): void {
     fs.mkdirSync(path.dirname(this.ticketFilePath), { recursive: true });
     fs.appendFileSync(this.ticketFilePath, `${JSON.stringify(record)}\n`, 'utf-8');
+  }
+
+  private readTickets(): SupportTicketRecord[] {
+    try {
+      const raw = fs.readFileSync(this.ticketFilePath, 'utf-8');
+      return raw
+        .split(/\r?\n/)
+        .filter(Boolean)
+        .map((line) => {
+          try {
+            const parsed = JSON.parse(line) as Partial<SupportTicketRecord>;
+            const createdAt = typeof parsed.createdAt === 'string' ? parsed.createdAt : new Date().toISOString();
+            return {
+              id: String(parsed.id ?? ''),
+              name: String(parsed.name ?? ''),
+              email: String(parsed.email ?? ''),
+              subject: String(parsed.subject ?? ''),
+              message: String(parsed.message ?? ''),
+              appVersion: String(parsed.appVersion ?? 'unknown'),
+              context: (parsed.context ?? 'unknown') as SupportTicketRecord['context'],
+              createdAt,
+              updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : createdAt,
+              status: (parsed.status ?? 'open') as SupportTicketStatus,
+              assignedTo: typeof parsed.assignedTo === 'string' ? parsed.assignedTo : null,
+              internalNote: typeof parsed.internalNote === 'string' ? parsed.internalNote : null,
+              resolvedAt: typeof parsed.resolvedAt === 'string' ? parsed.resolvedAt : null,
+            } satisfies SupportTicketRecord;
+          } catch {
+            return null;
+          }
+        })
+        .filter((entry): entry is SupportTicketRecord => Boolean(entry && entry.id));
+    } catch {
+      return [];
+    }
+  }
+
+  private writeTickets(records: SupportTicketRecord[]): void {
+    fs.mkdirSync(path.dirname(this.ticketFilePath), { recursive: true });
+    const nextFile = records.map((record) => JSON.stringify(record)).join('\n');
+    fs.writeFileSync(this.ticketFilePath, `${nextFile}${records.length > 0 ? '\n' : ''}`, 'utf-8');
   }
 
   private rotateClientLogIfNeeded(): void {

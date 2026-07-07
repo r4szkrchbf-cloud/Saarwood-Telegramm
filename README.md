@@ -178,6 +178,13 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 | `ADMIN_AUTH_MAGIC_LINK_ENABLED` | `false` | Enables Magic-Link login method in central auth endpoint |
 | `ADMIN_AUTH_SSO_PROVIDER` | `oidc` | Provider label for `/api/admin/auth/providers` |
 
+### Adminpanel support inbox endpoints
+
+- `GET /api/admin/support/tickets` (JWT/Admin-Key geschuetzt)
+- `PATCH /api/admin/support/tickets/:ticketId` (Status, Zuweisung, interne Notiz)
+
+Diese Endpunkte stellen sicher, dass Support-Tickets aus der Teleprompter-App im Adminpanel ankommen und dort bearbeitet werden koennen.
+
 ## Design Decisions
 
 The following decisions were made deliberately and must be traceable for future contributors.
