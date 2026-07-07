@@ -276,7 +276,17 @@ export function PrompterDisplay() {
     borderColor: 'rgba(255, 255, 255, 0.34)',
   }), [effectiveProjectTitleFontSize, projectTitleTextColor]);
 
-  const isMobileLayout = viewportSize.width > 0 && viewportSize.width <= 768;
+  const runtimeState = useMemo<'play' | 'pause' | 'ready'>(() => {
+    if (isPlaying) return 'play';
+    if (position === 0) return 'ready';
+    return 'pause';
+  }, [isPlaying, position]);
+
+  const runtimeLabel = runtimeState === 'play'
+    ? 'PLAY'
+    : runtimeState === 'pause'
+      ? 'PAUSE'
+      : 'READY';
 
   const contentStyle: CSSProperties = {
     fontSize: `${effectiveFontSize}px`,
@@ -318,8 +328,8 @@ export function PrompterDisplay() {
             title={wsConnected ? 'Remote connected' : 'Remote disconnected'}
           />
           <div className="prompter-runtime-status" role="status" aria-label="Prompter Laufzeitstatus">
-            <span className={['prompter-runtime-badge', isPlaying ? 'state-ready' : 'state-paused'].join(' ')}>
-              {isPlaying ? 'READY' : 'PAUSE'}
+            <span className={['prompter-runtime-badge', `state-${runtimeState}`].join(' ')}>
+              {runtimeLabel}
             </span>
             <span className="prompter-runtime-speed">{Math.round(speed)} px/s</span>
           </div>
@@ -345,7 +355,7 @@ export function PrompterDisplay() {
             {voiceStatusLabel}
           </div>
 
-          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && !isMobileLayout && (
+          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
             <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={projectTitleOverlayStyle}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
               <strong style={{ fontSize: `${effectiveProjectTitleFontSize}px` }}>{scriptTitle}</strong>
@@ -389,14 +399,6 @@ export function PrompterDisplay() {
             <div className="prompter-end-pad" aria-hidden="true" />
           </div>
 
-          {/* Speed / position overlay (shown when paused) */}
-          {!isPlaying && (
-            <div className="prompter-status-overlay" aria-live="polite">
-              {position === 0
-                ? 'READY'
-                : `PAUSED — ${Math.round(speed)} px/s`}
-            </div>
-          )}
         </div>
       </div>
     </div>

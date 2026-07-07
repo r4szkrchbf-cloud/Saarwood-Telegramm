@@ -49,6 +49,18 @@ Im Prompter-Modus soll fuer Tier Expert eine konfigurierbare Uhr eingeblendet we
 - [ ] Uhr ist in den Einstellungen konfigurierbar (Position/Ein-Aus)
 - [ ] Uhr beeinflusst den Scrolltext nicht und bleibt lesbar
 
+### TICKET-034 · Vollabgleich 3 Projekte + Dokumentation vor Support-Link-Block
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+Vor Start des Kontakt/Support-Link-Blocks wird ein kompletter Abgleich zwischen allen drei Projekten und der Dokumentation durchgefuehrt, damit Code- und Doku-Stand konsistent sind.
+
+**Akzeptanzkriterien:**
+- [ ] Aenderungen in allen drei Projekten sind gegengeprueft und konsistent
+- [ ] Relevante Doku-Dateien sind auf den aktuellen Code-Stand aktualisiert
+- [ ] Offene Abweichungen sind als explizite Tickets dokumentiert
+- [ ] Abgleichsergebnis ist datiert in einem Statusdokument festgehalten
+
 ### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
 
 **Prioritaet:** P0
