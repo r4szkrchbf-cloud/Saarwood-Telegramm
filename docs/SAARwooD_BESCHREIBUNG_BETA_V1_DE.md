@@ -31,7 +31,7 @@ Im Basic-Tier bleibt es weiterhin ausgeblendet, damit der Bedienumfang klein und
 - Transportsteuerung (Play, Pause, Text auf Anfang, Prompter NeuStart)
 - Geschwindigkeits- und Richtungssteuerung
 - Spiegelung und Rotation
-- Tastatursteuerung fuer Desktop/Tablet: `V` fuer V-Mirror, `Q/E` oder `[`/`]` fuer Rotation
+- Tastatursteuerung fuer Desktop/Tablet: `V` fuer V-Mirror, `Q/E` oder `[`/`]` bzw. `/` fuer Rotation, `P` fuer das getrennte Prompter-Fenster
 - WebSocket-Sync
 - PWA-Betrieb auf Desktop und mobilen Geraeten
 - Desktop-Operator-Workflow: Prompter-Ausgabe auf zweiten Monitor im Vollbild starten

@@ -391,9 +391,6 @@ export function App() {
     borderColor: 'rgba(255, 255, 255, 0.32)',
   }), [projectTitleFontSize, projectTitleTextColor]);
 
-  // ─── Hotkey manager ────────────────────────────────────────────────────
-  useHotkeyManager(!isOutputOnly);
-
   // ─── WS sync loop-prevention refs ─────────────────────────────────────
   // Tracks the lastModified of the most-recently applied remote script, so we
   // don't echo the update back to the sender.
@@ -802,6 +799,9 @@ export function App() {
     await window.saarwoodDesktop.openPrompterOnSecondMonitor();
   };
 
+  // ─── Hotkey manager ────────────────────────────────────────────────────
+  useHotkeyManager(!isOutputOnly, handleOpenOutputWindow);
+
   const toggleTemplatePanel = useCallback(() => {
     setMobileTemplatePanelOpen((current) => !current);
   }, []);
@@ -956,8 +956,8 @@ export function App() {
           <span className="restart-hint" aria-label="Taste N fuer Prompter NeuStart">
             Taste N: Prompter NeuStart
           </span>
-          <span className="restart-hint" aria-label="Taste V fuer V-Mirror sowie Q und E fuer Rotation">
-            Tasten: V = V-Mirror, Q/E = Rotation
+          <span className="restart-hint" aria-label="Taste V fuer V-Mirror, Q E oder Slash fuer Rotation und P fuer Prompter Fenster">
+            Tasten: V = V-Mirror, Q/E// = Rotation, P = Prompter Fenster
           </span>
           {licenseBannerVisible && (
             <span className="license-hint" aria-label={`Lizenzstatus ${licenseState.status}`}>

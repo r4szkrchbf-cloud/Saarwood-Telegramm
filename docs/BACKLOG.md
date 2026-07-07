@@ -61,6 +61,20 @@ Vor Start des Kontakt/Support-Link-Blocks wird ein kompletter Abgleich zwischen 
 - [ ] Offene Abweichungen sind als explizite Tickets dokumentiert
 - [ ] Abgleichsergebnis ist datiert in einem Statusdokument festgehalten
 
+### TICKET-035 · Teleprompter-Fernsteuerung und externe Steuerhardware nur fuer Expert-Tier
+
+**Prioritaet:** P1  
+**Beschreibung:**  
+Erweiterte Teleprompter-Fernsteuerung wird als Expert-Tier-Block geplant. Dazu gehoeren Synchronisation, Ein-/Ausgabe von Steuerbefehlen ueber USB, LAN und WLAN sowie die Anbindung externer Steuerhardware wie Stream Deck und aehnlicher Produkte. Zusaetzlich soll die Entwicklung eigener Spezialtastaturen auf Mikroprozessor-Basis ermoeglicht werden.
+
+**Akzeptanzkriterien:**
+- [ ] Erweiterte Fernsteuerung ist klar als Expert-Tier-Funktion definiert
+- [ ] Steuerbefehle koennen konzeptionell ueber USB, LAN und WLAN gesendet/empfangen werden
+- [ ] Sync-Architektur fuer Steuerbefehle und Statusanzeigen ist beschrieben
+- [ ] Stream Deck und aehnliche Controller sind als Integrationsziel dokumentiert
+- [ ] Konzept fuer eigene Tastaturen/Mikroprozessor-Controller ist dokumentiert
+- [ ] Sicherheits- und Pairing-Anforderungen fuer externe Steuerhardware sind beschrieben
+
 ### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
 
 **Prioritaet:** P0

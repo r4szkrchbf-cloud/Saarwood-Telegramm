@@ -20,13 +20,14 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  -            → Speed −5 px/s
  *  v / V        → Vertical mirror toggle
  *  r / R        → Reset (stop + position = 0)
+ *  p / P        → Open separate prompter window
  *  h / H        → Mirror horizontal toggle
  *  f / F        → Fullscreen toggle
  *  Escape       → Stop
  *  q / Q / [    → Rotate −90°
- *  e / E / ]    → Rotate +90°
+ *  e / E / ] / / → Rotate +90°
  */
-export function useHotkeyManager(enabled = true): void {
+export function useHotkeyManager(enabled = true, onOpenOutputWindow?: () => void): void {
   const play = usePrompterStore((s) => s.play);
   const pause = usePrompterStore((s) => s.pause);
   const stop = usePrompterStore((s) => s.stop);
@@ -116,6 +117,10 @@ export function useHotkeyManager(enabled = true): void {
 
     hotkeyManager.register('n', 'Prompter NeuStart', triggerRestart);
     hotkeyManager.register('N', 'Prompter NeuStart', triggerRestart);
+    if (onOpenOutputWindow) {
+      hotkeyManager.register('p', 'Prompter Fenster oeffnen', onOpenOutputWindow);
+      hotkeyManager.register('P', 'Prompter Fenster oeffnen', onOpenOutputWindow);
+    }
 
     // ── Mirror ─────────────────────────────────────────────────────────────
     hotkeyManager.register('h', 'Mirror horizontal', () => {
@@ -150,6 +155,8 @@ export function useHotkeyManager(enabled = true): void {
     hotkeyManager.register('Q', 'Rotate −90°', () => rotate(-1));
     hotkeyManager.register('e', 'Rotate +90°', () => rotate(1));
     hotkeyManager.register('E', 'Rotate +90°', () => rotate(1));
+    hotkeyManager.register('/', 'Rotate +90°', () => rotate(1));
+    hotkeyManager.register('?', 'Rotate +90°', () => rotate(1));
 
     // ── Fullscreen ─────────────────────────────────────────────────────────
     hotkeyManager.register('f', 'Fullscreen toggle', () => {
@@ -172,5 +179,5 @@ export function useHotkeyManager(enabled = true): void {
     return () => {
       hotkeyManager.disable();
     };
-  }, [enabled, play, pause, stop, setSpeed, setDirection, setDisplay]);
+  }, [enabled, onOpenOutputWindow, play, pause, stop, setSpeed, setDirection, setDisplay]);
 }

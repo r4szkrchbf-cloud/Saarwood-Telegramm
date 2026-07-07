@@ -207,6 +207,7 @@ Wichtige Buttons:
 - Leertaste: Play/Pause
 - r oder R: Text auf Anfang (Reset/Stop)
 - n oder N: Prompter NeuStart (mit Bestaetigung)
+- p oder P: separates Prompter-Fenster oeffnen
 - Escape: Stop
 - + oder = oder NumpadAdd: Geschwindigkeit +5
 - - oder _ oder NumpadSubtract: Geschwindigkeit -5
@@ -214,7 +215,7 @@ Wichtige Buttons:
 - h / H: Spiegelung horizontal
 - v / V: Vertikalspiegelung (`V-Mirror`)
 - q / Q oder [: Rotation -90
-- e / E oder ]: Rotation +90
+- e / E oder ] oder /: Rotation +90
 - f / F: Vollbild umschalten
 
 ## 5. Anzeigeeinstellungen
