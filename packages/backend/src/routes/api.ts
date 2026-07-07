@@ -346,8 +346,14 @@ export function createRouter(
   });
 
   // ─── Support contact/chat/ticket API ───────────────────────────────────
-  router.get('/support/info', (_req, res) => {
-    res.json({ ok: true, ...supportService.getInfo() });
+  router.get('/support/info', (req, res) => {
+    res.json({
+      ok: true,
+      ...supportService.getInfo({
+        protocol: req.protocol,
+        host: req.get('host') ?? '',
+      }),
+    });
   });
 
   router.post('/support/tickets', async (req, res) => {

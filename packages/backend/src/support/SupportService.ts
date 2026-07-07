@@ -11,6 +11,11 @@ export interface SupportInfo {
   testerFormUrl: string | null;
 }
 
+interface SupportRequestContext {
+  protocol: string;
+  host: string;
+}
+
 export interface SupportTicketInput {
   name: string;
   email: string;
@@ -66,6 +71,9 @@ interface TicketSequenceState {
 
 const MAX_CLIENT_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 const MAX_CLIENT_LOG_BACKUPS = 5;
+const DEFAULT_HANDBOOK_PATH = '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf';
+const DEFAULT_TESTER_GUIDE_PATH = '/support/beta-tester-guide-de.pdf';
+const DEFAULT_TESTER_FORM_PATH = '/support/testerformular-beta-v1-de.pdf';
 
 export class SupportService {
   private readonly chatUrl: string | null;
@@ -116,9 +124,9 @@ export class SupportService {
     this.ticketWebhookUrl = process.env.SUPPORT_TICKET_WEBHOOK_URL ?? null;
     this.ticketSequenceFilePath = process.env.SUPPORT_TICKET_SEQUENCE_FILE
       ?? path.resolve(__dirname, '../../data/support-ticket-sequence.json');
-    this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf';
-    this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? '/support/beta-tester-guide-de.pdf';
-    this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? '/support/testerformular-beta-v1-de.pdf';
+    this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? DEFAULT_HANDBOOK_PATH;
+    this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? DEFAULT_TESTER_GUIDE_PATH;
+    this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? DEFAULT_TESTER_FORM_PATH;
     this.clientLogFilePath = process.env.SUPPORT_CLIENT_LOG_FILE
       ?? path.resolve(__dirname, '../../data/support-client-logs.ndjson');
     this.smtpHost = process.env.SUPPORT_SMTP_HOST ?? null;
@@ -134,14 +142,50 @@ export class SupportService {
       ?? '[Saarwood Support]';
   }
 
-  getInfo(): SupportInfo {
+  getInfo(requestContext?: SupportRequestContext): SupportInfo {
     return {
       chatUrl: this.chatUrl,
       chatLabel: this.chatLabel,
-      handbookUrl: this.handbookUrl,
-      testerGuideUrl: this.testerGuideUrl,
-      testerFormUrl: this.testerFormUrl,
+      handbookUrl: this.resolveSupportDocumentUrl(this.handbookUrl, DEFAULT_HANDBOOK_PATH, requestContext),
+      testerGuideUrl: this.resolveSupportDocumentUrl(this.testerGuideUrl, DEFAULT_TESTER_GUIDE_PATH, requestContext),
+      testerFormUrl: this.resolveSupportDocumentUrl(this.testerFormUrl, DEFAULT_TESTER_FORM_PATH, requestContext),
     };
+  }
+
+  private resolveSupportDocumentUrl(
+    configuredUrl: string | null,
+    fallbackPath: string,
+    requestContext?: SupportRequestContext,
+  ): string {
+    const rawValue = configuredUrl?.trim();
+    if (!rawValue) {
+      return this.toPublicUrl(fallbackPath, requestContext);
+    }
+
+    if (rawValue.startsWith('/')) {
+      return this.toPublicUrl(rawValue, requestContext);
+    }
+
+    try {
+      const parsed = new URL(rawValue);
+      if (this.isHomepagePlaceholder(parsed)) {
+        return this.toPublicUrl(fallbackPath, requestContext);
+      }
+      return parsed.toString();
+    } catch {
+      return this.toPublicUrl(fallbackPath, requestContext);
+    }
+  }
+
+  private isHomepagePlaceholder(url: URL): boolean {
+    return url.pathname === '/' && !url.search && !url.hash;
+  }
+
+  private toPublicUrl(pathname: string, requestContext?: SupportRequestContext): string {
+    if (!requestContext?.protocol || !requestContext.host) {
+      return pathname;
+    }
+    return `${requestContext.protocol}://${requestContext.host}${pathname}`;
   }
 
   async createTicket(input: SupportTicketInput): Promise<SupportTicketCreateResult> {
