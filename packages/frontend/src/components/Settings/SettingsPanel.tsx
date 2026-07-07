@@ -10,6 +10,12 @@ interface SettingsPanelProps {
 
 type SettingsPage = 'settings' | 'io' | 'templates' | 'support' | 'about';
 
+const DEFAULT_SUPPORT_RESOURCE_URLS = {
+  handbookUrl: '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf',
+  testerGuideUrl: '/support/beta-tester-guide-de.pdf',
+  testerFormUrl: '/support/testerformular-beta-v1-de.pdf',
+} as const;
+
 export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const display = usePrompterStore((s) => s.display);
   const profiles = usePrompterStore((s) => s.profiles);
@@ -52,9 +58,9 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [supportInfo, setSupportInfo] = useState({
     chatUrl: '' as string | null,
     chatLabel: 'Support Chat',
-    handbookUrl: '' as string | null,
-    testerGuideUrl: '' as string | null,
-    testerFormUrl: '' as string | null,
+    handbookUrl: DEFAULT_SUPPORT_RESOURCE_URLS.handbookUrl as string | null,
+    testerGuideUrl: DEFAULT_SUPPORT_RESOURCE_URLS.testerGuideUrl as string | null,
+    testerFormUrl: DEFAULT_SUPPORT_RESOURCE_URLS.testerFormUrl as string | null,
   });
   const [supportStatus, setSupportStatus] = useState('');
   const [supportSending, setSupportSending] = useState(false);
@@ -210,9 +216,9 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         setSupportInfo({
           chatUrl: payload.chatUrl || null,
           chatLabel: payload.chatLabel || 'Support Chat',
-          handbookUrl: payload.handbookUrl || null,
-          testerGuideUrl: payload.testerGuideUrl || null,
-          testerFormUrl: payload.testerFormUrl || null,
+          handbookUrl: payload.handbookUrl || DEFAULT_SUPPORT_RESOURCE_URLS.handbookUrl,
+          testerGuideUrl: payload.testerGuideUrl || DEFAULT_SUPPORT_RESOURCE_URLS.testerGuideUrl,
+          testerFormUrl: payload.testerFormUrl || DEFAULT_SUPPORT_RESOURCE_URLS.testerFormUrl,
         });
       } catch {
         // Keep defaults
@@ -224,6 +230,42 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       active = false;
     };
   }, []);
+
+  const openSupportResource = useCallback((url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, []);
+
+  const downloadSupportResource = useCallback((url: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }, []);
+
+  const supportResources = useMemo(() => ([
+    {
+      key: 'handbook',
+      title: 'Handbuch',
+      description: 'Technische Referenz und Ablaeufe',
+      url: supportInfo.handbookUrl,
+    },
+    {
+      key: 'tester-guide',
+      title: 'Live-Tester Guide',
+      description: 'Checkliste fuer Beta-Feedback',
+      url: supportInfo.testerGuideUrl,
+    },
+    {
+      key: 'tester-form',
+      title: 'Testerformular',
+      description: 'PDF-Formular fuer Rueckmeldungen',
+      url: supportInfo.testerFormUrl,
+    },
+  ].filter((item) => Boolean(item.url))), [supportInfo.handbookUrl, supportInfo.testerGuideUrl, supportInfo.testerFormUrl]);
 
   const filteredProfiles = useMemo(() => {
     const q = templateSearch.trim().toLowerCase();
@@ -1441,24 +1483,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
               </div>
 
               <div className="support-link-list">
-                {supportInfo.handbookUrl && (
-                  <a className="support-link-card" href={supportInfo.handbookUrl} target="_blank" rel="noreferrer">
-                    <span>Handbuch</span>
-                    <small>Technische Referenz und Abläufe</small>
-                  </a>
-                )}
-                {supportInfo.testerGuideUrl && (
-                  <a className="support-link-card" href={supportInfo.testerGuideUrl} target="_blank" rel="noreferrer">
-                    <span>Live-Tester Guide</span>
-                    <small>Checkliste fuer Beta-Feedback</small>
-                  </a>
-                )}
-                {supportInfo.testerFormUrl && (
-                  <a className="support-link-card" href={supportInfo.testerFormUrl} target="_blank" rel="noreferrer">
-                    <span>Testerformular</span>
-                    <small>Formular fuer Rueckmeldungen</small>
-                  </a>
-                )}
+                {supportResources.map((resource) => (
+                  <div className="support-link-card" key={resource.key}>
+                    <span>{resource.title}</span>
+                    <small>{resource.description}</small>
+                    <div className="template-actions">
+                      <button type="button" className="btn-small" onClick={() => openSupportResource(resource.url as string)}>
+                        Im Fenster oeffnen
+                      </button>
+                      <button type="button" className="btn-small" onClick={() => downloadSupportResource(resource.url as string)}>
+                        PDF laden
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </article>
 
@@ -1521,9 +1559,10 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             <li>- / _ / Numpad-: Geschwindigkeit -5</li>
             <li>Pfeil hoch / runter: Richtung hoch / runter</li>
             <li>H: Spiegelung horizontal</li>
-            <li>[ / ]: Rotation -90 / +90</li>
+            <li>V: Vertikalspiegelung (`V-Mirror`)</li>
+            <li>Q / E oder [ / ] oder /: Rotation -90 / +90</li>
+            <li>P: separates Prompter-Fenster oeffnen</li>
             <li>F: Vollbild umschalten</li>
-            <li>V: Voice ON (nur Expert), M: Voice OFF (nur Expert)</li>
           </ul>
           <h4 className="settings-subheading">Links</h4>
           <div className="settings-link-grid">
@@ -1533,24 +1572,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
                 <small>Direkter Support-Kontakt</small>
               </a>
             )}
-            {supportInfo.handbookUrl && (
-              <a className="support-link-card" href={supportInfo.handbookUrl} target="_blank" rel="noreferrer">
-                <span>Handbuch</span>
-                <small>Technische Referenz und Abläufe</small>
-              </a>
-            )}
-            {supportInfo.testerGuideUrl && (
-              <a className="support-link-card" href={supportInfo.testerGuideUrl} target="_blank" rel="noreferrer">
-                <span>Live-Tester Guide</span>
-                <small>Checkliste fuer Beta-Feedback</small>
-              </a>
-            )}
-            {supportInfo.testerFormUrl && (
-              <a className="support-link-card" href={supportInfo.testerFormUrl} target="_blank" rel="noreferrer">
-                <span>Testerformular</span>
-                <small>Formular fuer Rueckmeldungen</small>
-              </a>
-            )}
+            {supportResources.map((resource) => (
+              <div className="support-link-card" key={`about-${resource.key}`}>
+                <span>{resource.title}</span>
+                <small>{resource.description}</small>
+                <div className="template-actions">
+                  <button type="button" className="btn-small" onClick={() => openSupportResource(resource.url as string)}>
+                    Im Fenster oeffnen
+                  </button>
+                  <button type="button" className="btn-small" onClick={() => downloadSupportResource(resource.url as string)}>
+                    PDF laden
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}

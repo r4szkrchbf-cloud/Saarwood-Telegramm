@@ -116,9 +116,9 @@ export class SupportService {
     this.ticketWebhookUrl = process.env.SUPPORT_TICKET_WEBHOOK_URL ?? null;
     this.ticketSequenceFilePath = process.env.SUPPORT_TICKET_SEQUENCE_FILE
       ?? path.resolve(__dirname, '../../data/support-ticket-sequence.json');
-    this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? null;
-    this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? null;
-    this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? null;
+    this.handbookUrl = process.env.SUPPORT_HANDBOOK_URL ?? '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf';
+    this.testerGuideUrl = process.env.SUPPORT_TESTER_GUIDE_URL ?? '/support/beta-tester-guide-de.pdf';
+    this.testerFormUrl = process.env.SUPPORT_TESTER_FORM_URL ?? '/support/testerformular-beta-v1-de.pdf';
     this.clientLogFilePath = process.env.SUPPORT_CLIENT_LOG_FILE
       ?? path.resolve(__dirname, '../../data/support-client-logs.ndjson');
     this.smtpHost = process.env.SUPPORT_SMTP_HOST ?? null;
