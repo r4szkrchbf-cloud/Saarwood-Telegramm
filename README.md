@@ -9,6 +9,10 @@ Professional broadcast-grade teleprompter web application — PWA, three tiers (
 
 This repository is teleprompter-only (frontend, backend, electron, teleprompter operations docs).
 
+## Current Status
+
+- Split and migration status report: `docs/STATUSBERICHT_REPO_TRENNUNG_UND_DOMAIN_MIGRATION_DE_2026-07-07.md`
+
 ## Architecture
 
 ```text
