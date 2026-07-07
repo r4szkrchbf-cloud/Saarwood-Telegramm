@@ -6,6 +6,7 @@ import type { MosHandler } from '../mos/MosHandler';
 import type { NdiAdapter } from '../ndi/NdiAdapter';
 import type { LicenseService } from '../license/LicenseService';
 import type { SupportService } from '../support/SupportService';
+import { AuthService } from '../auth/AuthService';
 
 /**
  * REST API routes
@@ -43,6 +44,15 @@ export function createRouter(
 ): Router {
   const router = Router();
   const adminApiKey = process.env.ADMIN_API_KEY ?? '';
+  const authService = new AuthService();
+
+  const authMethodSchema = z.enum(['password', 'sso', 'magic-link']);
+
+  const authLoginSchema = z.object({
+    identifier: z.string().min(1),
+    password: z.string().default(''),
+    method: authMethodSchema.default('password'),
+  });
 
   const activateSchema = z.object({
     token: z.string().min(10),
@@ -96,6 +106,14 @@ export function createRouter(
     return null;
   };
 
+  const getAccessTokenFromRequest = (req: Request): string | null => {
+    const authHeader = req.headers['authorization'];
+    if (typeof authHeader !== 'string') return null;
+    if (!authHeader.startsWith('Bearer ')) return null;
+    const token = authHeader.slice(7).trim();
+    return token || null;
+  };
+
   const hasAdminAccess = (req: Request): boolean => {
     if (!adminApiKey) return false;
 
@@ -137,6 +155,54 @@ export function createRouter(
   // ─── NDI status ──────────────────────────────────────────────────────────
   router.get('/ndi/status', (_req, res) => {
     res.json(ndiAdapter.getStatus());
+  });
+
+  // ─── Central admin auth API (JWT/session) ───────────────────────────────
+  router.get('/admin/auth/providers', (_req, res) => {
+    res.json({ ok: true, ...authService.getProviderConfig() });
+  });
+
+  router.post('/admin/auth/login', async (req, res) => {
+    const parsed = authLoginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(422).json({ ok: false, error: 'validation-failed' });
+      return;
+    }
+
+    try {
+      const result = await authService.login(parsed.data);
+      res.json({ ok: true, ...result });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'auth-login-failed';
+      res.status(401).json({ ok: false, error: reason });
+    }
+  });
+
+  router.get('/admin/auth/session', async (req, res) => {
+    const token = getAccessTokenFromRequest(req);
+    if (!token) {
+      res.status(401).json({ ok: false, error: 'auth-token-missing' });
+      return;
+    }
+
+    const session = await authService.verifyToken(token);
+    if (!session) {
+      res.status(401).json({ ok: false, error: 'auth-token-invalid' });
+      return;
+    }
+
+    res.json({ ok: true, session });
+  });
+
+  router.post('/admin/auth/logout', async (req, res) => {
+    const token = getAccessTokenFromRequest(req);
+    if (!token) {
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    await authService.revokeToken(token);
+    res.json({ ok: true });
   });
 
   // ─── WebSocket info (for mobile remote control UI) ───────────────────────

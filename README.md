@@ -168,7 +168,15 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 | `APP_TIER` | `basic` | `basic` / `professional` / `expert` |
 | `ENABLE_MOS` | `true` | Start MOS TCP listener |
 | `ENABLE_NDI` | `true` | Initialise NDI adapter |
-| `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
+| `CORS_ORIGIN` | `http://localhost:3000,http://localhost:5173,https://teleprompter.saarwood.ch,https://admin.saarwood.ch,https://saarwood.ch` | Allowed CORS origins (comma-separated) |
+| `ADMIN_AUTH_JWT_SECRET` | `dev-admin-auth-secret` | JWT signing secret for central admin auth |
+| `ADMIN_AUTH_TTL_SEC` | `28800` | JWT lifetime in seconds |
+| `ADMIN_AUTH_ISSUER` | `saarwood-auth` | JWT issuer claim |
+| `ADMIN_AUTH_AUDIENCE` | `saarwood-admin` | JWT audience claim |
+| `ADMIN_AUTH_USERS_JSON` | fallback demo users | JSON array of admin accounts (`adminId`, `email`, `displayName`, `role`, `password`) |
+| `ADMIN_AUTH_SSO_ENABLED` | `false` | Enables SSO login method in central auth endpoint |
+| `ADMIN_AUTH_MAGIC_LINK_ENABLED` | `false` | Enables Magic-Link login method in central auth endpoint |
+| `ADMIN_AUTH_SSO_PROVIDER` | `oidc` | Provider label for `/api/admin/auth/providers` |
 
 ## Design Decisions
 

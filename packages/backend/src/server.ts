@@ -16,6 +16,21 @@ const MOS_PORT = parseInt(process.env.MOS_PORT ?? '10540', 10);
 const ENABLE_MOS = process.env.ENABLE_MOS !== 'false';
 const ENABLE_NDI = process.env.ENABLE_NDI !== 'false';
 const APP_TIER = (process.env.APP_TIER ?? 'basic') as 'basic' | 'professional' | 'expert';
+function resolveCorsOrigins(): string[] {
+  const raw = process.env.CORS_ORIGIN;
+  if (!raw?.trim()) {
+    return [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://teleprompter.saarwood.ch',
+      'https://admin.saarwood.ch',
+      'https://saarwood.ch',
+    ];
+  }
+
+  return raw.split(',').map((origin) => origin.trim()).filter(Boolean);
+}
+
 function resolveTrustProxySetting(): boolean | number | string {
   const raw = process.env.TRUST_PROXY?.trim();
 
@@ -36,6 +51,7 @@ function resolveTrustProxySetting(): boolean | number | string {
 }
 
 const TRUST_PROXY = resolveTrustProxySetting();
+const CORS_ORIGINS = resolveCorsOrigins();
 // FRONTEND_DIST can be overridden (e.g. by the Electron wrapper) so the backend
 // can serve the built frontend from an arbitrary absolute path.
 const FRONTEND_DIST = process.env.FRONTEND_DIST ?? '../frontend/dist';
@@ -48,7 +64,13 @@ app.set('trust proxy', TRUST_PROXY);
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin(origin, callback) {
+      if (!origin || CORS_ORIGINS.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-api-key'],
   }),
@@ -135,6 +157,7 @@ httpServer.listen(HTTP_PORT, () => {
   console.log(`[Server] Tier: ${APP_TIER}`);
   console.log(`[Server] MOS: ${ENABLE_MOS && APP_TIER !== 'basic' ? `TCP port ${MOS_PORT}` : 'disabled'}`);
   console.log(`[Server] NDI: ${ENABLE_NDI ? 'adapter loaded (stub if no native addon)' : 'disabled'}`);
+  console.log(`[Server] CORS origins: ${CORS_ORIGINS.join(', ')}`);
   console.log(`[Server] License mode: ${licenseService.getMode()}`);
 });
 
