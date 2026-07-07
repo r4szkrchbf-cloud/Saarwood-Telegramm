@@ -259,7 +259,8 @@
 }
 
 @media (max-width: 768px) {
-  .app.output-with-controls .control-panel {
+  .app.output-with-controls .control-panel,
+  .app.mobile-controls-docked-prompter .control-panel {
     display: flex;
     position: fixed;
     left: 0;
@@ -276,7 +277,8 @@
     overflow-x: auto;
   }
 
-  .app.output-with-controls .transport-buttons {
+  .app.output-with-controls .transport-buttons,
+  .app.mobile-controls-docked-prompter .transport-buttons {
     width: auto;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -285,53 +287,63 @@
     align-items: center;
   }
 
-  .app.output-with-controls .transport-buttons--prompter {
+  .app.output-with-controls .transport-buttons--prompter,
+  .app.mobile-controls-docked-prompter .transport-buttons--prompter {
     width: 100%;
   }
 
-  .app.output-with-controls .speed-control {
+  .app.output-with-controls .speed-control,
+  .app.mobile-controls-docked-prompter .speed-control {
     width: auto;
     min-width: 0;
     flex: 0 0 auto;
     gap: 0.25rem;
   }
 
-  .app.output-with-controls .speed-control--inline {
+  .app.output-with-controls .speed-control--inline,
+  .app.mobile-controls-docked-prompter .speed-control--inline {
     margin-left: 0.05rem;
   }
 
-  .app.output-with-controls .speed-control--edge {
+  .app.output-with-controls .speed-control--edge,
+  .app.mobile-controls-docked-prompter .speed-control--edge {
     margin-left: auto;
     margin-right: 0;
     justify-content: flex-end;
   }
 
-  .app.output-with-controls .speed-label {
+  .app.output-with-controls .speed-label,
+  .app.mobile-controls-docked-prompter .speed-label {
     font-size: 0.72rem;
     gap: 3px;
   }
 
-  .app.output-with-controls .speed-value {
+  .app.output-with-controls .speed-value,
+  .app.mobile-controls-docked-prompter .speed-value {
     min-width: 2.2ch;
   }
 
-  .app.output-with-controls .mirror-controls {
+  .app.output-with-controls .mirror-controls,
+  .app.mobile-controls-docked-prompter .mirror-controls {
     display: flex;
     flex: 0 0 auto;
   }
 
-  .app.output-with-controls .btn {
+  .app.output-with-controls .btn,
+  .app.mobile-controls-docked-prompter .btn {
     padding: 0.34rem 0.52rem;
     font-size: 0.86rem;
   }
 
-  .app.output-with-controls .btn--playback-prominent {
+  .app.output-with-controls .btn--playback-prominent,
+  .app.mobile-controls-docked-prompter .btn--playback-prominent {
     min-width: 78px;
     min-height: 50px;
     font-size: 1.5rem;
   }
 
-  .app.output-with-controls .speed-nudge-stack.stacked .btn--nudge {
+  .app.output-with-controls .speed-nudge-stack.stacked .btn--nudge,
+  .app.mobile-controls-docked-prompter .speed-nudge-stack.stacked .btn--nudge {
     padding: 0.35rem 0.52rem;
     min-width: 36px;
     min-height: 28px;
