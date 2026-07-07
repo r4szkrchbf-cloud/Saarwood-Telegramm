@@ -68,6 +68,11 @@
   gap: 0.3rem;
 }
 
+.transport-buttons--prompter {
+  width: 100%;
+  align-items: center;
+}
+
 .voice-quick-controls {
   display: flex;
   gap: 0.3rem;
@@ -87,6 +92,10 @@
   flex: 0 0 auto;
   min-width: 0;
   width: auto;
+}
+
+.speed-control--edge {
+  margin-left: auto;
 }
 
 .speed-label {
@@ -275,6 +284,10 @@
     align-items: center;
   }
 
+  .app.output-with-controls .transport-buttons--prompter {
+    width: 100%;
+  }
+
   .app.output-with-controls .speed-control {
     width: auto;
     min-width: 0;
@@ -284,6 +297,11 @@
 
   .app.output-with-controls .speed-control--inline {
     margin-left: 0.05rem;
+  }
+
+  .app.output-with-controls .speed-control--edge {
+    margin-left: auto;
+    margin-right: 0;
   }
 
   .app.output-with-controls .speed-label {
@@ -312,7 +330,8 @@
   }
 
   .app.output-with-controls .speed-nudge-stack.stacked .btn--nudge {
-    padding: 0.2rem 0.42rem;
-    min-width: 34px;
+    padding: 0.3rem 0.5rem;
+    min-width: 36px;
+    min-height: 23px;
   }
 }

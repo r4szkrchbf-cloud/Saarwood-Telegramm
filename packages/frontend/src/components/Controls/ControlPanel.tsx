@@ -201,16 +201,18 @@ export function ControlPanel({
         <>
 
       {/* ─── Transport ────────────────────────────────────────────────── */}
-      <div className="transport-buttons">
-        <button
-          type="button"
-          className="btn btn--stop"
-          onClick={handleStop}
-          aria-label="Text auf Anfang"
-          title="Text auf Anfang"
-        >
-          Text auf Anfang
-        </button>
+      <div className={['transport-buttons', isPrompterMode ? 'transport-buttons--prompter' : ''].join(' ')}>
+        {!isPrompterMode && (
+          <button
+            type="button"
+            className="btn btn--stop"
+            onClick={handleStop}
+            aria-label="Text auf Anfang"
+            title="Text auf Anfang"
+          >
+            Text auf Anfang
+          </button>
+        )}
 
         {viewMode !== 'prompter' && !isOutputOnly && (
           <button
@@ -273,44 +275,60 @@ export function ControlPanel({
         )}
 
         {isPrompterMode && (
-          isPlaying ? (
-            <button
-              type="button"
-              className={['btn', 'btn--pause', 'btn--playback-prominent'].join(' ')}
-              onClick={handlePause}
-              aria-label="Pause"
-              title="Pause"
-            >
-              ❙❙
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={['btn', 'btn--play', 'btn--playback-prominent'].join(' ')}
-              onClick={handlePlay}
-              aria-label="Play"
-              title="Play"
-            >
-              ▶
-            </button>
-          )
-        )}
-
-        {isPrompterMode && (
-          <button
-            type="button"
-            className="btn btn--direction"
-            onClick={handleDirectionToggle}
-            aria-label={`Scroll direction: ${direction}`}
-            title="Toggle scroll direction"
-          >
-            {direction === 'down' ? '↓' : '↑'}
-          </button>
-        )}
-
-        {isPrompterMode && (
           <>
-            <div className="speed-control speed-control--inline" role="group" aria-label="Scroll speed">
+            <button
+              type="button"
+              className={['btn', 'btn--mirror', mirrorVertical ? 'active' : ''].join(' ')}
+              onClick={() => setDisplay({ mirrorVertical: !mirrorVertical })}
+              aria-pressed={mirrorVertical}
+              title="Flip vertical"
+            >
+              ↕ V-Mirror
+            </button>
+
+            <button
+              type="button"
+              className="btn btn--stop"
+              onClick={handleStop}
+              aria-label="Text auf Anfang"
+              title="Text auf Anfang"
+            >
+              Text auf Anfang
+            </button>
+
+            {isPlaying ? (
+              <button
+                type="button"
+                className={['btn', 'btn--pause', 'btn--playback-prominent'].join(' ')}
+                onClick={handlePause}
+                aria-label="Pause"
+                title="Pause"
+              >
+                ❙❙
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={['btn', 'btn--play', 'btn--playback-prominent'].join(' ')}
+                onClick={handlePlay}
+                aria-label="Play"
+                title="Play"
+              >
+                ▶
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="btn btn--direction"
+              onClick={handleDirectionToggle}
+              aria-label={`Scroll direction: ${direction}`}
+              title="Toggle scroll direction"
+            >
+              {direction === 'down' ? '↓' : '↑'}
+            </button>
+
+            <div className="speed-control speed-control--inline speed-control--edge" role="group" aria-label="Scroll speed">
               <div className="speed-nudge-stack stacked">
                 <button
                   type="button"
@@ -330,16 +348,6 @@ export function ControlPanel({
                 </button>
               </div>
             </div>
-
-            <button
-              type="button"
-              className={['btn', 'btn--mirror', mirrorVertical ? 'active' : ''].join(' ')}
-              onClick={() => setDisplay({ mirrorVertical: !mirrorVertical })}
-              aria-pressed={mirrorVertical}
-              title="Flip vertical"
-            >
-              ↕ V-Mirror
-            </button>
           </>
         )}
       </div>
