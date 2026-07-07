@@ -18,14 +18,13 @@ type RotationDeg = (typeof ROTATION_STEPS)[number];
  *  Space        → Play / Pause toggle
  *  +            → Speed +5 px/s
  *  -            → Speed −5 px/s
- *  v / V        → Voice tracking ON
- *  m / M        → Voice tracking OFF
+ *  v / V        → Vertical mirror toggle
  *  r / R        → Reset (stop + position = 0)
  *  h / H        → Mirror horizontal toggle
  *  f / F        → Fullscreen toggle
  *  Escape       → Stop
- *  [            → Rotate −90°
- *  ]            → Rotate +90°
+ *  q / Q / [    → Rotate −90°
+ *  e / E / ]    → Rotate +90°
  */
 export function useHotkeyManager(enabled = true): void {
   const play = usePrompterStore((s) => s.play);
@@ -33,7 +32,6 @@ export function useHotkeyManager(enabled = true): void {
   const stop = usePrompterStore((s) => s.stop);
   const setSpeed = usePrompterStore((s) => s.setSpeed);
   const setDirection = usePrompterStore((s) => s.setDirection);
-  const setSpeechEnabled = usePrompterStore((s) => s.setSpeechEnabled);
   const setDisplay = usePrompterStore((s) => s.setDisplay);
 
   useEffect(() => {
@@ -96,23 +94,6 @@ export function useHotkeyManager(enabled = true): void {
       wsService.send('SET_DIRECTION', { direction: 'down' });
     });
 
-    hotkeyManager.register('v', 'Voice tracking ON', () => {
-      if (usePrompterStore.getState().tier !== 'expert') return;
-      setSpeechEnabled(true);
-    });
-    hotkeyManager.register('V', 'Voice tracking ON', () => {
-      if (usePrompterStore.getState().tier !== 'expert') return;
-      setSpeechEnabled(true);
-    });
-    hotkeyManager.register('m', 'Voice tracking OFF', () => {
-      if (usePrompterStore.getState().tier !== 'expert') return;
-      setSpeechEnabled(false);
-    });
-    hotkeyManager.register('M', 'Voice tracking OFF', () => {
-      if (usePrompterStore.getState().tier !== 'expert') return;
-      setSpeechEnabled(false);
-    });
-
     hotkeyManager.register('r', 'Reset (Stop)', () => {
       stop();
       wsService.send('STOP');
@@ -145,6 +126,14 @@ export function useHotkeyManager(enabled = true): void {
       const { display } = usePrompterStore.getState();
       setDisplay({ mirrorHorizontal: !display.mirrorHorizontal });
     });
+    hotkeyManager.register('v', 'Mirror vertical', () => {
+      const { display } = usePrompterStore.getState();
+      setDisplay({ mirrorVertical: !display.mirrorVertical });
+    });
+    hotkeyManager.register('V', 'Mirror vertical', () => {
+      const { display } = usePrompterStore.getState();
+      setDisplay({ mirrorVertical: !display.mirrorVertical });
+    });
 
     // ── Rotation ───────────────────────────────────────────────────────────
     const rotate = (delta: -1 | 1): void => {
@@ -157,6 +146,10 @@ export function useHotkeyManager(enabled = true): void {
 
     hotkeyManager.register('[', 'Rotate −90°', () => rotate(-1));
     hotkeyManager.register(']', 'Rotate +90°', () => rotate(1));
+    hotkeyManager.register('q', 'Rotate −90°', () => rotate(-1));
+    hotkeyManager.register('Q', 'Rotate −90°', () => rotate(-1));
+    hotkeyManager.register('e', 'Rotate +90°', () => rotate(1));
+    hotkeyManager.register('E', 'Rotate +90°', () => rotate(1));
 
     // ── Fullscreen ─────────────────────────────────────────────────────────
     hotkeyManager.register('f', 'Fullscreen toggle', () => {
@@ -179,5 +172,5 @@ export function useHotkeyManager(enabled = true): void {
     return () => {
       hotkeyManager.disable();
     };
-  }, [enabled, play, pause, stop, setSpeed, setDirection, setSpeechEnabled, setDisplay]);
+  }, [enabled, play, pause, stop, setSpeed, setDirection, setDisplay]);
 }

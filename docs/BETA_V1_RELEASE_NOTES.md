@@ -39,7 +39,7 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 - ✅ Hardware-beschleunigte Rotation 0°/90°/180°/270° (GPU Compositor)
 - ✅ Dark Mode (Director/Editor-UI)
 - ✅ WebSocket Remote Control (Smartphone, Tablet, Bluetooth-Pedal-Relay)
-- ✅ Tastaturkürzel: Space=Play/Pause, Esc=Stop, ↑/↓=Speed, [/]=Rotation
+- ✅ Tastaturkürzel: Space=Play/Pause, Esc=Stop, ↑/↓=Richtung, +/-=Speed, V=V-Mirror, Q/E oder [/]=Rotation
 - ✅ Moderator-Einstellungen (Schriftgröße, Familie, Farben, Zeilenhöhe) mit localStorage-Persistenz
 
 ### Professional-Tier (Regionaler Broadcast)

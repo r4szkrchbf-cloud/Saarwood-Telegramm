@@ -473,7 +473,7 @@ export function ControlPanel({
             type="button"
             className="btn btn--rotate"
             onClick={() => handleRotate(-90)}
-            title="Rotate −90° (hotkey: [)"
+            title="Rotate −90° (hotkeys: Q oder [)"
             aria-label="Rotate counter-clockwise 90°"
           >
             ↺ −90°
@@ -485,7 +485,7 @@ export function ControlPanel({
             type="button"
             className="btn btn--rotate"
             onClick={() => handleRotate(90)}
-            title="Rotate +90° (hotkey: ])"
+            title="Rotate +90° (hotkeys: E oder ])"
             aria-label="Rotate clockwise 90°"
           >
             ↻ +90°

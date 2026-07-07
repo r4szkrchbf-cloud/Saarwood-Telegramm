@@ -212,10 +212,10 @@ Wichtige Buttons:
 - - oder _ oder NumpadSubtract: Geschwindigkeit -5
 - Pfeil hoch / runter: Richtung
 - h / H: Spiegelung horizontal
-- [ / ]: Rotation
+- v / V: Vertikalspiegelung (`V-Mirror`)
+- q / Q oder [: Rotation -90
+- e / E oder ]: Rotation +90
 - f / F: Vollbild umschalten
-- v / V: Voice ON
-- m / M: Voice OFF
 
 ## 5. Anzeigeeinstellungen
 

@@ -956,6 +956,9 @@ export function App() {
           <span className="restart-hint" aria-label="Taste N fuer Prompter NeuStart">
             Taste N: Prompter NeuStart
           </span>
+          <span className="restart-hint" aria-label="Taste V fuer V-Mirror sowie Q und E fuer Rotation">
+            Tasten: V = V-Mirror, Q/E = Rotation
+          </span>
           {licenseBannerVisible && (
             <span className="license-hint" aria-label={`Lizenzstatus ${licenseState.status}`}>
               Lizenz: {licenseState.status}
