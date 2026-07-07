@@ -96,6 +96,7 @@
 
 .speed-control--edge {
   margin-left: auto;
+  justify-content: flex-end;
 }
 
 .speed-label {
@@ -302,6 +303,7 @@
   .app.output-with-controls .speed-control--edge {
     margin-left: auto;
     margin-right: 0;
+    justify-content: flex-end;
   }
 
   .app.output-with-controls .speed-label {
@@ -330,8 +332,8 @@
   }
 
   .app.output-with-controls .speed-nudge-stack.stacked .btn--nudge {
-    padding: 0.3rem 0.5rem;
+    padding: 0.35rem 0.52rem;
     min-width: 36px;
-    min-height: 23px;
+    min-height: 28px;
   }
 }
