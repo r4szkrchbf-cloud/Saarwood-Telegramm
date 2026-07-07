@@ -1123,6 +1123,7 @@ export function App() {
                 </div>
               </>
             )}
+            {mobileTemplateSection}
             <div className="editor-scroll">
               {script.segments.map((seg, idx) => (
                 <Suspense key={`${seg.id}-${idx}`} fallback={<div className="settings-loading">Editor wird geladen ...</div>}>
@@ -1152,7 +1153,6 @@ export function App() {
                 + Add segment
               </button>
             </div>
-            {mobileTemplateSection}
           </section>
         )}
 
