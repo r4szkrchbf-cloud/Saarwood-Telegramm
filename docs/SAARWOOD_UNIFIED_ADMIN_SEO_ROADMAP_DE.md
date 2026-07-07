@@ -4,6 +4,8 @@
 
 SAARwooD soll als zentrale Marke auf `saarwood.ch` einheitlich auftreten. Alle heutigen und kuenftigen Apps, Subdomains und Operator-Flows sollen unter einem gemeinsamen Marken- und Admin-Konzept sichtbar sein.
 
+Dieses Teleprompter-Repository bleibt bewusst auf die Teleprompter-App, die teleprompter-spezifische API und die zugehoerige Betriebsdoku begrenzt. Die oeffentliche SAARwooD-Hauptseite und das zentrale Plattform-/Adminpanel werden in eigenen Repositories gefuehrt.
+
 Markenstil:
 
 - `SAAR` gross und rot
@@ -22,7 +24,7 @@ Markenstil:
 ## Aktueller Public-Status
 
 - `teleprompter.saarwood.ch` zeigt auf die produktive Teleprompter-App.
-- `saarwood.ch` ist aktuell noch als Hostinger-Parkseite sichtbar und muss fuer die Marken-Landingpage noch auf die neue Zielarchitektur umgestellt werden.
+- `saarwood.ch` ist die separate Marken-/SEO-Hauptseite und wird ausserhalb dieses Repositories gepflegt.
 - Fuer die eigentliche Marken-/SEO-Seite reicht der Frontend-Code alleine nicht; DNS/Hosting/Forwarding fuer die Hauptdomain muessen separat angepasst werden.
 
 ## Was der Nutzer erreichen will
