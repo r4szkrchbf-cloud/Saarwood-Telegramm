@@ -277,8 +277,11 @@ export function PrompterDisplay() {
   }), [effectiveProjectTitleFontSize, projectTitleTextColor]);
 
   const runtimeState = useMemo<'play' | 'pause' | 'ready'>(() => {
+    // PLAY always has priority while the engine is running.
     if (isPlaying) return 'play';
-    if (position === 0) return 'ready';
+    // READY is reserved for the reset/start boundary.
+    if (Math.round(position) <= 0) return 'ready';
+    // Otherwise we are paused mid-script.
     return 'pause';
   }, [isPlaying, position]);
 
