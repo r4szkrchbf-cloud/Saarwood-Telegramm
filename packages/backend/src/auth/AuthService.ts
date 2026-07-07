@@ -37,28 +37,28 @@ const FALLBACK_USERS: AuthUser[] = [
     email: 'owner@saarwood.ch',
     displayName: 'Owner Console',
     role: 'owner',
-    password: 'owner123!',
+    password: 'CHANGE_ME_IN_ENV',
   },
   {
     adminId: 'ADM-OPS-01',
     email: 'operator@saarwood.ch',
     displayName: 'Operator Desk',
     role: 'operator',
-    password: 'operator123!',
+    password: 'CHANGE_ME_IN_ENV',
   },
   {
     adminId: 'ADM-EDIT-01',
     email: 'editor@saarwood.ch',
     displayName: 'Editor Studio',
     role: 'editor',
-    password: 'editor123!',
+    password: 'CHANGE_ME_IN_ENV',
   },
   {
     adminId: 'ADM-VIEW-01',
     email: 'viewer@saarwood.ch',
     displayName: 'Viewer Audit',
     role: 'viewer',
-    password: 'viewer123!',
+    password: 'CHANGE_ME_IN_ENV',
   },
 ];
 
