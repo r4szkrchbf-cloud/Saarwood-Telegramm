@@ -16,6 +16,20 @@ const DEFAULT_SUPPORT_RESOURCE_URLS = {
   testerFormUrl: '/support/testerformular-beta-v1-de.pdf',
 } as const;
 
+function normalizeSupportResourceUrl(url: string | null | undefined, fallback: string): string {
+  if (!url || !url.trim()) return fallback;
+
+  if (typeof window !== 'undefined') {
+    const normalized = url.trim();
+    const originRoot = `${window.location.origin}/`;
+    if (normalized === window.location.origin || normalized === originRoot || normalized === '/') {
+      return fallback;
+    }
+  }
+
+  return url;
+}
+
 export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const display = usePrompterStore((s) => s.display);
   const profiles = usePrompterStore((s) => s.profiles);
@@ -216,9 +230,9 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         setSupportInfo({
           chatUrl: payload.chatUrl || null,
           chatLabel: payload.chatLabel || 'Support Chat',
-          handbookUrl: payload.handbookUrl || DEFAULT_SUPPORT_RESOURCE_URLS.handbookUrl,
-          testerGuideUrl: payload.testerGuideUrl || DEFAULT_SUPPORT_RESOURCE_URLS.testerGuideUrl,
-          testerFormUrl: payload.testerFormUrl || DEFAULT_SUPPORT_RESOURCE_URLS.testerFormUrl,
+          handbookUrl: normalizeSupportResourceUrl(payload.handbookUrl, DEFAULT_SUPPORT_RESOURCE_URLS.handbookUrl),
+          testerGuideUrl: normalizeSupportResourceUrl(payload.testerGuideUrl, DEFAULT_SUPPORT_RESOURCE_URLS.testerGuideUrl),
+          testerFormUrl: normalizeSupportResourceUrl(payload.testerFormUrl, DEFAULT_SUPPORT_RESOURCE_URLS.testerFormUrl),
         });
       } catch {
         // Keep defaults
