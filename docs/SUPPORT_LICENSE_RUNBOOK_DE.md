@@ -4,6 +4,20 @@ Stand: 2026-07-05
 
 Dieses Runbook beschreibt die internen Standardkommandos fuer das Support-Team.
 
+## 0. Repository-Grenze und Cross-Repo-Verweise
+
+Dieses Runbook gilt fuer das Teleprompter-Repository. Plattformfremde Aenderungen werden in den Schwester-Repositories umgesetzt.
+
+- Teleprompter-Repo: `https://github.com/r4szkrchbf-cloud/Saarwood-Telegramm`
+- Main-Site-Repo: `https://github.com/r4szkrchbf-cloud/saarwood-ch-main-site`
+- Adminpanel-Repo: `https://github.com/r4szkrchbf-cloud/saarwood-app-technik-adminpanel`
+
+Zustaendigkeit:
+
+- Lizenz-CLI, Revocation, Support-API und Ticket-Backend bleiben im Teleprompter-Repo.
+- Public-Webseiteninhalte (Impressum/Datenschutz-Hauptseite) liegen im Main-Site-Repo.
+- UI fuer zentrale Admin-Operationen liegt im Adminpanel-Repo.
+
 ## 1. Vorbereitung
 
 1. Repository lokal vorhanden.

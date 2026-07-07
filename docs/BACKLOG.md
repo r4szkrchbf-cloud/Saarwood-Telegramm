@@ -222,6 +222,17 @@ Minimalstart mit internem CLI oder Admin-Endpunkten, spaeter optional als kleine
 - [ ] Audit-Log fuer Ausgabe/Sperrung mit Timestamp und Operator vorhanden
 - [ ] Runbook fuer Supportfaelle (Geraetewechsel, Verlust, Missbrauch) vorhanden
 
+### TICKET-032 · Teleprompter-Runbook mit finalen Cross-Repo-Verweisen stabil halten
+
+**Prioritaet:** P1
+**Beschreibung:**
+Nach der Repo-Trennung muessen Support-/Lizenz-Runbooks im Teleprompter-Projekt die gueltigen Schwester-Repositories und klare Zustaendigkeiten enthalten.
+
+**Akzeptanzkriterien:**
+- [x] `SUPPORT_LICENSE_RUNBOOK_DE.md` enthaelt finale Cross-Repo-Verweise
+- [ ] Cross-Repo-Links werden quartalsweise auf Erreichbarkeit geprueft
+- [ ] Repo-Zustaendigkeiten bleiben in Runbooks und README konsistent
+
 ### TICKET-024 · Public MVP Rollout (Internet + Offline) verbindlich umsetzen
 
 **Prioritaet:** P0
