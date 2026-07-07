@@ -27,6 +27,9 @@ interface ControlPanelProps {
   onOpenOutputWindow?: () => void;
   onOpenSecondMonitorOutput?: () => void;
   isDesktopApp?: boolean;
+  isMobileLayout?: boolean;
+  isTabletLayout?: boolean;
+  isOutputOnly?: boolean;
 }
 
 export function ControlPanel({
@@ -34,6 +37,9 @@ export function ControlPanel({
   onOpenOutputWindow,
   onOpenSecondMonitorOutput,
   isDesktopApp = false,
+  isMobileLayout = false,
+  isTabletLayout = false,
+  isOutputOnly = false,
 }: ControlPanelProps) {
   const isPlaying = usePrompterStore((s) => s.scroll.isPlaying);
   const speed = usePrompterStore((s) => s.scroll.speed);
@@ -53,6 +59,7 @@ export function ControlPanel({
   const [speedInput, setSpeedInput] = useState(String(Math.round(speed)));
   const [isSpeedEditing, setIsSpeedEditing] = useState(false);
   const [restartPending, setRestartPending] = useState(false);
+  const [speedInputCollapsed, setSpeedInputCollapsed] = useState(false);
 
   useEffect(() => {
     if (!restartPending) return;
@@ -163,6 +170,8 @@ export function ControlPanel({
     applySpeed(parsed);
   }, [speedInput, applySpeed]);
 
+  const allowSpeedInputCollapse = isMobileLayout && typeof window !== 'undefined' && window.innerWidth < 360;
+
   return (
     <div className="control-panel" role="region" aria-label="Teleprompter controls">
 
@@ -178,7 +187,7 @@ export function ControlPanel({
           Text auf Anfang
         </button>
 
-        {viewMode !== 'prompter' && (
+        {viewMode !== 'prompter' && !isOutputOnly && (
           <button
             type="button"
             className="btn btn--restart"
@@ -190,7 +199,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && onOpenOutputWindow && (
+        {viewMode !== 'prompter' && !isOutputOnly && onOpenOutputWindow && (
           <button
             type="button"
             className="btn"
@@ -202,7 +211,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && isDesktopApp && onOpenSecondMonitorOutput && (
+        {viewMode !== 'prompter' && !isOutputOnly && isDesktopApp && onOpenSecondMonitorOutput && (
           <button
             type="button"
             className="btn"
@@ -214,7 +223,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && tier === 'expert' && (
+        {viewMode !== 'prompter' && !isOutputOnly && tier === 'expert' && (
           <div className="voice-quick-controls" role="group" aria-label="Voice tracking">
             <button
               type="button"
@@ -288,24 +297,58 @@ export function ControlPanel({
           <span className="speed-unit">px/s</span>
         </label>
 
-        <input
-          id="speed-input"
-          type="number"
-          min={0}
-          max={400}
-          step={1}
-          inputMode="numeric"
-          value={isSpeedEditing ? speedInput : String(Math.round(speed))}
-          onChange={handleSpeedInputChange}
-          onFocus={() => setIsSpeedEditing(true)}
-          onBlur={handleSpeedInputBlur}
-          onKeyDown={handleSpeedInputKeyDown}
-          className="speed-input"
-          aria-label="Speed input"
-          aria-valuenow={speed}
-          aria-valuemin={0}
-          aria-valuemax={400}
-        />
+        {allowSpeedInputCollapse ? (
+          <>
+            <button
+              type="button"
+              className={['btn', 'btn--speed-toggle', speedInputCollapsed ? '' : 'active'].join(' ')}
+              onClick={() => setSpeedInputCollapsed((current) => !current)}
+              aria-expanded={!speedInputCollapsed}
+              aria-controls="speed-input"
+            >
+              {speedInputCollapsed ? 'Speed Feld' : 'Speed Feld aus'}
+            </button>
+            {!speedInputCollapsed && (
+              <input
+                id="speed-input"
+                type="number"
+                min={0}
+                max={400}
+                step={1}
+                inputMode="numeric"
+                value={isSpeedEditing ? speedInput : String(Math.round(speed))}
+                onChange={handleSpeedInputChange}
+                onFocus={() => setIsSpeedEditing(true)}
+                onBlur={handleSpeedInputBlur}
+                onKeyDown={handleSpeedInputKeyDown}
+                className="speed-input"
+                aria-label="Speed input"
+                aria-valuenow={speed}
+                aria-valuemin={0}
+                aria-valuemax={400}
+              />
+            )}
+          </>
+        ) : (
+          <input
+            id="speed-input"
+            type="number"
+            min={0}
+            max={400}
+            step={1}
+            inputMode="numeric"
+            value={isSpeedEditing ? speedInput : String(Math.round(speed))}
+            onChange={handleSpeedInputChange}
+            onFocus={() => setIsSpeedEditing(true)}
+            onBlur={handleSpeedInputBlur}
+            onKeyDown={handleSpeedInputKeyDown}
+            className="speed-input"
+            aria-label="Speed input"
+            aria-valuenow={speed}
+            aria-valuemin={0}
+            aria-valuemax={400}
+          />
+        )}
 
         <button
           type="button"
@@ -340,29 +383,31 @@ export function ControlPanel({
       </div>
 
       {/* ─── Rotation controls ────────────────────────────────────────── */}
-      <div className="rotation-controls" role="group" aria-label="Rotation controls">
-        <button
-          type="button"
-          className="btn btn--rotate"
-          onClick={() => handleRotate(-90)}
-          title="Rotate −90° (hotkey: [)"
-          aria-label="Rotate counter-clockwise 90°"
-        >
-          ↺ −90°
-        </button>
-        <span className="rotation-value" aria-label={`Current rotation: ${rotation ?? 0}°`}>
-          {rotation ?? 0}°
-        </span>
-        <button
-          type="button"
-          className="btn btn--rotate"
-          onClick={() => handleRotate(90)}
-          title="Rotate +90° (hotkey: ])"
-          aria-label="Rotate clockwise 90°"
-        >
-          ↻ +90°
-        </button>
-      </div>
+      {!isTabletLayout && !isMobileLayout && (
+        <div className="rotation-controls" role="group" aria-label="Rotation controls">
+          <button
+            type="button"
+            className="btn btn--rotate"
+            onClick={() => handleRotate(-90)}
+            title="Rotate −90° (hotkey: [)"
+            aria-label="Rotate counter-clockwise 90°"
+          >
+            ↺ −90°
+          </button>
+          <span className="rotation-value" aria-label={`Current rotation: ${rotation ?? 0}°`}>
+            {rotation ?? 0}°
+          </span>
+          <button
+            type="button"
+            className="btn btn--rotate"
+            onClick={() => handleRotate(90)}
+            title="Rotate +90° (hotkey: ])"
+            aria-label="Rotate clockwise 90°"
+          >
+            ↻ +90°
+          </button>
+        </div>
+      )}
     </div>
   );
 }

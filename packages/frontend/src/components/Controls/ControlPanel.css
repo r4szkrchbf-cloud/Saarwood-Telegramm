@@ -111,6 +111,11 @@
   line-height: 1;
 }
 
+.btn--speed-toggle {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.55rem;
+}
+
 /* ─── Mirror Controls ─────────────────────────────────────────────────────── */
 
 .mirror-controls {
@@ -192,5 +197,31 @@
 
   .btn--nudge {
     padding: 0.26rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app.output-with-controls .control-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.3);
+  }
+
+  .app.output-with-controls .transport-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .app.output-with-controls .mirror-controls {
+    display: none;
+  }
+
+  .app.output-with-controls .speed-control {
+    width: 100%;
   }
 }

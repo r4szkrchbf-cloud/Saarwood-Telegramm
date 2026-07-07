@@ -234,6 +234,7 @@ export function App() {
   const isOutputOnly = initialContext.outputOnly;
   const room = initialContext.room;
   const [roomCopied, setRoomCopied] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -361,6 +362,16 @@ export function App() {
     if (tier === 'basic') return;
     setDisplay({ showProjectTitle: !showProjectTitle });
   }, [setDisplay, showProjectTitle, tier]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const isMobileLayout = viewportWidth <= 768;
+  const isTabletLayout = viewportWidth <= 1024;
 
   const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({
     color: projectTitleTextColor,
@@ -719,6 +730,17 @@ export function App() {
 
     demoSeededRef.current = true;
   }, [hydrated, setScript]);
+
+  useEffect(() => {
+    if (isOutputOnly) {
+      if (viewMode !== 'prompter') setViewMode('prompter');
+      return;
+    }
+    if (isMobileLayout && viewMode === 'split') {
+      setViewMode('prompter');
+    }
+  }, [isMobileLayout, isOutputOnly, viewMode]);
+
   // ─── Layout ────────────────────────────────────────────────────────────
 
   const rootClass = [
@@ -726,7 +748,13 @@ export function App() {
     display.darkMode ? 'dark-mode' : 'light-mode',
     `view-${viewMode}`,
     isOutputOnly ? 'output-only' : '',
+    isOutputOnly && isMobileLayout ? 'output-with-controls' : '',
   ].join(' ');
+
+  const availableViewModes: ViewMode[] = isMobileLayout
+    ? ['editor', 'prompter']
+    : ['editor', 'split', 'prompter'];
+  const showControlPanel = !isOutputOnly || isMobileLayout;
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;
@@ -842,7 +870,7 @@ export function App() {
 
         {/* View mode switcher */}
         <nav className="view-switcher" role="navigation" aria-label="View mode">
-          {(['editor', 'split', 'prompter'] as ViewMode[]).map((m) => (
+          {availableViewModes.map((m) => (
             <button
               key={m}
               type="button"
@@ -868,12 +896,15 @@ export function App() {
       )}
 
       {/* ─── Control bar ─────────────────────────────────────────────── */}
-      {!isOutputOnly && (
+      {showControlPanel && (
         <ControlPanel
           viewMode={viewMode}
           onOpenOutputWindow={handleOpenOutputWindow}
           onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
           isDesktopApp={isDesktopApp}
+          isMobileLayout={isMobileLayout}
+          isTabletLayout={isTabletLayout}
+          isOutputOnly={isOutputOnly}
         />
       )}
 
@@ -944,7 +975,7 @@ export function App() {
 
             {/* Script title */}
             <div className="editor-title-bar">
-              {tier !== 'basic' && showProjectTitle && (
+              {tier !== 'basic' && !isMobileLayout && showProjectTitle && (
                 <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={editorProjectTitleStyle}>
                   <span className="project-title-banner-label">Projekt / Sendung</span>
                   <span className="project-title-banner-value" style={{ fontSize: `${projectTitleFontSize}px` }}>{script.title || 'Unbenanntes Projekt'}</span>
@@ -958,7 +989,7 @@ export function App() {
                 aria-label="Script title"
                 placeholder="Projekt- oder Sendungsname"
               />
-              {tier !== 'basic' && (
+              {tier !== 'basic' && !isMobileLayout && (
                 <div className="project-title-controls" role="group" aria-label="Projektname Darstellung">
                   <button
                     type="button"

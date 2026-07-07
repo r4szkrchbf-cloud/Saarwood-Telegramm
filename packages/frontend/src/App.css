@@ -15,6 +15,15 @@
   grid-template-rows: 1fr;
 }
 
+.app.output-with-controls {
+  grid-template-rows: auto 1fr;
+}
+
+.app.output-with-controls .app-workspace {
+  grid-row: 2;
+  padding-bottom: 146px;
+}
+
 .app.output-only .app-workspace {
   grid-row: 1;
 }
@@ -511,6 +520,15 @@
 /* ─── Responsive: mobile / tablet ────────────────────────────────────────── */
 
 @media (max-width: 768px) {
+  .view-switcher {
+    width: 100%;
+  }
+
+  .view-switcher .view-btn {
+    flex: 1;
+    text-align: center;
+  }
+
   .view-split .editor-pane,
   .view-split .prompter-pane {
     flex: 1;
@@ -536,6 +554,11 @@
   .beta-warning { display: none; }
   .restart-hint { display: none; }
   .license-hint { display: none; }
+
+  .project-title-controls,
+  .project-title-banner.editor-project-banner {
+    display: none;
+  }
 }
 
 @media (max-width: 1024px) {
