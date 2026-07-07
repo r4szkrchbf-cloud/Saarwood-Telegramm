@@ -180,3 +180,4 @@ Der erste Live-Smoke-Test im Browser wurde erfolgreich durchgefuehrt, die Vorfue
 - `docs/FEHLERBEHEBUNGEN.md` (chronologische Fehlerbehebung)
 - `docs/STATUSBERICHT_MVP_LAN_DE_2026-07-05.md` (neuer Delta-Statusbericht mit Code-vs-Doku-Abweichungen)
 - `docs/STATUSBERICHT_REPO_SYNC_DE_2026-07-05.md` (Konsolidierung, Verzeichnis-Aufraeumen, Commit-/Push-Transparenz)
+- `docs/STATUSBERICHT_SOLL_IST_DE_2026-07-07.md` (inkl. Delta-Update Support-Mailflow, Hostinger-DNS und Exit-Code-5-Einordnung)
