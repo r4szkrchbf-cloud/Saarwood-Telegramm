@@ -10,6 +10,22 @@
   flex-wrap: wrap;
 }
 
+.control-panel-collapse-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.15rem 0 0.45rem;
+}
+
+.control-panel-collapse-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 /* ─── Buttons ─────────────────────────────────────────────────────────────── */
 
 .btn {
@@ -67,6 +83,12 @@
   min-width: 200px;
 }
 
+.speed-control--inline {
+  flex: 0 0 auto;
+  min-width: 0;
+  width: auto;
+}
+
 .speed-label {
   font-size: 0.8rem;
   color: var(--text-muted);
@@ -111,9 +133,31 @@
   line-height: 1;
 }
 
+.speed-nudge-stack {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.speed-nudge-stack.stacked {
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .btn--speed-toggle {
   font-size: 0.78rem;
   padding: 0.3rem 0.55rem;
+}
+
+.btn--panel-toggle {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.btn--playback-prominent {
+  min-width: 72px;
+  min-height: 48px;
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
 /* ─── Mirror Controls ─────────────────────────────────────────────────────── */
@@ -185,6 +229,10 @@
     grid-template-columns: 1fr;
   }
 
+  .control-panel-collapse-bar {
+    padding-bottom: 0.2rem;
+  }
+
   .transport-buttons {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -202,6 +250,7 @@
 
 @media (max-width: 768px) {
   .app.output-with-controls .control-panel {
+    display: flex;
     position: fixed;
     left: 0;
     right: 0;
@@ -210,18 +259,60 @@
     border-top: 1px solid var(--border);
     border-bottom: none;
     box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.3);
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.45rem;
+    overflow-x: auto;
   }
 
   .app.output-with-controls .transport-buttons {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .app.output-with-controls .mirror-controls {
-    display: none;
+    width: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow: visible;
+    gap: 0.25rem;
+    align-items: center;
   }
 
   .app.output-with-controls .speed-control {
-    width: 100%;
+    width: auto;
+    min-width: 0;
+    flex: 0 0 auto;
+    gap: 0.25rem;
+  }
+
+  .app.output-with-controls .speed-control--inline {
+    margin-left: 0.05rem;
+  }
+
+  .app.output-with-controls .speed-label {
+    font-size: 0.72rem;
+    gap: 3px;
+  }
+
+  .app.output-with-controls .speed-value {
+    min-width: 2.2ch;
+  }
+
+  .app.output-with-controls .mirror-controls {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  .app.output-with-controls .btn {
+    padding: 0.34rem 0.52rem;
+    font-size: 0.86rem;
+  }
+
+  .app.output-with-controls .btn--playback-prominent {
+    min-width: 78px;
+    min-height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .app.output-with-controls .speed-nudge-stack.stacked .btn--nudge {
+    padding: 0.2rem 0.42rem;
+    min-width: 34px;
   }
 }

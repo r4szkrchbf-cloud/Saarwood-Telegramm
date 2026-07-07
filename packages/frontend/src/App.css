@@ -24,6 +24,10 @@
   padding-bottom: 146px;
 }
 
+.app.mobile-controls-docked .app-workspace {
+  padding-bottom: 168px;
+}
+
 .app.output-only .app-workspace {
   grid-row: 1;
 }
@@ -233,6 +237,7 @@
 
 .view-switcher {
   display: flex;
+  align-items: center;
   gap: 0.25rem;
   margin-left: auto;
 }
@@ -296,6 +301,25 @@
   background: color-mix(in srgb, var(--surface) 92%, #000 8%);
 }
 
+.editor-template-card {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, #000 8%);
+}
+
+.editor-template-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.editor-template-card-body {
+  display: grid;
+  gap: 0.2rem;
+  padding-bottom: 0.25rem;
+}
+
 .editor-template-label {
   min-width: 170px;
   font-size: 0.8rem;
@@ -325,6 +349,25 @@
   cursor: pointer;
   white-space: nowrap;
   font-size: 0.8rem;
+}
+
+.editor-template-toggle {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.editor-template-row--mobile {
+  flex-wrap: wrap;
+}
+
+.editor-template-row--mobile .editor-template-label {
+  min-width: 100%;
 }
 
 .editor-template-btn:disabled {
@@ -520,13 +563,30 @@
 /* ─── Responsive: mobile / tablet ────────────────────────────────────────── */
 
 @media (max-width: 768px) {
+  .app-header {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.65rem;
+  }
+
+  .app-logo {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
   .view-switcher {
-    width: 100%;
+    width: auto;
+    margin-left: auto;
+    order: 1;
+    gap: 0.3rem;
   }
 
   .view-switcher .view-btn {
-    flex: 1;
+    flex: 0 0 auto;
     text-align: center;
+    min-width: 74px;
   }
 
   .view-split .editor-pane,
@@ -546,14 +606,44 @@
     flex-wrap: wrap;
   }
 
+  .editor-template-card--mobile .editor-template-row {
+    border-bottom: none;
+  }
+
   .editor-template-label {
     min-width: 100%;
   }
 
-  .logo-text { display: none; }
+  .logo-icon { display: none; }
+  .logo-text {
+    display: inline;
+    font-size: 0.95rem;
+    letter-spacing: 0;
+  }
+  .brand-gap {
+    margin-left: 0;
+  }
+  .beta-badge {
+    font-size: 0.58rem;
+    padding: 0.08em 0.38em;
+  }
   .beta-warning { display: none; }
   .restart-hint { display: none; }
   .license-hint { display: none; }
+  .room-hint { display: none; }
+  .room-copy-btn { display: none; }
+
+  .settings-toggle {
+    order: initial;
+    margin-left: 0;
+    min-width: 40px;
+  }
+
+  .editor-template-card--mobile {
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    margin-top: auto;
+  }
 
   .project-title-controls,
   .project-title-banner.editor-project-banner {
@@ -598,10 +688,10 @@
   }
 
   .view-switcher {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-start;
-    order: 2;
+    margin-left: auto;
+    width: auto;
+    justify-content: flex-end;
+    order: 1;
     gap: 0.4rem;
   }
 
@@ -612,8 +702,8 @@
   }
 
   .settings-toggle {
-    margin-left: auto;
-    order: 1;
+    margin-left: 0;
+    order: initial;
     padding: 0.38rem 0.85rem;
     font-size: 1.05rem;
     min-height: 34px;
@@ -625,6 +715,17 @@
 
   .editor-template-label {
     min-width: 100%;
+  }
+
+  .mobile-controls-docked .control-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.3);
   }
 }
 

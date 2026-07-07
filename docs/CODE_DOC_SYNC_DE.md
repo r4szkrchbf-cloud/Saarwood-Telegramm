@@ -11,6 +11,8 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 - Teleprompter-Output als Output-only-Ansicht via `?view=prompter&output=1`.
 - Display-Steuerung: Scroll-Speed, Play/Pause, Reset, Richtungswechsel, Horizontal- und Vertikalspiegelung, Rotation.
 - Projekt-/Sendungsname als eigener Titelpfad mit Einblendung in Editor, Split und Prompter.
+- Smartphone-Layout: nur `editor` und `prompter`, keine Titelanzeige, kein `Prompter Fenster` auf Mobile, Vorlagenkarte und Editor-Control-Karte einklappbar.
+- Smartphone-Prompter-Ansicht folgt funktional dem Output-Modus `?view=prompter&output=1`.
 - Professional: Groesse und Schriftfarbe der Titelanzeige konfigurierbar.
 - Expert: persistierte Projekt-/Sendungsnamen-Bibliothek mit CSV/TXT-Import.
 - Tiptap-Editor mit Segmentstruktur und synchroner Prompter-Vorschau.

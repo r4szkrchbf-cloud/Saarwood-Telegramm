@@ -8,6 +8,20 @@
 4. Optional: `Prompter Fenster` fuer getrennte Ausgabe oeffnen (`?view=prompter&output=1`).
 5. In der Electron-App: `Monitor 2 Vollbild` nutzen, um den Prompter direkt auf den zweiten Bildschirm zu legen.
 
+Auf Smartphones gilt aktuell:
+
+- nur `editor` und `prompter`
+- keine Titelanzeige und keine Titel-Steuerung
+- kein `Prompter Fenster`-Button
+- Vorlagenkarte und Editor-Steuerkarte sind einklappbar
+- im Header nur `SAARwooD Teleprompter`, ohne Icon und ohne Room-Hinweis
+- Vorlagenkarte sichtbar/einklappbar im Editor, Editor-Steuerkarte unten angedockt
+- Settings-Button direkt neben den Umschaltern `Editor`/`Prompter`
+- im Prompter-Modus keine numerische Speed-Eingabe, nur `+`/`-`
+- im Prompter-Modus nur `V-Mirror`
+- im Prompter-Modus groesserer Play/Pause-Button
+- die Prompter-Ansicht entspricht dem Output-Modus `?view=prompter&output=1`
+
 ## 1.1 Als Web-App auf Tablet/Smartphone speichern (PWA)
 
 Die Seite kann auf mobilen Geraeten wie eine App gespeichert werden.

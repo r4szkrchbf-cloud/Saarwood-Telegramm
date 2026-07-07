@@ -60,12 +60,20 @@ export function ControlPanel({
   const [isSpeedEditing, setIsSpeedEditing] = useState(false);
   const [restartPending, setRestartPending] = useState(false);
   const [speedInputCollapsed, setSpeedInputCollapsed] = useState(false);
+  const isPrompterMode = viewMode === 'prompter' || isOutputOnly;
+  const isEditorMode = viewMode === 'editor' && !isOutputOnly;
+  const mobileEditorControlsCollapsedMode = isMobileLayout && viewMode === 'editor' && !isOutputOnly;
+  const [mobileEditorControlsOpen, setMobileEditorControlsOpen] = useState(() => !mobileEditorControlsCollapsedMode);
 
   useEffect(() => {
     if (!restartPending) return;
     const timer = window.setTimeout(() => setRestartPending(false), 5000);
     return () => window.clearTimeout(timer);
   }, [restartPending]);
+
+  useEffect(() => {
+    setMobileEditorControlsOpen(!mobileEditorControlsCollapsedMode);
+  }, [mobileEditorControlsCollapsedMode]);
 
   const notifyManualControl = useCallback(() => {
     window.dispatchEvent(new Event('prompter:manual-control'));
@@ -170,10 +178,27 @@ export function ControlPanel({
     applySpeed(parsed);
   }, [speedInput, applySpeed]);
 
-  const allowSpeedInputCollapse = isMobileLayout && typeof window !== 'undefined' && window.innerWidth < 360;
+  const allowSpeedInputCollapse = !isPrompterMode && !isEditorMode && isMobileLayout && typeof window !== 'undefined' && window.innerWidth < 360;
 
   return (
     <div className="control-panel" role="region" aria-label="Teleprompter controls">
+      {mobileEditorControlsCollapsedMode && (
+        <div className="control-panel-collapse-bar">
+          <span className="control-panel-collapse-label">Editor-Steuerung</span>
+          <button
+            type="button"
+            className="btn btn--panel-toggle"
+            onClick={() => setMobileEditorControlsOpen((current) => !current)}
+            aria-expanded={mobileEditorControlsOpen}
+            aria-label={mobileEditorControlsOpen ? 'Editor-Steuerung einklappen' : 'Editor-Steuerung einblenden'}
+          >
+            {mobileEditorControlsOpen ? 'Einklappen' : 'Anzeigen'}
+          </button>
+        </div>
+      )}
+
+      {(!mobileEditorControlsCollapsedMode || mobileEditorControlsOpen) && (
+        <>
 
       {/* ─── Transport ────────────────────────────────────────────────── */}
       <div className="transport-buttons">
@@ -199,7 +224,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && !isOutputOnly && onOpenOutputWindow && (
+        {viewMode !== 'prompter' && !isOutputOnly && !isMobileLayout && onOpenOutputWindow && (
           <button
             type="button"
             className="btn"
@@ -211,7 +236,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && !isOutputOnly && isDesktopApp && onOpenSecondMonitorOutput && (
+        {viewMode !== 'prompter' && !isOutputOnly && !isMobileLayout && isDesktopApp && onOpenSecondMonitorOutput && (
           <button
             type="button"
             className="btn"
@@ -247,57 +272,93 @@ export function ControlPanel({
           </div>
         )}
 
-        {isPlaying ? (
+        {isPrompterMode && (
+          isPlaying ? (
+            <button
+              type="button"
+              className={['btn', 'btn--pause', 'btn--playback-prominent'].join(' ')}
+              onClick={handlePause}
+              aria-label="Pause"
+              title="Pause"
+            >
+              ❙❙
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={['btn', 'btn--play', 'btn--playback-prominent'].join(' ')}
+              onClick={handlePlay}
+              aria-label="Play"
+              title="Play"
+            >
+              ▶
+            </button>
+          )
+        )}
+
+        {isPrompterMode && (
           <button
             type="button"
-            className="btn btn--pause"
-            onClick={handlePause}
-            aria-label="Pause"
-            title="Pause"
+            className="btn btn--direction"
+            onClick={handleDirectionToggle}
+            aria-label={`Scroll direction: ${direction}`}
+            title="Toggle scroll direction"
           >
-            ❙❙
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="btn btn--play"
-            onClick={handlePlay}
-            aria-label="Play"
-            title="Play"
-          >
-            ▶
+            {direction === 'down' ? '↓' : '↑'}
           </button>
         )}
 
-        <button
-          type="button"
-          className="btn btn--direction"
-          onClick={handleDirectionToggle}
-          aria-label={`Scroll direction: ${direction}`}
-          title="Toggle scroll direction"
-        >
-          {direction === 'down' ? '↓' : '↑'}
-        </button>
+        {isPrompterMode && (
+          <>
+            <div className="speed-control speed-control--inline" role="group" aria-label="Scroll speed">
+              <label className="speed-label" htmlFor="speed-input">
+                Speed
+                <span className="speed-value">{Math.round(speed)}</span>
+                <span className="speed-unit">px/s</span>
+              </label>
+              <div className="speed-nudge-stack stacked">
+                <button
+                  type="button"
+                  className="btn btn--nudge"
+                  onClick={() => handleSpeedNudge(-5)}
+                  aria-label="Decrease speed by 5"
+                >
+                  −
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--nudge"
+                  onClick={() => handleSpeedNudge(5)}
+                  aria-label="Increase speed by 5"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className={['btn', 'btn--mirror', mirrorVertical ? 'active' : ''].join(' ')}
+              onClick={() => setDisplay({ mirrorVertical: !mirrorVertical })}
+              aria-pressed={mirrorVertical}
+              title="Flip vertical"
+            >
+              ↕ V-Mirror
+            </button>
+          </>
+        )}
       </div>
 
       {/* ─── Speed dial ───────────────────────────────────────────────── */}
-      <div className="speed-control" role="group" aria-label="Scroll speed">
-        <button
-          type="button"
-          className="btn btn--nudge"
-          onClick={() => handleSpeedNudge(-5)}
-          aria-label="Decrease speed by 5"
-        >
-          −
-        </button>
-
+      {!isPrompterMode && (
+        <div className="speed-control" role="group" aria-label="Scroll speed">
         <label className="speed-label" htmlFor="speed-input">
           Speed
           <span className="speed-value">{Math.round(speed)}</span>
           <span className="speed-unit">px/s</span>
         </label>
 
-        {allowSpeedInputCollapse ? (
+        {!isPrompterMode && allowSpeedInputCollapse ? (
           <>
             <button
               type="button"
@@ -329,7 +390,7 @@ export function ControlPanel({
               />
             )}
           </>
-        ) : (
+        ) : !isPrompterMode ? (
           <input
             id="speed-input"
             type="number"
@@ -348,39 +409,34 @@ export function ControlPanel({
             aria-valuemin={0}
             aria-valuemax={400}
           />
-        )}
+        ) : null}
 
-        <button
-          type="button"
-          className="btn btn--nudge"
-          onClick={() => handleSpeedNudge(5)}
-          aria-label="Increase speed by 5"
-        >
-          +
-        </button>
       </div>
+      )}
 
       {/* ─── Mirror controls ──────────────────────────────────────────── */}
-      <div className="mirror-controls" role="group" aria-label="Mirror controls">
-        <button
-          type="button"
-          className={['btn', 'btn--mirror', mirrorHorizontal ? 'active' : ''].join(' ')}
-          onClick={() => setDisplay({ mirrorHorizontal: !mirrorHorizontal })}
-          aria-pressed={mirrorHorizontal}
-          title="Flip horizontal (teleprompter glass)"
-        >
-          ↔ H-Mirror
-        </button>
-        <button
-          type="button"
-          className={['btn', 'btn--mirror', mirrorVertical ? 'active' : ''].join(' ')}
-          onClick={() => setDisplay({ mirrorVertical: !mirrorVertical })}
-          aria-pressed={mirrorVertical}
-          title="Flip vertical"
-        >
-          ↕ V-Mirror
-        </button>
-      </div>
+      {!isPrompterMode && !isEditorMode && (
+        <div className="mirror-controls" role="group" aria-label="Mirror controls">
+          <button
+            type="button"
+            className={['btn', 'btn--mirror', mirrorHorizontal ? 'active' : ''].join(' ')}
+            onClick={() => setDisplay({ mirrorHorizontal: !mirrorHorizontal })}
+            aria-pressed={mirrorHorizontal}
+            title="Flip horizontal (teleprompter glass)"
+          >
+            ↔ H-Mirror
+          </button>
+          <button
+            type="button"
+            className={['btn', 'btn--mirror', mirrorVertical ? 'active' : ''].join(' ')}
+            onClick={() => setDisplay({ mirrorVertical: !mirrorVertical })}
+            aria-pressed={mirrorVertical}
+            title="Flip vertical"
+          >
+            ↕ V-Mirror
+          </button>
+        </div>
+      )}
 
       {/* ─── Rotation controls ────────────────────────────────────────── */}
       {!isTabletLayout && !isMobileLayout && (
@@ -407,6 +463,8 @@ export function ControlPanel({
             ↻ +90°
           </button>
         </div>
+      )}
+        </>
       )}
     </div>
   );

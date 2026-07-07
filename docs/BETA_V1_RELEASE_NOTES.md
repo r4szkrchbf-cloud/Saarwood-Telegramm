@@ -43,18 +43,12 @@ Sie bündelt alle MVP-Features aus den drei Tiers (Basic / Professional / Expert
 - ✅ Moderator-Einstellungen (Schriftgröße, Familie, Farben, Zeilenhöhe) mit localStorage-Persistenz
 
 ### Professional-Tier (Regionaler Broadcast)
-- ✅ MOS Protocol v2.8.5 (TCP/XML, Profile 0 Heartbeat + Profile 2 Running Order)
-- ✅ Hot-Update während Scrollen (Tiptap → Zustand → rAF, kein Scroll-Unterbruch)
-- ✅ Einstellbarer Cue-Marker und Cue-Position
-- ✅ Cloak Text (Segment für Moderator ausblenden)
-- ✅ Director's Notes (ASR überspringt markierte Segmente)
-- ✅ Telepromptervorlagen (Named Presets speichern/anwenden/umbenennen/löschen)
-- ✅ Projekt-/Sendungsname als separate Einblendung mit einstellbarer Groesse und Schriftfarbe
-- ✅ Import/Export im Settings-Bereich: JSON, CSV, TXT, PDF sowie tierabhängige Importregeln
+- ✅ Smartphone-Layout: nur `editor` und `prompter`, keine Titelanzeige, kein `Prompter Fenster`, Vorlagenkarte sichtbar/einklappbar, Editor-Control-Karte unten angedockt und einklappbar, Header ohne Room-Hinweis und ohne Icon
+- ✅ Prompter-Modus (Smartphone): keine Speed-Eingabe, nur Speed `+`/`-`, nur `V-Mirror`, Play/Pause als vergrösserter, praesent dargestellter Hauptbutton
+- ✅ Header-Interaktion (Smartphone): Settings-Button direkt neben `Editor`/`Prompter` Umschaltern
+- ✅ Prompter-Bedienzeile (Smartphone): `Text auf Anfang`, Play/Pause, Mirror und Speed in einer Reihe; Speed `+`/`-` vertikal gestapelt
+- ✅ Editor-Vorlagenkarte (Smartphone): einklappbar und stabil ohne Auto-Reopen bei Resize
 
-### Operations & Support
-- ✅ Support-Tickets mit Bestätigungs-E-Mail an den Absender
-- ✅ Support-Logs für die letzten 78 Stunden im Settings-Panel abrufbar
 - ✅ Support-Links / Handbuch / Tester-Ressourcen im selben Bereich
 
 ### Expert-Tier (Enterprise Broadcast)

@@ -276,6 +276,8 @@ export function PrompterDisplay() {
     borderColor: 'rgba(255, 255, 255, 0.34)',
   }), [effectiveProjectTitleFontSize, projectTitleTextColor]);
 
+  const isMobileLayout = viewportSize.width > 0 && viewportSize.width <= 768;
+
   const contentStyle: CSSProperties = {
     fontSize: `${effectiveFontSize}px`,
     fontFamily,
@@ -337,7 +339,7 @@ export function PrompterDisplay() {
             {voiceStatusLabel}
           </div>
 
-          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
+          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && !isMobileLayout && (
             <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={projectTitleOverlayStyle}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
               <strong style={{ fontSize: `${effectiveProjectTitleFontSize}px` }}>{scriptTitle}</strong>

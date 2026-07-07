@@ -73,6 +73,10 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Projekt-/Sendungsname ist jetzt als eigener Titelpfad im Script vorhanden, in Vorlagenformaten enthalten und im Professional-Tier ein-/ausblendbar.
 - Projekt-/Sendungsname ist im Professional-Tier jetzt auch in Groesse und Schriftfarbe konfigurierbar.
 - Im Expert-Tier gibt es eine eigene, persistierte Projekt-/Sendungsnamen-Bibliothek mit CSV/TXT-Import fuer haeufig wechselnde Sendungen.
+- Smartphone-Layout ist jetzt aktualisiert: nur `editor` und `prompter`, keine Titelanzeige, kein `Prompter Fenster` auf Mobile, Vorlagenkarte sichtbar und einklappbar, die Editor-Control-Karte ist unten angedockt und einklappbar, der Mobile-Header zeigt nur `SAARwooD Teleprompter` ohne Icon und ohne Room-Hinweis, Settings sitzt direkt neben den Umschaltbuttons `Editor`/`Prompter`, die Output-Ansicht entspricht `?view=prompter&output=1`.
+- Im Smartphone-Prompter-Modus wurde die Bedienung weiter verdichtet: keine numerische Speed-Eingabe, nur `+`/`-`, nur `V-Mirror`, und ein groesserer Play/Pause-Button fuer sichere Live-Bedienung.
+- Im Smartphone-Prompter-Modus liegen `Text auf Anfang`, Play/Pause, Mirror und Speed in einer gemeinsamen Bedienzeile; die Speed-Tasten `+`/`-` sind vertikal angeordnet.
+- Die Vorlagenkarte im Editor bleibt im Smartphone-Layout stabil einklappbar (kein automatisches Wiederaufklappen durch Viewport-Resize).
 - Werbekonzept fuer die kostenlose Basic-Version vor Hostinger-Go-Live als separates Konzept dokumentiert (`docs/BASIC_TIER_ADS_CONCEPT_DE.md`).
 
 ## 1.2 Code-/Doku-Abgleich (aktuell)

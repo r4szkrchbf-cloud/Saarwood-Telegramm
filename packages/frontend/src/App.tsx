@@ -372,6 +372,7 @@ export function App() {
 
   const isMobileLayout = viewportWidth <= 768;
   const isTabletLayout = viewportWidth <= 1024;
+  const [mobileTemplatePanelOpen, setMobileTemplatePanelOpen] = useState(true);
 
   const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({
     color: projectTitleTextColor,
@@ -749,6 +750,7 @@ export function App() {
     `view-${viewMode}`,
     isOutputOnly ? 'output-only' : '',
     isOutputOnly && isMobileLayout ? 'output-with-controls' : '',
+    !isOutputOnly && isMobileLayout ? 'mobile-controls-docked' : '',
   ].join(' ');
 
   const availableViewModes: ViewMode[] = isMobileLayout
@@ -792,6 +794,81 @@ export function App() {
     && licenseState.status !== 'active';
 
   const licenseBannerVisible = !licenseState.loading && licenseState.mode !== 'disabled';
+  const mobileTemplateSection = isMobileLayout ? (
+    <section className="editor-template-card editor-template-card--mobile" aria-label="Telepromptervorlagen">
+      <div className="editor-template-card-header">
+        <span className="editor-template-label">Telepromptervorlagen</span>
+        <button
+          type="button"
+          className="editor-template-toggle"
+          onClick={() => setMobileTemplatePanelOpen((current) => !current)}
+          aria-expanded={mobileTemplatePanelOpen}
+          aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
+        >
+          {mobileTemplatePanelOpen ? 'Vorlagen einklappen' : 'Vorlagen anzeigen'}
+        </button>
+      </div>
+
+      {mobileTemplatePanelOpen && (
+        tier === 'basic' ? (
+          <div className="editor-template-card-body">
+            <p className="settings-help-text">Vorlagenverwaltung ab Professional.</p>
+          </div>
+        ) : (
+          <div className="editor-template-card-body">
+            <div className="editor-template-row editor-template-row--mobile" role="group" aria-label="Telepromptervorlagen">
+              <input
+                type="search"
+                className="editor-template-search"
+                placeholder="Vorlage durchsuchen"
+                value={templateSearch}
+                onChange={(e) => setTemplateSearch(e.target.value)}
+                aria-label="Telepromptervorlage durchsuchen"
+              />
+              <select
+                className="editor-template-select"
+                value={selectedTemplateId || activeProfileId || ''}
+                onChange={(e) => setSelectedTemplateId(e.target.value)}
+                aria-label="Telepromptervorlage auswaehlen"
+              >
+                <option value="">Vorlage waehlen</option>
+                {filteredTemplates.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="editor-template-btn"
+                onClick={handleApplySelectedTemplate}
+                disabled={!(selectedTemplateId || activeProfileId)}
+              >
+                Anwenden
+              </button>
+            </div>
+
+            <div className="editor-template-row editor-template-row--mobile" role="group" aria-label="Telepromptervorlage anlegen">
+              <input
+                type="text"
+                className="editor-template-search"
+                placeholder="Name der Vorlage"
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
+                aria-label="Name der neuen Telepromptervorlage"
+              />
+              <button
+                type="button"
+                className="editor-template-btn"
+                onClick={handleCreateTemplateFromEditor}
+                disabled={!newTemplateName.trim()}
+              >
+                Aus aktuellem Editor speichern
+              </button>
+            </div>
+          </div>
+        )
+      )}
+    </section>
+  ) : null;
 
   return (
     <div className={rootClass}>
@@ -835,7 +912,6 @@ export function App() {
       {!isOutputOnly && (
         <header className="app-header">
         <div className="app-logo" aria-label="Saarwood Teleprompter Beta V1">
-          <span className="logo-icon" aria-hidden="true">📺</span>
           <span className="logo-text" aria-label="SAARwooD Teleprompter">
             <span className="brand-red">SAAR</span>
             <span className="brand-white">woo</span>
@@ -854,18 +930,22 @@ export function App() {
               Lizenz: {licenseState.status}
             </span>
           )}
-          <span className="room-hint" aria-label={`Room ${room}`}>
-            Room: {room}
-          </span>
-          <button
-            type="button"
-            className="room-copy-btn"
-            onClick={handleCopyRoom}
-            aria-label="Room-ID kopieren"
-            title="Room-ID kopieren"
-          >
-            {roomCopied ? 'Kopiert' : 'Room kopieren'}
-          </button>
+          {!isMobileLayout && (
+            <>
+              <span className="room-hint" aria-label={`Room ${room}`}>
+                Room: {room}
+              </span>
+              <button
+                type="button"
+                className="room-copy-btn"
+                onClick={handleCopyRoom}
+                aria-label="Room-ID kopieren"
+                title="Room-ID kopieren"
+              >
+                {roomCopied ? 'Kopiert' : 'Room kopieren'}
+              </button>
+            </>
+          )}
         </div>
 
         {/* View mode switcher */}
@@ -881,22 +961,21 @@ export function App() {
               {m.charAt(0).toUpperCase() + m.slice(1)}
             </button>
           ))}
+          <button
+            type="button"
+            className="settings-toggle"
+            onClick={() => setShowSettings(!showSettings)}
+            aria-label="Toggle settings panel"
+            aria-expanded={showSettings}
+          >
+            ⚙
+          </button>
         </nav>
-
-        <button
-          type="button"
-          className="settings-toggle"
-          onClick={() => setShowSettings(!showSettings)}
-          aria-label="Toggle settings panel"
-          aria-expanded={showSettings}
-        >
-          ⚙
-        </button>
         </header>
       )}
 
       {/* ─── Control bar ─────────────────────────────────────────────── */}
-      {showControlPanel && (
+      {showControlPanel && !isMobileLayout && (
         <ControlPanel
           viewMode={viewMode}
           onOpenOutputWindow={handleOpenOutputWindow}
@@ -913,119 +992,125 @@ export function App() {
         {/* Editor pane */}
         {(viewMode === 'editor' || viewMode === 'split') && (
           <section className="editor-pane" aria-label="Script editor">
-            {tier === 'basic' ? (
-              <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
-                <span className="editor-template-label">Telepromptervorlagen</span>
-                <span className="settings-help-text">Vorlagenverwaltung ab Professional.</span>
-              </div>
-            ) : (
-              <>
-                <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
+            {!isMobileLayout ? (
+              tier === 'basic' ? (
+                <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
                   <span className="editor-template-label">Telepromptervorlagen</span>
-                  <input
-                    type="search"
-                    className="editor-template-search"
-                    placeholder="Vorlage durchsuchen"
-                    value={templateSearch}
-                    onChange={(e) => setTemplateSearch(e.target.value)}
-                    aria-label="Telepromptervorlage durchsuchen"
-                  />
-                  <select
-                    className="editor-template-select"
-                    value={selectedTemplateId || activeProfileId || ''}
-                    onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    aria-label="Telepromptervorlage auswaehlen"
-                  >
-                    <option value="">Vorlage waehlen</option>
-                    {filteredTemplates.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    className="editor-template-btn"
-                    onClick={handleApplySelectedTemplate}
-                    disabled={!(selectedTemplateId || activeProfileId)}
-                  >
-                    Anwenden
-                  </button>
+                  <span className="settings-help-text">Vorlagenverwaltung ab Professional.</span>
                 </div>
+              ) : (
+                <>
+                  <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
+                    <span className="editor-template-label">Telepromptervorlagen</span>
+                    <input
+                      type="search"
+                      className="editor-template-search"
+                      placeholder="Vorlage durchsuchen"
+                      value={templateSearch}
+                      onChange={(e) => setTemplateSearch(e.target.value)}
+                      aria-label="Telepromptervorlage durchsuchen"
+                    />
+                    <select
+                      className="editor-template-select"
+                      value={selectedTemplateId || activeProfileId || ''}
+                      onChange={(e) => setSelectedTemplateId(e.target.value)}
+                      aria-label="Telepromptervorlage auswaehlen"
+                    >
+                      <option value="">Vorlage waehlen</option>
+                      {filteredTemplates.map((p) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="editor-template-btn"
+                      onClick={handleApplySelectedTemplate}
+                      disabled={!(selectedTemplateId || activeProfileId)}
+                    >
+                      Anwenden
+                    </button>
+                  </div>
 
-                <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
-                  <span className="editor-template-label">Telepromptervorlage anlegen</span>
+                  <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
+                    <span className="editor-template-label">Telepromptervorlage anlegen</span>
+                    <input
+                      type="text"
+                      className="editor-template-search"
+                      placeholder="Name der Vorlage"
+                      value={newTemplateName}
+                      onChange={(e) => setNewTemplateName(e.target.value)}
+                      aria-label="Name der neuen Telepromptervorlage"
+                    />
+                    <button
+                      type="button"
+                      className="editor-template-btn"
+                      onClick={handleCreateTemplateFromEditor}
+                      disabled={!newTemplateName.trim()}
+                    >
+                      Aus aktuellem Editor speichern
+                    </button>
+                  </div>
+                </>
+              )
+            ) : null}
+
+            {!isMobileLayout && (
+              <>
+                {/* Script title */}
+                <div className="editor-title-bar">
+                  {tier !== 'basic' && showProjectTitle && (
+                    <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={editorProjectTitleStyle}>
+                      <span className="project-title-banner-label">Projekt / Sendung</span>
+                      <span className="project-title-banner-value" style={{ fontSize: `${projectTitleFontSize}px` }}>{script.title || 'Unbenanntes Projekt'}</span>
+                    </div>
+                  )}
                   <input
                     type="text"
-                    className="editor-template-search"
-                    placeholder="Name der Vorlage"
-                    value={newTemplateName}
-                    onChange={(e) => setNewTemplateName(e.target.value)}
-                    aria-label="Name der neuen Telepromptervorlage"
+                    className="script-title-input"
+                    value={script.title}
+                    onChange={(e) => setScriptTitle(e.target.value)}
+                    aria-label="Script title"
+                    placeholder="Projekt- oder Sendungsname"
                   />
-                  <button
-                    type="button"
-                    className="editor-template-btn"
-                    onClick={handleCreateTemplateFromEditor}
-                    disabled={!newTemplateName.trim()}
-                  >
-                    Aus aktuellem Editor speichern
-                  </button>
+                  {tier !== 'basic' && (
+                    <div className="project-title-controls" role="group" aria-label="Projektname Darstellung">
+                      <button
+                        type="button"
+                        className="project-title-toggle-btn"
+                        onClick={handleToggleProjectTitle}
+                        aria-pressed={showProjectTitle}
+                      >
+                        {showProjectTitle ? 'Projektname ausblenden' : 'Projektname einblenden'}
+                      </button>
+                      <label className="project-title-inline-control">
+                        <span>Groesse</span>
+                        <input
+                          type="range"
+                          min={12}
+                          max={40}
+                          step={1}
+                          value={projectTitleFontSize}
+                          onChange={(e) => setDisplay({ projectTitleFontSize: Number(e.target.value) })}
+                          disabled={!showProjectTitle}
+                          aria-label="Projektname Groesse direkt einstellen"
+                        />
+                        <strong>{projectTitleFontSize}px</strong>
+                      </label>
+                      <label className="project-title-inline-control project-title-inline-color">
+                        <span>Farbe</span>
+                        <input
+                          type="color"
+                          value={projectTitleTextColor}
+                          onChange={(e) => setDisplay({ projectTitleTextColor: e.target.value })}
+                          disabled={!showProjectTitle}
+                          aria-label="Projektname Farbe direkt einstellen"
+                        />
+                      </label>
+                    </div>
+                  )}
                 </div>
               </>
             )}
-
-            {/* Script title */}
-            <div className="editor-title-bar">
-              {tier !== 'basic' && !isMobileLayout && showProjectTitle && (
-                <div className="project-title-banner editor-project-banner" aria-label="Projekt- oder Sendungsname Anzeige" style={editorProjectTitleStyle}>
-                  <span className="project-title-banner-label">Projekt / Sendung</span>
-                  <span className="project-title-banner-value" style={{ fontSize: `${projectTitleFontSize}px` }}>{script.title || 'Unbenanntes Projekt'}</span>
-                </div>
-              )}
-              <input
-                type="text"
-                className="script-title-input"
-                value={script.title}
-                onChange={(e) => setScriptTitle(e.target.value)}
-                aria-label="Script title"
-                placeholder="Projekt- oder Sendungsname"
-              />
-              {tier !== 'basic' && !isMobileLayout && (
-                <div className="project-title-controls" role="group" aria-label="Projektname Darstellung">
-                  <button
-                    type="button"
-                    className="project-title-toggle-btn"
-                    onClick={handleToggleProjectTitle}
-                    aria-pressed={showProjectTitle}
-                  >
-                    {showProjectTitle ? 'Projektname ausblenden' : 'Projektname einblenden'}
-                  </button>
-                  <label className="project-title-inline-control">
-                    <span>Groesse</span>
-                    <input
-                      type="range"
-                      min={12}
-                      max={40}
-                      step={1}
-                      value={projectTitleFontSize}
-                      onChange={(e) => setDisplay({ projectTitleFontSize: Number(e.target.value) })}
-                      disabled={!showProjectTitle}
-                      aria-label="Projektname Groesse direkt einstellen"
-                    />
-                    <strong>{projectTitleFontSize}px</strong>
-                  </label>
-                  <label className="project-title-inline-control project-title-inline-color">
-                    <span>Farbe</span>
-                    <input
-                      type="color"
-                      value={projectTitleTextColor}
-                      onChange={(e) => setDisplay({ projectTitleTextColor: e.target.value })}
-                      disabled={!showProjectTitle}
-                      aria-label="Projektname Farbe direkt einstellen"
-                    />
-                  </label>
-                </div>
-              )}
-            </div>
             <div className="editor-scroll">
               {script.segments.map((seg, idx) => (
                 <Suspense key={`${seg.id}-${idx}`} fallback={<div className="settings-loading">Editor wird geladen ...</div>}>
@@ -1055,6 +1140,7 @@ export function App() {
                 + Add segment
               </button>
             </div>
+            {mobileTemplateSection}
           </section>
         )}
 
@@ -1065,6 +1151,18 @@ export function App() {
           </section>
         )}
       </main>
+
+      {showControlPanel && isMobileLayout && (
+        <ControlPanel
+          viewMode={viewMode}
+          onOpenOutputWindow={handleOpenOutputWindow}
+          onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
+          isDesktopApp={isDesktopApp}
+          isMobileLayout={isMobileLayout}
+          isTabletLayout={isTabletLayout}
+          isOutputOnly={isOutputOnly}
+        />
+      )}
 
       {/* ─── Settings drawer ─────────────────────────────────────────── */}
       {showSettings && !isOutputOnly && (

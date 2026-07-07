@@ -55,30 +55,39 @@ Ein belastbares Smartphone-Layoutkonzept fuer den Teleprompter definieren, das b
 - 90/270 Grad Rotation wird nicht mehr in der App angeboten.
 - Geraeterotation erfolgt ueber das Smartphone/Tablet selbst.
 
-3. Settings auf Smartphone/Tablet entschlacken:
+3. Smartphone-Layout wird bewusst auf die Kernwege reduziert:
+- Auf Smartphones gibt es nur `editor` und `prompter`.
+- Der Button `Prompter Fenster` faellt auf Smartphone komplett weg.
+- Die Vorlagenkarte im Editor und die Control-Karte mit `Text auf Anfang` / `Voice ON/OFF` sind einklappbar.
+- Die Titelanzeige und Titel-Steuerung bleiben auf Smartphone ausgeblendet.
+- Die Smartphone-Prompter-Ansicht folgt funktional dem Output-Modus `?view=prompter&output=1`.
+- Der Smartphone-Header zeigt nur `SAARwooD Teleprompter`; Room-Anzeige und Header-Icon entfallen.
+- Vorlagenkarte und Editor-Steuerkarte werden auf Smartphone nach unten verlagert; die Steuerkarte dockt unten an.
+
+4. Settings auf Smartphone/Tablet entschlacken:
 - Titel-Einblendung und Titel-Steuerung entfallen wegen Platzmangel.
 - Prompter-Neustart bleibt vorhanden, aber kompakter dargestellt.
 
-4. Pflicht-Controls im Prompter-Output:
+5. Pflicht-Controls im Prompter-Output:
 - Start
 - Pause
 - Text auf Anfang
 - Geschwindigkeit `+` und `-`
 - Geschwindigkeits-Zahleneingabe
 
-5. Editor-Modus vereinfachen:
+6. Editor-Modus vereinfachen:
 - Prompter-Steuerungstasten sind im Editor-Modus nicht sichtbar.
 - Titel-Steuerung ist im Editor-Modus auf Smartphone nicht sichtbar.
 
-6. Tablet-Scope bleibt vorerst stabil:
+7. Tablet-Scope bleibt vorerst stabil:
 - Tablet-Design wird aktuell nicht angefasst.
 - Anpassungen am Tablet erfolgen erst nach User-Bewertungen.
 
-7. Output-Strategie kurzfristig (Variante A):
+8. Output-Strategie kurzfristig (Variante A):
 - `output=1` bleibt bestehen.
 - Auf Smartphone wird `output=1` funktional an den neuen Prompter-View angeglichen (inkl. Pflicht-Controls).
 
-8. Sehr kleine Smartphone-Displays (<360px):
+9. Sehr kleine Smartphone-Displays (<360px):
 - Speed-Zahleneingabe ist optional einklappbar.
 
 ## Meeting-Outputs (Definition of Done)

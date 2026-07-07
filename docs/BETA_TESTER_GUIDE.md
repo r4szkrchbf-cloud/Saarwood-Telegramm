@@ -148,6 +148,19 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | M-04 | Touchscreen: Play/Stop/Speed | Buttons reagieren auf Touch | | |
 | M-05 | Orientation landscape → portrait | Layout passt sich an | | |
 | M-06 | Settings-Drawer auf kleinem Bildschirm | Volle Breite, scrollbar | | |
+| M-07 | Smartphone-Editor: Vorlagenkarte einklappen | Vorlagenkarte laesst sich per Button ein-/ausklappen | | |
+| M-08 | Smartphone-Editor: Control-Karte einklappen | Card mit Text auf Anfang / Voice ON/OFF laesst sich ein-/ausklappen | | |
+| M-09 | Smartphone-Editor: Prompter-Fenster fehlt | Kein `Prompter Fenster`-Button auf Smartphone | | |
+| M-10 | Smartphone-Prompter/Output-Ansicht | Entspricht funktional `?view=prompter&output=1` mit Pflicht-Controls | | |
+| M-11 | Smartphone-Header reduziert | Nur `SAARwooD Teleprompter`, kein Icon, kein Room-Hinweis | | |
+| M-12 | Smartphone-Karten unten | Vorlagenkarte unten im Editor, Control-Karte unten angedockt | | |
+| M-13 | Smartphone-Prompter: Speed-Eingabe fehlt absichtlich | Kein numerisches Speed-Feld, nur `+`/`-` | | |
+| M-14 | Smartphone-Prompter: Mirror reduziert | Nur `V-Mirror` sichtbar | | |
+| M-15 | Smartphone-Prompter: Play/Pause prominent | Play/Pause sichtbar groesser als andere Buttons | | |
+| M-16 | Smartphone-Header: Settings neben View-Toggle | Settings-Button steht direkt bei `Editor`/`Prompter` | | |
+| M-17 | Smartphone-Prompter: Eine Bedienzeile | `Text auf Anfang`, Play/Pause, Mirror und Speed in einer Reihe | | |
+| M-18 | Smartphone-Prompter: Speed-Tasten vertikal | `+` und `-` sind uebereinander angeordnet | | |
+| M-19 | Smartphone-Editor: Vorlagenkarte bleibt eingeklappt | Kein automatisches Wiederaufklappen nach Resize/Rotate | | |
 
 ---
 

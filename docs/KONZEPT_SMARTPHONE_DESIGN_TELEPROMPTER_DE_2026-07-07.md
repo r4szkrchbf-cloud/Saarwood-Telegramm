@@ -18,27 +18,50 @@ Fokus: maximale Bedienklarheit im Live-Betrieb mit Einhand-Logik und minimaler v
 - Keine UI fuer 90/270 Grad in Mobile-Kontext.
 - Drehung erfolgt ueber Geraeteausrichtung.
 
-3. Titel-Funktionen entfallen auf Smartphones:
+3. Smartphone-Layout bleibt streng reduziert:
+- Auf dem Smartphone gibt es nur `editor` und `prompter`.
+- Der Button `Prompter Fenster` faellt auf Smartphone komplett weg.
+- Die Vorlagenkarte im Editor und die Control-Karte mit `Text auf Anfang` / `Voice ON/OFF` sind einklappbar.
+- Die Vorlagenkarte liegt auf Smartphone unterhalb des Editor-Inhalts.
+- Die Control-Karte liegt auf Smartphone am unteren Bildschirmrand.
+- Die Smartphone-Prompter-Ansicht entspricht funktional dem Output-Modus `?view=prompter&output=1`.
+
+3.1 Prompter-Modus-Bedienung (Smartphone):
+- Keine numerische Speed-Eingabe
+- Speed-Steuerung nur ueber `+` / `-`
+- Spiegelung nur ueber `V-Mirror`
+- Play/Pause wird als groesserer Hauptbutton dargestellt
+- `Text auf Anfang`, Play/Pause, Mirror und Speed liegen in einer gemeinsamen horizontalen Bedienzeile
+- Speed `+` / `-` sind in dieser Zeile vertikal gestapelt
+
+4. Titel-Funktionen entfallen auf Smartphones:
 - Keine Titel-Einblendung
 - Keine Titel-Steuerung
+- Kein Room-Hinweis im Smartphone-Header
+- Kein Header-Icon auf Smartphone; sichtbar bleibt nur `SAARwooD Teleprompter`
+- Settings-Button steht direkt neben den Umschaltbuttons `Editor`/`Prompter`
 - Grund: Platzprioritaet fuer Kernsteuerung
 
-4. Prompter-Neustart bleibt auf Smartphone erhalten:
+4.1 Vorlagenkarte im Editor (Smartphone):
+- Einklappbar ueber eigenen Toggle
+- Collapse-Zustand bleibt beim Viewport-Resize erhalten (kein erzwungenes Wiederaufklappen)
+
+5. Prompter-Neustart bleibt auf Smartphone erhalten:
 - Sichtbar, aber visuell kompakter
 - Klar vom Stop/Reset unterscheidbar
 
-5. Geschwindigkeit bleibt voll bedienbar auf Smartphone:
+6. Geschwindigkeit bleibt voll bedienbar auf Smartphone:
 - Zahleneingabe
 - `+` / `-`
 
-6. Pflicht-Controls im Prompter-/Output-View immer sichtbar:
+7. Pflicht-Controls im Prompter-/Output-View immer sichtbar:
 - Start
 - Pause
 - Text auf Anfang
 - Geschwindigkeit `+` / `-`
 - Geschwindigkeits-Zahleneingabe (auf <360px optional einklappbar)
 
-7. Editor-Modus wird entlastet:
+8. Editor-Modus wird entlastet:
 - Keine Prompter-Steuerungstasten im Editor-Modus
 - Keine Titel-Steuerung im Editor-Modus
 
@@ -49,10 +72,12 @@ Fokus: maximale Bedienklarheit im Live-Betrieb mit Einhand-Logik und minimaler v
 Sichtbar:
 - Script-Editor
 - Kern-Editorfunktionen
+- einklappbare Vorlagenkarte
 - Wechsel zum Prompter-View
 
 Nicht sichtbar:
 - Play/Pause/Start/Reset Controls
+- Prompter-Fenster-Button
 - Titel-Steuerung
 - Rotationssteuerung
 
@@ -62,6 +87,7 @@ Sichtbar:
 - Prompter-Text
 - Pflicht-Controls (Start, Pause, Text auf Anfang, Speed +/-, Speed-Wert)
 - Prompter-Neustart (kompakt)
+- entspricht dem Output-Modus `?view=prompter&output=1`
 
 Nicht sichtbar:
 - Titel-Steuerung
