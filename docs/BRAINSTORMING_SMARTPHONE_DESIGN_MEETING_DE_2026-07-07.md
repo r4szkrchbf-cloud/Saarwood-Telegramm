@@ -70,6 +70,17 @@ Ein belastbares Smartphone-Layoutkonzept fuer den Teleprompter definieren, das b
 - Prompter-Steuerungstasten sind im Editor-Modus nicht sichtbar.
 - Titel-Steuerung ist im Editor-Modus auf Smartphone nicht sichtbar.
 
+6. Tablet-Scope bleibt vorerst stabil:
+- Tablet-Design wird aktuell nicht angefasst.
+- Anpassungen am Tablet erfolgen erst nach User-Bewertungen.
+
+7. Output-Strategie kurzfristig (Variante A):
+- `output=1` bleibt bestehen.
+- Auf Smartphone wird `output=1` funktional an den neuen Prompter-View angeglichen (inkl. Pflicht-Controls).
+
+8. Sehr kleine Smartphone-Displays (<360px):
+- Speed-Zahleneingabe ist optional einklappbar.
+
 ## Meeting-Outputs (Definition of Done)
 
 Nach dem Meeting muessen folgende Entscheidungen feststehen:
@@ -80,7 +91,9 @@ Nach dem Meeting muessen folgende Entscheidungen feststehen:
 4. Touch-Targets, Spacing und Typografie-Regeln fuer kleine Screens.
 5. Umsetzungsplan fuer naechsten UI-Release (max. 2 Iterationen).
 6. Testplan-Update mit messbaren Mobile-Kriterien fuer Live-Test.
-7. Verbindlicher Entscheid, ob Tablet dieselbe reduzierte Steuerlogik wie Smartphone nutzt.
+7. Tablet bleibt fuer den aktuellen Zyklus unveraendert; spaetere Anpassung nur auf Basis von User-Feedback.
+8. `output=1`-Strategie fuer Smartphone verbindlich (beibehalten + funktional angleichen).
+9. Verhalten der Speed-Zahleneingabe fuer <360px verbindlich (einklappbar).
 
 ## Vorschlag: 60-Minuten-Agenda
 
@@ -127,7 +140,7 @@ Nach dem Meeting muessen folgende Entscheidungen feststehen:
 3. Wie verhindern wir Fehlbedienung bei schnellen Live-Korrekturen?
 4. Welche Unterschiede brauchen wir zwischen Operator-Smartphone und Output-Smartphone?
 5. Wann erzwingen wir proaktiv prompter-first statt split-view?
-6. Soll fuer Tablet exakt dieselbe Entschlackung wie Smartphone gelten oder eine leichte Mittelstufe?
+6. Welche Trigger aus User-Bewertungen loesen spaeter eine Tablet-Anpassung aus?
 
 ## Konkrete Arbeits-Hypothesen (zur Diskussion)
 
@@ -155,6 +168,8 @@ Nach dem Meeting muessen folgende Entscheidungen feststehen:
 - Beschlossene Regel fuer Output-View Pflicht-Controls:
 - Beschlossene Regel zu Rotation (App entfernt / geraeteseitig):
 - Beschlossene Regel zu Titel-Funktionen auf Smartphone:
+- Beschlossene Regel fuer `output=1` auf Smartphone:
+- Beschlossene Regel fuer Speed-Zahleneingabe <360px:
 - Beschlossene Breakpoint-Regeln:
 - Nicht-Ziele fuer v1:
 - Tickets fuer Iteration 1:

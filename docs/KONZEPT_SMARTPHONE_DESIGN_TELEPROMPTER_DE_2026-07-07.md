@@ -36,7 +36,7 @@ Fokus: maximale Bedienklarheit im Live-Betrieb mit Einhand-Logik und minimaler v
 - Pause
 - Text auf Anfang
 - Geschwindigkeit `+` / `-`
-- Geschwindigkeits-Zahleneingabe
+- Geschwindigkeits-Zahleneingabe (auf <360px optional einklappbar)
 
 7. Editor-Modus wird entlastet:
 - Keine Prompter-Steuerungstasten im Editor-Modus
@@ -78,8 +78,16 @@ Nicht sichtbar:
 
 ## 5. Tablet-Regel (vorlaeufig)
 
-Da aus Team-Feedback gewuenscht: gleiche Entfernung der Rotationssteuerung und Titelsteuerung fuer Smartphone und Tablet.
-Finale Tablet-Abgrenzung wird im Brainstorming final beschlossen.
+Tablet-Design bleibt im aktuellen Zyklus unveraendert.
+Anpassungen am Tablet erfolgen erst nach Auswertung realer User-Bewertungen aus dem Live-Test.
+
+## 5.1 Output-Strategie (kurzfristig)
+
+Variante A ist beschlossen:
+
+1. `output=1` bleibt bestehen (keine brechende Umstellung im Live-Test).
+2. Auf Smartphone wird `output=1` funktional an den neuen Prompter-View angeglichen.
+3. Pflicht-Controls bleiben auch dort sichtbar, um Bedienkonsistenz sicherzustellen.
 
 ## 6. Technische Auswirkungen (Frontend)
 
@@ -114,11 +122,12 @@ Umsetzungsrichtung:
 2. Rotationssteuerung ist auf Smartphone/Tablet nicht mehr sichtbar.
 3. Titel-Steuerung ist auf Smartphone nicht sichtbar.
 4. Pflicht-Controls sind im Prompter-/Output-View permanent vorhanden.
-5. Editor-View zeigt keine Prompter-Steuerung.
-6. M-01 bis M-06 aus Tester-Guide laufen ohne neue kritische Fehler.
+5. Speed-Zahleneingabe ist auf <360px erreichbar und optional einklappbar.
+6. `output=1` bleibt kompatibel und entspricht auf Smartphone der neuen Prompter-Logik.
+7. Editor-View zeigt keine Prompter-Steuerung.
+8. M-01 bis M-06 aus Tester-Guide laufen ohne neue kritische Fehler.
 
 ## 9. Offene Fragen fuer Meeting
 
-1. Soll Output-View auf Smartphone weiterhin denselben URL-Parameter (`output=1`) nutzen oder in den normalen prompter-View aufgehen?
-2. Sollen Tablet-Geraete langfristig eine Zwischenstufe bekommen (mehr als Smartphone, weniger als Desktop)?
-3. Welche Mindestbreite erhaelt die Geschwindigkeits-Zahleneingabe auf sehr kleinen Displays?
+1. Welche Trigger aus User-Bewertungen fuehren spaeter zu einer Tablet-Anpassung?
+2. Wie wird die Einklapp-Interaktion der Speed-Zahleneingabe auf <360px konkret visualisiert?
