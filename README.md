@@ -2,6 +2,13 @@
 
 Professional broadcast-grade teleprompter web application — PWA, three tiers (Basic / Professional / Expert).
 
+## Related Repositories
+
+- Saarwood Main Site: https://github.com/r4szkrchbf-cloud/saarwood-ch-main-site
+- Saarwood Adminpanel: https://github.com/r4szkrchbf-cloud/saarwood-app-technik-adminpanel
+
+This repository is teleprompter-only (frontend, backend, electron, teleprompter operations docs).
+
 ## Architecture
 
 ```text
