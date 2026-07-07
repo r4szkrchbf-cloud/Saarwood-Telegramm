@@ -9,6 +9,30 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ## HOTFIX-Block 2026-07-05 (P0 fuer MVP-Langzeittest)
 
+### TICKET-031 · Offene Layout-Feinschliffe in Sammel-Backlog fuehren
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+Alle weiteren UI/Layout-Aenderungen werden bis zur naechsten Umsetzungsrunde zentral als To-do gesammelt, damit nur freigegebene Layout-Eingriffe live gehen.
+
+**Akzeptanzkriterien:**
+- [ ] Offene Layout-Wuensche sind als Liste mit Ziel-Layout (Desktop/Tablet/Mobil) erfasst
+- [ ] Pro Wunsch ist ein klares Soll-Verhalten inkl. Positionierung dokumentiert
+- [ ] Umsetzung erfolgt erst nach expliziter Freigabe pro Ticketblock
+
+### TICKET-032 · Einstellungen > Kontakt/Support Links aktiv schalten
+
+**Prioritaet:** P0  
+**Beschreibung:**  
+Die verlinkten Hilferessourcen unter Kontakt/Support (Handbuch, Live-Tester-Guide, Testerformular) sind aktuell nicht aktiv und muessen funktional verdrahtet werden.
+
+**Akzeptanzkriterien:**
+- [ ] Link zu Handbuch oeffnet korrekt
+- [ ] Link zum Live-Tester-Guide oeffnet korrekt
+- [ ] Link zum Testerformular oeffnet korrekt
+- [ ] Links funktionieren in Desktop/Tablet/Mobil
+- [ ] Kurztest in `docs/TEST_MVP.md` dokumentiert
+
 ### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
 
 **Prioritaet:** P0

@@ -760,6 +760,7 @@ export function App() {
     display.darkMode ? 'dark-mode' : 'light-mode',
     `view-${viewMode}`,
     isOutputOnly ? 'output-only' : '',
+    !isOutputOnly && viewMode === 'prompter' ? 'prompter-controls-bottom' : '',
     isOutputOnly && isMobileLayout ? 'output-with-controls' : '',
     !isOutputOnly && isMobileLayout && viewMode === 'editor' ? 'mobile-controls-docked' : '',
     !isOutputOnly && isMobileLayout && viewMode === 'prompter' ? 'mobile-controls-docked-prompter' : '',

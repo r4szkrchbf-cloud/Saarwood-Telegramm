@@ -24,6 +24,10 @@
   padding-bottom: 92px;
 }
 
+.app.prompter-controls-bottom .app-workspace {
+  padding-bottom: 92px;
+}
+
 .app.mobile-controls-docked .app-workspace {
   padding-bottom: 168px;
 }
@@ -34,6 +38,17 @@
 
 .app.output-only .app-workspace {
   grid-row: 1;
+}
+
+.app.prompter-controls-bottom .control-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.3);
 }
 
 /* ─── Header ──────────────────────────────────────────────────────────────── */
