@@ -1405,3 +1405,37 @@ Kurzer Live-E2E-Check auf Produktivdomain mit sichtbarem Bedienfluss:
 | Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
 |-------|------------------------|-------|-------|----------|
 | 17 | 2026-07-06 22:58 | Manueller Browser-E2E (Controller + Output, gleicher room) | n/a | GRUEN |
+
+---
+
+## Runde 18 - 2026-07-07 UTC (UI-/Hotkey- und Layout-Abgleich)
+
+### Ziel
+
+Aktuellen Produktionsstand fuer die letzten UI- und Hotkey-Aenderungen dokumentieren:
+
+1. Prompter-Control-Bar in allen Layouts unten.
+2. Split-Titelanzeige im Prompter sichtbar.
+3. Laufzeitstatus `PLAY` / `PAUSE` / `READY` oben im Prompter vorhanden.
+4. Desktop-/Tablet-Hotkeys fuer `V-Mirror`, Rotation (`Q/E`, `[`/`]`, `/`) und getrenntes Prompter-Fenster (`P`).
+
+### Beobachtung
+
+1. Live-Deploy auf `teleprompter.saarwood.ch` erfolgreich aktualisiert.
+2. Prompter-Bar sitzt in Desktop, Tablet und Smartphone unten an der Viewport-Kante.
+3. Split-Titel wird im Prompter wieder korrekt dargestellt, wenn aktiviert.
+4. Laufzeitstatus mit Speed-Anzeige wird oben im Prompter angezeigt.
+5. Smartphone-Prompter zeigt nur reduzierte Pflicht-Controls (`Text auf Anfang`, Play/Pause, `V-Mirror`, `+`/`-`).
+6. App-Hinweis und Doku auf aktuelle Hotkeys erweitert (`V`, `Q/E`, `/`, `P`, `N`).
+
+### Ergebnis Runde 18
+
+- Ergebnis: PASS (GRUEN)
+- Aktueller Code- und UI-Stand ist fuer den folgenden Vollabgleich dokumentiert.
+- Naechster Block: kompletter 3-Projekte-/Doku-Abgleich vor der Aktivierung der Kontakt-/Support-PDF-Links.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 18 | 2026-07-07 | UI-/Hotkey-/Layout-Abgleich live | PASS | GRUEN |

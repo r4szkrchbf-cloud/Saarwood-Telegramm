@@ -83,8 +83,8 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | S-05 | Scrollrichtung umkehren (↕-Button) | Scrollen geht rückwärts | | |
 | S-06 | Horizontal-Spiegel (↔ H-Mirror) | Text wird horizontal gespiegelt | | |
 | S-07 | Vertikal-Spiegel (↕ V-Mirror) | Text wird vertikal gespiegelt | | |
-| S-08 | Rotation +90° (↻ +90°-Button oder ]-Taste) | Inhalt dreht sich 90° im UZS | | |
-| S-09 | Rotation −90° (↺ −90°-Button oder [-Taste) | Inhalt dreht sich 90° gegen UZS | | |
+| S-08 | Rotation +90° (↻ +90°-Button oder `E` / `]` / `/`) | Inhalt dreht sich 90° im UZS | | |
+| S-09 | Rotation −90° (↺ −90°-Button oder `Q` / `[`) | Inhalt dreht sich 90° gegen UZS | | |
 | S-10 | Rotation alle 4 Stufen (0/90/180/270) | Jede Stufe korrekt, kein Reflow | | |
 | S-11 | Spiegel + Rotation kombiniert | Kein visueller Fehler, korrekte Transform-Kombination | | |
 | S-12 | Scrollen bei 120 fps (wenn Monitor 120 Hz) | Flüssig ohne Ruckeln | | |
@@ -93,6 +93,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | S-15 | Cue-Marker sichtbar | Horizontale Linie an eingestellter Position | | |
 | S-16 | Restart in Split/Editor (zweistufig bestaetigen) | Erst Klick setzt "NeuStart bestaetigen", zweiter Klick fuehrt Reload aus | | |
 | S-17 | Restart waehrend aktiver Ausgabe auf zweitem Client | Lokale UI kann neu laden, Ausgabe-Client wird nicht per STOP unterbrochen | | |
+| S-18 | Status oben im Prompter pruefen | `PLAY` gruen, `PAUSE` gelb, `READY` blau, Speed sichtbar | | |
 
 ---
 
@@ -135,6 +136,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | W-04 | Script-Update von Tab A sichtbar in Tab B | Echtzeit-Sync ohne Scroll-Unterbruch | | |
 | W-05 | Einstellungs-Update sync | Display-Einstellungen sync zwischen Clients | | |
 | W-06 | Output-only URL in zweitem Tab (`?view=prompter&output=1`) | Ausgabe sichtbar, keine Settings/Controls/Header in Output-only View | | |
+| W-07 | Taste `P` im Controller (Desktop/Tablet) | Getrenntes Prompter-Fenster oeffnet sich | | |
 
 ---
 

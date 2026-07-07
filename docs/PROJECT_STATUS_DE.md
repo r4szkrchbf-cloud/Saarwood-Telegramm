@@ -1,6 +1,6 @@
 # Projektstand Saarwood Teleprompter
 
-Stand: 2026-07-06 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support- und Import/Export-Stand)
+Stand: 2026-07-07 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support-, Layout- und Hotkey-Stand)
 
 ## 1. Kurzfazit
 
@@ -13,6 +13,24 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Support-Logs, TXT-Import und tierabhängige UI-Regeln sind im Code und in der Doku abgebildet.
 
 ## 1.1 Delta-Update (neu)
+
+- Bedien- und Layout-Regeln weiter geschaerft:
+  - Prompter-Control-Bar sitzt jetzt in allen Layouts unten.
+  - Im Split-Modus wird der Projekt-/Sendungsname im Prompter wieder korrekt angezeigt.
+  - Im Prompter-Output gibt es oben einen klaren Laufzeitstatus mit `PLAY` / `PAUSE` / `READY` plus aktueller Geschwindigkeit.
+  - Im Smartphone-Prompter bleiben nur `V-Mirror`, `Text auf Anfang`, Play/Pause sowie Speed `+`/`-` sichtbar.
+  - Room-ID bleibt im Header sichtbar und kopierbar, aber nur auf Desktop/Tablet; auf Smartphone ist der Room-Hinweis ausgeblendet.
+
+- Tastatursteuerung fuer Desktop/Tablet erweitert:
+  - `V` schaltet `V-Mirror`.
+  - Rotation funktioniert ueber `Q/E`, `[`/`]` sowie `/` fuer `+90°`.
+  - `P` oeffnet das getrennte Prompter-Fenster.
+  - `N` bleibt Prompter-Neustart mit Bestaetigung.
+
+- Dokumentations- und Roadmap-Block erweitert:
+  - Vollabgleich ueber Frontend, Backend und Electron als eigener Pflichtblock vor dem Support-Link-Block definiert.
+  - Expert-Roadmap fuer konfigurierbare Uhr im Prompter und erweiterte Fernsteuerung (USB/LAN/WLAN/Stream Deck/Mikrocontroller-Keyboards) als Backlog aufgenommen.
+  - Kontakt/Support-Links werden im naechsten Block als PDF-basierte Ressourcen mit separatem Fenster und Download aktiviert.
 
 - Akuter Runtime-Fix umgesetzt (Mehrnutzer + Performance):
   - WebSocket-Sync auf room-scoped Betrieb umgestellt (`?room=...`) statt globalem Shared-State.
@@ -62,6 +80,7 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Kalibrierungs-Assistent in Settings ergaenzt (Testsatz, Erkennungsauswertung, automatische Empfehlung).
 - Deutscher 4-Segment-Testsprechertext als Default/Loader verfuegbar, inkl. Legacy-Englisch-Migration.
 - Getrennte Prompter-Ausgabe als Output-Ansicht eingefuehrt (`?view=prompter&output=1`) ohne Header/Controls/Settings/Hotkeys.
+- Im normalen Prompter-Modus ist die Control-Bar ebenfalls unten angedockt; im Output-only Modus bleibt sie als reine Bedienleiste ohne Header/Settings aktiv.
 - Electron-Operatorfunktion `Monitor 2 Vollbild` ergaenzt: Prompter-Ausgabe laesst sich direkt auf den zweiten Bildschirm im Vollbild starten.
 - Browser-Neustart entkoppelt: kein `STOP`/`PAUSE`-Broadcast waehrend lokalem Reload, damit laufende Prompter-Ausgaben nicht unterbrochen werden.
 - Lizenz-/Rollout-Plan vorbereitet (`docs/LICENSING_AND_RELEASE_PLAN_DE.md`): signierte Lizenzschluessel, Revocation/Kill-Switch, Support-Runbook und Public+Offline-Rolloutphasen.
@@ -78,12 +97,15 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Im Smartphone-Prompter-Modus liegen `Text auf Anfang`, Play/Pause, Mirror und Speed in einer gemeinsamen Bedienzeile; die Speed-Tasten `+`/`-` sind vertikal angeordnet.
 - Die Vorlagenkarte im Editor bleibt im Smartphone-Layout stabil einklappbar (kein automatisches Wiederaufklappen durch Viewport-Resize).
 - Werbekonzept fuer die kostenlose Basic-Version vor Hostinger-Go-Live als separates Konzept dokumentiert (`docs/BASIC_TIER_ADS_CONCEPT_DE.md`).
+- Das Werbekonzept ist derzeit dokumentiert, aber im Code noch nicht aktiv umgesetzt.
 
 ## 1.2 Code-/Doku-Abgleich (aktuell)
 
 Folgende Codebereiche sind derzeit in der Dokumentation abgedeckt und sollen bei Aenderungen zuerst nachgezogen werden:
 
 - `packages/frontend/src/App.tsx`: App-Shell, License-Gate, View-Modi, Output-only View.
+- `packages/frontend/src/hooks/useHotkeyManager.ts`: aktuelle Desktop-/Tablet-Hotkeys fuer Mirror, Rotation, Neustart und Prompter-Fenster.
+- `packages/frontend/src/components/PrompterDisplay/PrompterDisplay.tsx`: Runtime-Status (`PLAY` / `PAUSE` / `READY`), Titeloverlay und Output-Anzeige.
 - `packages/frontend/src/components/Settings/SettingsPanel.tsx`: Support, Vorlagenverwaltung, Import/Export, Voice-Kalibrierung.
 - `packages/frontend/src/store/prompterStore.ts`: Tier, Profile, Script, Display, duplicate/rename support.
 - `packages/backend/src/support/SupportService.ts`: Ticketpersistenz, Bestaetigungs-E-Mails, 78h Logs.
@@ -93,6 +115,8 @@ Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 
 - VPS/Public-MVP-Rollout
 - Basic-Tier Werbe-/Upgrade-Modell fuer Hostinger-Go-Live
+- PDF-Aktivierung fuer Kontakt/Support-Ressourcen
+- Expert-Tier Fernsteuerung via USB/LAN/WLAN und externe Steuerhardware
 - Lizenz-Kill-Switch / Revocation-Runbook
 - Tally / On-Air-Preview-Schnittstelle
 - Screen-Presets und weitere Layout-Automation
@@ -105,6 +129,7 @@ Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 - Build: PASS (`tsc && vite build`)
 - PWA-Build erfolgreich (Service Worker und Manifest erzeugt)
 - Kernfunktionen vorhanden: Editor, Prompter-Render, Controls, Mirror/Rotation, Settings, Speech-Tracking, WebSocket-Sync
+- Split-/Prompter-Titelanzeige, Runtime-Status, Output-only View und Hotkey-Steuerung aktuell im Produktionscode vorhanden
 - Warnung beim Build: groesseres Bundle (>500 kB), aktuell kein MVP-Blocker
 
 ### Backend (`packages/backend`)
@@ -112,6 +137,12 @@ Bekannte kommende Aenderungen, die in der Doku frueh sichtbar sein muessen:
 - Build: PASS (`tsc`)
 - Tests: PASS (9/9)
 - REST, WebSocket, MOS-Handler, NDI-Adapter (Stub/Fallback) vorhanden
+
+### Electron (`packages/electron`)
+
+- Build-Pipeline vorhanden
+- Zweitmonitor-Output (`Monitor 2 Vollbild`) vorhanden
+- Desktop-App startet Backend mit und laeuft standardmaessig im Expert-Tier
 
 ## 3. Qualitaetsstatus (heute verifiziert)
 
