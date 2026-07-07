@@ -139,6 +139,25 @@ Das Scrollen stottert unter Last. Der Sync-Fluss muss entkoppelt und die Last re
 - [ ] Scrollen bleibt visuell stabil bei mindestens 2 parallelen Session/Room-Instanzen
 - [ ] Kurztestprotokoll in `docs/TEST_MVP.md` ergaenzt (Szenario, Ergebnis, Auffaelligkeiten)
 
+### TICKET-030 · Sofortige Rotation offengelegter Produktions-Secrets
+
+**Prioritaet:** P0
+**Beschreibung:**
+Im Support-/Ops-Chat wurden produktive Secrets sichtbar. Diese muessen unverzueglich rotiert werden, um Missbrauchsrisiken und Session-Faelschungen zu verhindern.
+
+**Betroffene Secrets (Muss-Rotation):**
+- `SUPPORT_SMTP_PASS`
+- `ADMIN_API_KEY`
+- `ADMIN_AUTH_JWT_SECRET`
+- Klartext-Passwoerter in `ADMIN_AUTH_USERS_JSON`
+
+**Akzeptanzkriterien:**
+- [ ] Alle oben genannten Secrets sind mit neuen Werten ersetzt und sicher gespeichert.
+- [ ] `/srv/saarwood_telepromter/.env.production` ist aktualisiert und Service neu gestartet.
+- [ ] Bestehende Admin-Sessions/Token mit altem JWT-Secret sind ungueltig (Re-Login erzwungen).
+- [ ] Support-Ticket-E2E bleibt nach Rotation gruen (`confirmationEmailSent=true`, `supportNotificationEmailSent=true`).
+- [ ] Rotationszeitpunkt und verantwortliche Person sind in einem datierten Statusbericht dokumentiert.
+
 ### TICKET-018 · Restproblem Speed-Slider-Sprung (nach Langzeittest beheben)
 
 **Prioritaet:** P0 (direkt nach Abschluss des Langzeittests)  

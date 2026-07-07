@@ -68,10 +68,10 @@ Stand: 2026-07-07
 
 ### Verifikation / aktueller Stand
 
-- Live-Tickettest erfolgreich erstellt (`SWD-2026-000005`), aber Mailversand erwartbar noch `false`:
-  - `confirmationEmailSent=false`
-  - `supportNotificationEmailSent=false`
-- Ursache: SMTP-Passwort (`SUPPORT_SMTP_PASS`) wurde noch nicht gesetzt.
+- Finaler Live-E2E-Tickettest erfolgreich (`SWD-2026-000006`):
+  - `confirmationEmailSent=true`
+  - `supportNotificationEmailSent=true`
+- SMTP-Anbindung ist damit produktiv verifiziert.
 
 ### Letzter manueller Secret-Schritt (Owner)
 
@@ -81,6 +81,15 @@ Stand: 2026-07-07
 4. `systemctl restart saarwood-teleprompter.service`
 
 Danach E2E erneut testen und beide Mailflags auf `true` validieren.
+
+### Sicherheitsmassnahme (naechster Pflichtschritt)
+
+- Im Chat offengelegte Secrets muessen sofort rotiert werden:
+  - `SUPPORT_SMTP_PASS`
+  - `ADMIN_API_KEY`
+  - `ADMIN_AUTH_JWT_SECRET`
+  - Klartext-Passwoerter aus `ADMIN_AUTH_USERS_JSON`
+- Rotation als P0 im Backlog aufgenommen (TICKET-030).
 
 ### Repo-Transparenz (bereits gepusht)
 
