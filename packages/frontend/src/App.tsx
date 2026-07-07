@@ -1,4 +1,15 @@
-import { lazy, Suspense, useState, useEffect, useMemo, useRef, useCallback, type CSSProperties } from 'react';
+import {
+  lazy,
+  Suspense,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  type CSSProperties,
+  type MouseEvent,
+  type PointerEvent,
+} from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
 import { usePrompterStore } from './store/prompterStore';
@@ -235,6 +246,7 @@ export function App() {
   const room = initialContext.room;
   const [roomCopied, setRoomCopied] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
+  const templateToggleHandledAtRef = useRef(0);
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -789,6 +801,26 @@ export function App() {
     await window.saarwoodDesktop.openPrompterOnSecondMonitor();
   };
 
+  const toggleTemplatePanel = useCallback(() => {
+    setMobileTemplatePanelOpen((current) => !current);
+  }, []);
+
+  const handleTemplateTogglePointerDown = useCallback((e: PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    templateToggleHandledAtRef.current = Date.now();
+    toggleTemplatePanel();
+  }, [toggleTemplatePanel]);
+
+  const handleTemplateToggleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    if (Date.now() - templateToggleHandledAtRef.current < 350) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    toggleTemplatePanel();
+  }, [toggleTemplatePanel]);
+
   const licenseBlocked = !licenseState.loading
     && licenseState.mode === 'enforce'
     && licenseState.status !== 'active';
@@ -801,7 +833,8 @@ export function App() {
         <button
           type="button"
           className="editor-template-toggle"
-          onClick={() => setMobileTemplatePanelOpen((current) => !current)}
+          onPointerDown={handleTemplateTogglePointerDown}
+          onClick={handleTemplateToggleClick}
           aria-expanded={mobileTemplatePanelOpen}
           aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
         >
@@ -999,7 +1032,8 @@ export function App() {
                   <button
                     type="button"
                     className="editor-template-toggle"
-                    onClick={() => setMobileTemplatePanelOpen((current) => !current)}
+                    onPointerDown={handleTemplateTogglePointerDown}
+                    onClick={handleTemplateToggleClick}
                     aria-expanded={mobileTemplatePanelOpen}
                     aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
                   >
