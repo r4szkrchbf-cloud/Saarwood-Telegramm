@@ -311,11 +311,6 @@ export function ControlPanel({
         {isPrompterMode && (
           <>
             <div className="speed-control speed-control--inline" role="group" aria-label="Scroll speed">
-              <label className="speed-label" htmlFor="speed-input">
-                Speed
-                <span className="speed-value">{Math.round(speed)}</span>
-                <span className="speed-unit">px/s</span>
-              </label>
               <div className="speed-nudge-stack stacked">
                 <button
                   type="button"

@@ -28,6 +28,10 @@
   padding-bottom: 168px;
 }
 
+.app.mobile-controls-docked-prompter .app-workspace {
+  padding-bottom: 86px;
+}
+
 .app.output-only .app-workspace {
   grid-row: 1;
 }
@@ -312,6 +316,15 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.55rem 0.75rem;
+}
+
+.editor-template-card-header--toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .editor-template-card-body {

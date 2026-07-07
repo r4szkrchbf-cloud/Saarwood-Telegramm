@@ -7,8 +7,7 @@ import {
   useRef,
   useCallback,
   type CSSProperties,
-  type MouseEvent,
-  type PointerEvent,
+  type TouchEvent,
 } from 'react';
 import { PrompterDisplay } from './components/PrompterDisplay/PrompterDisplay';
 import { ControlPanel } from './components/Controls/ControlPanel';
@@ -246,7 +245,6 @@ export function App() {
   const room = initialContext.room;
   const [roomCopied, setRoomCopied] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
-  const templateToggleHandledAtRef = useRef(0);
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -257,6 +255,7 @@ export function App() {
   const [licenseInput, setLicenseInput] = useState('');
   const [licenseMessage, setLicenseMessage] = useState('');
   const [licenseSubmitting, setLicenseSubmitting] = useState(false);
+  const lastTemplateTouchRef = useRef(0);
   const [templateSearch, setTemplateSearch] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [newTemplateName, setNewTemplateName] = useState('');
@@ -762,7 +761,8 @@ export function App() {
     `view-${viewMode}`,
     isOutputOnly ? 'output-only' : '',
     isOutputOnly && isMobileLayout ? 'output-with-controls' : '',
-    !isOutputOnly && isMobileLayout ? 'mobile-controls-docked' : '',
+    !isOutputOnly && isMobileLayout && viewMode === 'editor' ? 'mobile-controls-docked' : '',
+    !isOutputOnly && isMobileLayout && viewMode === 'prompter' ? 'mobile-controls-docked-prompter' : '',
   ].join(' ');
 
   const availableViewModes: ViewMode[] = isMobileLayout
@@ -805,19 +805,16 @@ export function App() {
     setMobileTemplatePanelOpen((current) => !current);
   }, []);
 
-  const handleTemplateTogglePointerDown = useCallback((e: PointerEvent<HTMLButtonElement>) => {
+  const handleTemplateToggleTouchEnd = useCallback((e: TouchEvent<HTMLElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    templateToggleHandledAtRef.current = Date.now();
+    lastTemplateTouchRef.current = Date.now();
     toggleTemplatePanel();
   }, [toggleTemplatePanel]);
 
-  const handleTemplateToggleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    if (Date.now() - templateToggleHandledAtRef.current < 350) {
+  const handleTemplateToggleClick = useCallback(() => {
+    if (Date.now() - lastTemplateTouchRef.current < 450) {
       return;
     }
-    e.preventDefault();
-    e.stopPropagation();
     toggleTemplatePanel();
   }, [toggleTemplatePanel]);
 
@@ -828,19 +825,19 @@ export function App() {
   const licenseBannerVisible = !licenseState.loading && licenseState.mode !== 'disabled';
   const mobileTemplateSection = isMobileLayout ? (
     <section className="editor-template-card editor-template-card--mobile" aria-label="Telepromptervorlagen">
-      <div className="editor-template-card-header">
+      <button
+        type="button"
+        className="editor-template-card-header editor-template-card-header--toggle"
+        onTouchEnd={handleTemplateToggleTouchEnd}
+        onClick={handleTemplateToggleClick}
+        aria-expanded={mobileTemplatePanelOpen}
+        aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
+      >
         <span className="editor-template-label">Telepromptervorlagen</span>
-        <button
-          type="button"
-          className="editor-template-toggle"
-          onPointerDown={handleTemplateTogglePointerDown}
-          onClick={handleTemplateToggleClick}
-          aria-expanded={mobileTemplatePanelOpen}
-          aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
-        >
+        <span className="editor-template-toggle" aria-hidden="true">
           {mobileTemplatePanelOpen ? 'Vorlagen einklappen' : 'Vorlagen anzeigen'}
-        </button>
-      </div>
+        </span>
+      </button>
 
       {mobileTemplatePanelOpen && (
         tier === 'basic' ? (
@@ -1027,19 +1024,19 @@ export function App() {
           <section className="editor-pane" aria-label="Script editor">
             {!isMobileLayout ? (
               <section className="editor-template-card" aria-label="Telepromptervorlagen">
-                <div className="editor-template-card-header">
+                <button
+                  type="button"
+                  className="editor-template-card-header editor-template-card-header--toggle"
+                  onTouchEnd={handleTemplateToggleTouchEnd}
+                  onClick={handleTemplateToggleClick}
+                  aria-expanded={mobileTemplatePanelOpen}
+                  aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
+                >
                   <span className="editor-template-label">Telepromptervorlagen</span>
-                  <button
-                    type="button"
-                    className="editor-template-toggle"
-                    onPointerDown={handleTemplateTogglePointerDown}
-                    onClick={handleTemplateToggleClick}
-                    aria-expanded={mobileTemplatePanelOpen}
-                    aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
-                  >
+                  <span className="editor-template-toggle" aria-hidden="true">
                     {mobileTemplatePanelOpen ? 'Vorlagen einklappen' : 'Vorlagen anzeigen'}
-                  </button>
-                </div>
+                  </span>
+                </button>
 
                 {mobileTemplatePanelOpen && (tier === 'basic' ? (
                   <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
