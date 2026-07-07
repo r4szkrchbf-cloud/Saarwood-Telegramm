@@ -317,6 +317,12 @@ export function PrompterDisplay() {
             aria-label={`Remote control ${wsConnected ? 'connected' : 'disconnected'}`}
             title={wsConnected ? 'Remote connected' : 'Remote disconnected'}
           />
+          <div className="prompter-runtime-status" role="status" aria-label="Prompter Laufzeitstatus">
+            <span className={['prompter-runtime-badge', isPlaying ? 'state-ready' : 'state-paused'].join(' ')}>
+              {isPlaying ? 'READY' : 'PAUSE'}
+            </span>
+            <span className="prompter-runtime-speed">{Math.round(speed)} px/s</span>
+          </div>
 
           {speechEnabled && (
             <div

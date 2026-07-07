@@ -62,6 +62,7 @@ export function ControlPanel({
   const [speedInputCollapsed, setSpeedInputCollapsed] = useState(false);
   const isPrompterMode = viewMode === 'prompter' || isOutputOnly;
   const isEditorMode = viewMode === 'editor' && !isOutputOnly;
+  const showControllerPlayback = !isMobileLayout && !isOutputOnly && (viewMode === 'split' || isTabletLayout);
   const mobileEditorControlsCollapsedMode = isMobileLayout && viewMode === 'editor' && !isOutputOnly;
   const [mobileEditorControlsOpen, setMobileEditorControlsOpen] = useState(() => !mobileEditorControlsCollapsedMode);
 
@@ -212,6 +213,30 @@ export function ControlPanel({
           >
             Text auf Anfang
           </button>
+        )}
+
+        {!isPrompterMode && showControllerPlayback && (
+          isPlaying ? (
+            <button
+              type="button"
+              className={['btn', 'btn--pause', 'btn--playback-prominent'].join(' ')}
+              onClick={handlePause}
+              aria-label="Pause"
+              title="Pause"
+            >
+              ❙❙
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={['btn', 'btn--play', 'btn--playback-prominent'].join(' ')}
+              onClick={handlePlay}
+              aria-label="Play"
+              title="Play"
+            >
+              ▶
+            </button>
+          )
         )}
 
         {viewMode !== 'prompter' && !isOutputOnly && (

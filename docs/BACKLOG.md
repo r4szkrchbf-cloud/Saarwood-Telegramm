@@ -24,14 +24,30 @@ Alle weiteren UI/Layout-Aenderungen werden bis zur naechsten Umsetzungsrunde zen
 
 **Prioritaet:** P0  
 **Beschreibung:**  
-Die verlinkten Hilferessourcen unter Kontakt/Support (Handbuch, Live-Tester-Guide, Testerformular) sind aktuell nicht aktiv und muessen funktional verdrahtet werden.
+Die verlinkten Hilferessourcen unter Kontakt/Support (Handbuch, Live-Tester-Guide, Testerformular) sind aktuell nicht aktiv und muessen funktional verdrahtet werden. Fuer die Beta werden separate Dokumente als saubere PDFs bereitgestellt, in einem getrennten Fenster angezeigt und als Download angeboten.
 
 **Akzeptanzkriterien:**
 - [ ] Link zu Handbuch oeffnet korrekt
 - [ ] Link zum Live-Tester-Guide oeffnet korrekt
 - [ ] Link zum Testerformular oeffnet korrekt
+- [ ] Handbuch, Live-Tester-Guide und Testerformular liegen als PDF-Dateien vor
+- [ ] PDF-Links oeffnen in einem separaten Fenster/Tab
+- [ ] PDF-Dateien sind direkt herunterladbar
 - [ ] Links funktionieren in Desktop/Tablet/Mobil
 - [ ] Kurztest in `docs/TEST_MVP.md` dokumentiert
+
+### TICKET-033 · Expert-Uhr im Prompter (Desktop/Tablet + separates Output-Fenster)
+
+**Prioritaet:** P1  
+**Beschreibung:**  
+Im Prompter-Modus soll fuer Tier Expert eine konfigurierbare Uhr eingeblendet werden. Die Anzeige muss sowohl im normalen Prompter-Modus (Desktop/Tablet) als auch im separaten Prompter-Ausgabefenster verfuegbar sein.
+
+**Akzeptanzkriterien:**
+- [ ] Uhr ist nur sichtbar, wenn Tier = Expert
+- [ ] Uhr ist im Prompter-Modus (Desktop/Tablet) sichtbar
+- [ ] Uhr ist im separaten Prompter-Ausgabefenster sichtbar
+- [ ] Uhr ist in den Einstellungen konfigurierbar (Position/Ein-Aus)
+- [ ] Uhr beeinflusst den Scrolltext nicht und bleibt lesbar
 
 ### TICKET-013 · Frontend-Testharness fuer Persist-Store stabilisieren
 

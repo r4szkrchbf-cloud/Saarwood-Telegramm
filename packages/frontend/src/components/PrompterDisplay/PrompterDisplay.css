@@ -51,6 +51,44 @@
   box-shadow: 0 0 8px rgba(231, 76, 60, 0.9);
 }
 
+.prompter-runtime-status {
+  position: absolute;
+  top: 0.9rem;
+  right: 2rem;
+  z-index: 22;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.prompter-runtime-badge,
+.prompter-runtime-speed {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.24rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.56);
+  font-size: 0.66rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+.prompter-runtime-badge.state-ready {
+  color: #7bed9f;
+  border-color: rgba(123, 237, 159, 0.52);
+}
+
+.prompter-runtime-badge.state-paused {
+  color: #ffd166;
+  border-color: rgba(255, 209, 102, 0.52);
+}
+
+.prompter-runtime-speed {
+  color: #d5d8dc;
+}
+
 .prompter-voice-indicator {
   position: absolute;
   top: 0.7rem;
