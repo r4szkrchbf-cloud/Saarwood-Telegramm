@@ -993,65 +993,77 @@ export function App() {
         {(viewMode === 'editor' || viewMode === 'split') && (
           <section className="editor-pane" aria-label="Script editor">
             {!isMobileLayout ? (
-              tier === 'basic' ? (
-                <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
+              <section className="editor-template-card" aria-label="Telepromptervorlagen">
+                <div className="editor-template-card-header">
                   <span className="editor-template-label">Telepromptervorlagen</span>
-                  <span className="settings-help-text">Vorlagenverwaltung ab Professional.</span>
+                  <button
+                    type="button"
+                    className="editor-template-toggle"
+                    onClick={() => setMobileTemplatePanelOpen((current) => !current)}
+                    aria-expanded={mobileTemplatePanelOpen}
+                    aria-label={mobileTemplatePanelOpen ? 'Telepromptervorlagen einklappen' : 'Telepromptervorlagen einblenden'}
+                  >
+                    {mobileTemplatePanelOpen ? 'Vorlagen einklappen' : 'Vorlagen anzeigen'}
+                  </button>
                 </div>
-              ) : (
-                <>
-                  <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
-                    <span className="editor-template-label">Telepromptervorlagen</span>
-                    <input
-                      type="search"
-                      className="editor-template-search"
-                      placeholder="Vorlage durchsuchen"
-                      value={templateSearch}
-                      onChange={(e) => setTemplateSearch(e.target.value)}
-                      aria-label="Telepromptervorlage durchsuchen"
-                    />
-                    <select
-                      className="editor-template-select"
-                      value={selectedTemplateId || activeProfileId || ''}
-                      onChange={(e) => setSelectedTemplateId(e.target.value)}
-                      aria-label="Telepromptervorlage auswaehlen"
-                    >
-                      <option value="">Vorlage waehlen</option>
-                      {filteredTemplates.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className="editor-template-btn"
-                      onClick={handleApplySelectedTemplate}
-                      disabled={!(selectedTemplateId || activeProfileId)}
-                    >
-                      Anwenden
-                    </button>
-                  </div>
 
-                  <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
-                    <span className="editor-template-label">Telepromptervorlage anlegen</span>
-                    <input
-                      type="text"
-                      className="editor-template-search"
-                      placeholder="Name der Vorlage"
-                      value={newTemplateName}
-                      onChange={(e) => setNewTemplateName(e.target.value)}
-                      aria-label="Name der neuen Telepromptervorlage"
-                    />
-                    <button
-                      type="button"
-                      className="editor-template-btn"
-                      onClick={handleCreateTemplateFromEditor}
-                      disabled={!newTemplateName.trim()}
-                    >
-                      Aus aktuellem Editor speichern
-                    </button>
+                {mobileTemplatePanelOpen && (tier === 'basic' ? (
+                  <div className="editor-template-row" role="status" aria-label="Vorlagenhinweis">
+                    <span className="settings-help-text">Vorlagenverwaltung ab Professional.</span>
                   </div>
-                </>
-              )
+                ) : (
+                  <>
+                    <div className="editor-template-row" role="group" aria-label="Telepromptervorlagen">
+                      <input
+                        type="search"
+                        className="editor-template-search"
+                        placeholder="Vorlage durchsuchen"
+                        value={templateSearch}
+                        onChange={(e) => setTemplateSearch(e.target.value)}
+                        aria-label="Telepromptervorlage durchsuchen"
+                      />
+                      <select
+                        className="editor-template-select"
+                        value={selectedTemplateId || activeProfileId || ''}
+                        onChange={(e) => setSelectedTemplateId(e.target.value)}
+                        aria-label="Telepromptervorlage auswaehlen"
+                      >
+                        <option value="">Vorlage waehlen</option>
+                        {filteredTemplates.map((p) => (
+                          <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="editor-template-btn"
+                        onClick={handleApplySelectedTemplate}
+                        disabled={!(selectedTemplateId || activeProfileId)}
+                      >
+                        Anwenden
+                      </button>
+                    </div>
+
+                    <div className="editor-template-row" role="group" aria-label="Telepromptervorlage anlegen">
+                      <input
+                        type="text"
+                        className="editor-template-search"
+                        placeholder="Name der Vorlage"
+                        value={newTemplateName}
+                        onChange={(e) => setNewTemplateName(e.target.value)}
+                        aria-label="Name der neuen Telepromptervorlage"
+                      />
+                      <button
+                        type="button"
+                        className="editor-template-btn"
+                        onClick={handleCreateTemplateFromEditor}
+                        disabled={!newTemplateName.trim()}
+                      >
+                        Aus aktuellem Editor speichern
+                      </button>
+                    </div>
+                  </>
+                ))}
+              </section>
             ) : null}
 
             {!isMobileLayout && (
