@@ -38,6 +38,7 @@ interface SupportTicketCreateResult {
   stored: boolean;
   forwarded: boolean;
   confirmationEmailSent: boolean;
+  supportNotificationEmailSent: boolean;
 }
 
 export interface SupportClientLogInput {
@@ -161,7 +162,14 @@ export class SupportService {
 
     const forwarded = await this.forwardTicket(record);
     const confirmationEmailSent = await this.sendTicketConfirmationEmail(record);
-    return { id, stored: true, forwarded, confirmationEmailSent };
+    const supportNotificationEmailSent = await this.sendSupportNotificationEmail(record);
+    return {
+      id,
+      stored: true,
+      forwarded,
+      confirmationEmailSent,
+      supportNotificationEmailSent,
+    };
   }
 
   listTickets(limit = 300): SupportTicketRecord[] {
@@ -411,7 +419,44 @@ export class SupportService {
         from: this.mailFrom,
         to: record.email,
         ...(this.mailReplyTo ? { replyTo: this.mailReplyTo } : {}),
-        ...(this.supportContactEmail ? { bcc: this.supportContactEmail } : {}),
+        subject,
+        text,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async sendSupportNotificationEmail(record: SupportTicketRecord): Promise<boolean> {
+    if (!this.supportContactEmail) return false;
+    const transporter = this.getTransporter();
+    if (!transporter || !this.mailFrom) return false;
+
+    const subject = `${this.confirmationSubjectPrefix} Neues Ticket: ${record.id}`;
+    const text = [
+      'Neues Support-Ticket eingegangen.',
+      '',
+      `Ticket-ID: ${record.id}`,
+      `Name: ${record.name}`,
+      `E-Mail: ${record.email}`,
+      `Betreff: ${record.subject}`,
+      `App: ${record.sourceApp}`,
+      `App-Version: ${record.appVersion}`,
+      `Kontext: ${record.context}`,
+      `Erstellt am (UTC): ${record.createdAt}`,
+      '',
+      'Nachricht:',
+      record.message,
+      '',
+      'Quelle: Teleprompter Ticket API',
+    ].join('\n');
+
+    try {
+      await transporter.sendMail({
+        from: this.mailFrom,
+        to: this.supportContactEmail,
+        ...(this.mailReplyTo ? { replyTo: this.mailReplyTo } : {}),
         subject,
         text,
       });

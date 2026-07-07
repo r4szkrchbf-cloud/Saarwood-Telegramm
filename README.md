@@ -177,6 +177,15 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 | `ADMIN_AUTH_SSO_ENABLED` | `false` | Enables SSO login method in central auth endpoint |
 | `ADMIN_AUTH_MAGIC_LINK_ENABLED` | `false` | Enables Magic-Link login method in central auth endpoint |
 | `ADMIN_AUTH_SSO_PROVIDER` | `oidc` | Provider label for `/api/admin/auth/providers` |
+| `SUPPORT_SMTP_HOST` | _leer_ | SMTP host for ticket confirmation and support mailbox notifications |
+| `SUPPORT_SMTP_PORT` | `587` | SMTP port |
+| `SUPPORT_SMTP_SECURE` | `false` | `true` for SMTPS (typically 465), otherwise STARTTLS (587) |
+| `SUPPORT_SMTP_USER` | _leer_ | SMTP username (usually the support mailbox address) |
+| `SUPPORT_SMTP_PASS` | _leer_ | SMTP password / app password |
+| `SUPPORT_MAIL_FROM` | `Saarwood Support <support@saarwood.ch>` | Sender shown in confirmation and internal notifications |
+| `SUPPORT_MAIL_REPLY_TO` | `support@saarwood.ch` | Reply-to address in support mails |
+| `SUPPORT_CONTACT_EMAIL` | `support@saarwood.ch` | Internal support inbox receiving a copy of each new ticket |
+| `SUPPORT_CONFIRMATION_MAIL_ENABLED` | `true` | Sends confirmation email to ticket creator |
 
 ### Adminpanel support inbox endpoints
 
