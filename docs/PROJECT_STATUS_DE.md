@@ -1,6 +1,6 @@
 # Projektstand Saarwood Teleprompter
 
-Stand: 2026-07-07 UTC (Code-/Doku-Abgleich, Tier-Regeln, Support-, Layout- und Hotkey-Stand)
+Stand: 2026-07-08 UTC (Code-/Doku-Abgleich, Recovery-Commit, Support-Mail-Operationsstand)
 
 ## 1. Kurzfazit
 
@@ -13,6 +13,20 @@ Die Testphase bleibt aktiv, aber der Voice-Pfad ist deutlich robuster und besser
 Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Support-Logs, TXT-Import und tierabhängige UI-Regeln sind im Code und in der Doku abgebildet.
 
 ## 1.1 Delta-Update (neu)
+
+- Recovery und Versionsstand verifiziert (2026-07-08):
+  - Git-Recovery ueber frischen Clone abgeschlossen; produktiver Branch `main` ist gesund.
+  - Aktueller Referenzstand: `main` mit 134 Commits, letzter Commit `eb5593c`.
+  - Build/Test erneut verifiziert: Frontend+Backend build gruen, Frontend 30/30 Tests gruen, Backend 12/12 Tests gruen.
+
+- Output-only Verhalten final gehaertet:
+  - `?view=prompter&output=1` blendet Header, Settings und Control-Panel vollstaendig aus.
+  - Neben dem App-Gate existiert ein zusaetzlicher Hard-Guard direkt im `ControlPanel`.
+
+- Support-Ticket-Transparenz + Live-Betrieb:
+  - Ticket-API liefert den realen Versandstatus getrennt ueber `confirmationEmailSent` und `supportNotificationEmailSent`.
+  - Live-Test in Produktion erstellt Tickets weiterhin erfolgreich (`stored=true`).
+  - Operativer Restpunkt: SMTP-Provider lehnt `From: support@...` bei Auth via `office@...` mit `553 5.7.1` ab; daher bleiben Mail-Flags bis zur Sender-Autorisierung `false`.
 
 - Bedien- und Layout-Regeln weiter geschaerft:
   - Prompter-Control-Bar sitzt jetzt in allen Layouts unten.
@@ -80,7 +94,7 @@ Aktuell ist zusaetzlich der Dokumentationsabgleich aktualisiert: Vorlagen, Suppo
 - Kalibrierungs-Assistent in Settings ergaenzt (Testsatz, Erkennungsauswertung, automatische Empfehlung).
 - Deutscher 4-Segment-Testsprechertext als Default/Loader verfuegbar, inkl. Legacy-Englisch-Migration.
 - Getrennte Prompter-Ausgabe als Output-Ansicht eingefuehrt (`?view=prompter&output=1`) ohne Header/Controls/Settings/Hotkeys.
-- Im normalen Prompter-Modus ist die Control-Bar ebenfalls unten angedockt; im Output-only Modus bleibt sie als reine Bedienleiste ohne Header/Settings aktiv.
+- Im normalen Prompter-Modus ist die Control-Bar unten angedockt; im Output-only Modus wird sie vollstaendig ausgeblendet.
 - Electron-Operatorfunktion `Monitor 2 Vollbild` ergaenzt: Prompter-Ausgabe laesst sich direkt auf den zweiten Bildschirm im Vollbild starten.
 - Browser-Neustart entkoppelt: kein `STOP`/`PAUSE`-Broadcast waehrend lokalem Reload, damit laufende Prompter-Ausgaben nicht unterbrochen werden.
 - Lizenz-/Rollout-Plan vorbereitet (`docs/LICENSING_AND_RELEASE_PLAN_DE.md`): signierte Lizenzschluessel, Revocation/Kill-Switch, Support-Runbook und Public+Offline-Rolloutphasen.

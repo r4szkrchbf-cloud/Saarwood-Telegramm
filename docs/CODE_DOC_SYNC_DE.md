@@ -1,6 +1,6 @@
 # Code- und Doku-Abgleich Saarwood Teleprompter
 
-_Stand: 2026-07-07_
+_Stand: 2026-07-08_
 
 Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen Code bereits vorhanden sind und welche bekannten Erweiterungen in der Doku bereits mitgedacht werden muessen.
 
@@ -9,7 +9,8 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 ### Frontend
 - App-Shell in `packages/frontend/src/App.tsx` mit Editor, Split-View, Prompter-View und Settings-Drawer.
 - Teleprompter-Output als Output-only-Ansicht via `?view=prompter&output=1`.
-- Normale Prompter-Ansicht und Output-only Ansicht nutzen beide die unten angedockte Prompter-Control-Bar.
+- Normale Prompter-Ansicht nutzt die unten angedockte Prompter-Control-Bar.
+- Output-only (`?view=prompter&output=1`) zeigt keine Header-/Settings-/Control-UI.
 - Display-Steuerung: Scroll-Speed, Play/Pause, Reset, Richtungswechsel, Horizontal- und Vertikalspiegelung, Rotation.
 - Desktop-/Tablet-Hotkeys: `Space`, `+/-`, `V`, `Q/E`, `[`/`]`, `/`, `P`, `N`, `Esc`, `F`.
 - Prompter-Output zeigt oben einen Laufzeitstatus (`PLAY` / `PAUSE` / `READY`) sowie die aktuelle Geschwindigkeit.
@@ -22,7 +23,7 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 - Tiptap-Editor mit Segmentstruktur und synchroner Prompter-Vorschau.
 - Voice Tracking mit Web Speech API im Expert-Tier, inklusive Mikrofonwahl, Empfindlichkeit und Kalibrierungs-Assistent.
 - Settings-Panel mit Support-Tickets, Support-Links, Support-Logs und lokaler Client-Log-Erfassung.
-- Kontakt/Support-Links werden aktuell aus `/api/support/info` geladen; PDF-basierte Aktivierung ist als eigener Folgeblock geplant.
+- Kontakt/Support-Links werden aus `/api/support/info` geladen; bei Platzhalter-/ungueltigen Werten greift eine PDF-Fallback-Normalisierung.
 - Import/Export fuer Segmente als JSON, CSV, TXT und PDF; Drucken nur ausserhalb Basic.
 - Template-Verwaltung unter dem aktuellen Begriff Telepromptervorlagen.
 - Desktop-spezifische Funktion fuer Prompter auf zweitem Monitor im Vollbild.
@@ -40,7 +41,7 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 ### Backend
 - REST-API und WebSocket-Sync fuer Steuerung und Editor-State.
 - WebSocket-Sync ist room-basiert; Output-only Clients senden keine Script-/Settings-/Positionsupdates zurueck.
-- Support-Service mit Ticket-Persistenz und automatischer Bestätigungs-E-Mail an den Absender.
+- Support-Service mit Ticket-Persistenz und Mail-Statusfeldern (`confirmationEmailSent`, `supportNotificationEmailSent`) fuer transparente Rueckmeldung.
 - Support-Log-Pipeline fuer die letzten 78 Stunden mit geschuetztem Zugriff.
 - MOS- und NDI-Abstraktion im Backend vorhanden.
 - Lizenz-/Zugriffsplanung ist dokumentiert, aber die operative produktive Rolle wird separat ueber Lizenzdokumente gesteuert.
@@ -68,7 +69,7 @@ Dieses Dokument ist die zentrale Referenz dafuer, welche Funktionen im aktuellen
 Diese Punkte sind bereits als naechste Schritte bekannt und sollen bei Codeaenderungen frueh in den Dokus gespiegelt werden:
 
 - Bundle-Splitting / Performance-Optimierung im Frontend.
-- PDF-Aktivierung der Kontakt/Support-Ressourcen in separatem Fenster mit Download.
+- SMTP-Sender-Autorisierung finalisieren, damit Ticket-Mails in Produktion von `false` auf `true` wechseln.
 - Vollabgleich aller drei Projekte vor dem Support-Link-Block.
 - Hostinger-VPS / Public-MVP-Rollout mit oeffentlicher WebSocket-Topologie.
 - Lizenz-Kill-Switch und Support-Runbook fuer Sperrung / Ausgabe / Revocation.
