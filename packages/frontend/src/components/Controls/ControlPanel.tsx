@@ -180,6 +180,12 @@ export function ControlPanel({
   }, [speedInput, applySpeed]);
 
   const allowSpeedInputCollapse = !isPrompterMode && !isEditorMode && isMobileLayout && typeof window !== 'undefined' && window.innerWidth < 360;
+  const urlForcesOutputOnly = typeof window !== 'undefined'
+    && new URLSearchParams(window.location.search).get('output') === '1';
+
+  if (isOutputOnly || urlForcesOutputOnly) {
+    return null;
+  }
 
   return (
     <div className="control-panel" role="region" aria-label="Teleprompter controls">

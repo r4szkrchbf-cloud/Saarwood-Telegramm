@@ -766,7 +766,7 @@ export function App() {
   const availableViewModes: ViewMode[] = isMobileLayout
     ? ['editor', 'prompter']
     : ['editor', 'split', 'prompter'];
-  const showControlPanel = !isOutputOnly || isMobileLayout;
+  const showControlPanel = !isOutputOnly;
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;

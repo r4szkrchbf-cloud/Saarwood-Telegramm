@@ -108,7 +108,7 @@ export class SupportService {
 
   private readonly mailReplyTo: string | null;
 
-  private readonly supportContactEmail: string | null;
+  private readonly supportContactEmails: string[];
 
   private readonly confirmationMailEnabled: boolean;
 
@@ -136,7 +136,7 @@ export class SupportService {
     this.smtpPass = process.env.SUPPORT_SMTP_PASS ?? null;
     this.mailFrom = process.env.SUPPORT_MAIL_FROM ?? null;
     this.mailReplyTo = process.env.SUPPORT_MAIL_REPLY_TO ?? null;
-    this.supportContactEmail = process.env.SUPPORT_CONTACT_EMAIL ?? null;
+    this.supportContactEmails = this.parseSupportContactEmails(process.env.SUPPORT_CONTACT_EMAIL ?? null);
     this.confirmationMailEnabled = process.env.SUPPORT_CONFIRMATION_MAIL_ENABLED !== 'false';
     this.confirmationSubjectPrefix = process.env.SUPPORT_CONFIRMATION_SUBJECT_PREFIX
       ?? '[Saarwood Support]';
@@ -431,6 +431,14 @@ export class SupportService {
     return this.smtpTransporter;
   }
 
+  private parseSupportContactEmails(raw: string | null): string[] {
+    if (!raw) return [];
+    return raw
+      .split(/[;,]/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+
   private async sendTicketConfirmationEmail(record: SupportTicketRecord): Promise<boolean> {
     if (!this.confirmationMailEnabled) return false;
     const transporter = this.getTransporter();
@@ -467,13 +475,15 @@ export class SupportService {
         text,
       });
       return true;
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(`[Support] Confirmation mail failed for ${record.id}: ${message}`);
       return false;
     }
   }
 
   private async sendSupportNotificationEmail(record: SupportTicketRecord): Promise<boolean> {
-    if (!this.supportContactEmail) return false;
+    if (this.supportContactEmails.length === 0) return false;
     const transporter = this.getTransporter();
     if (!transporter || !this.mailFrom) return false;
 
@@ -499,13 +509,15 @@ export class SupportService {
     try {
       await transporter.sendMail({
         from: this.mailFrom,
-        to: this.supportContactEmail,
+        to: this.supportContactEmails,
         ...(this.mailReplyTo ? { replyTo: this.mailReplyTo } : {}),
         subject,
         text,
       });
       return true;
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(`[Support] Support notification mail failed for ${record.id}: ${message}`);
       return false;
     }
   }

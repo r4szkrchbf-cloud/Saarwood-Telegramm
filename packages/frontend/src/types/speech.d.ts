@@ -133,3 +133,5 @@ interface SaarwoodDesktopApi {
 interface Window {
   saarwoodDesktop?: SaarwoodDesktopApi;
 }
+
+declare module '*.css';

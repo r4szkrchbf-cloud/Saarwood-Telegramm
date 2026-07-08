@@ -1010,18 +1010,27 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       const payload = await response.json() as {
         ticketId?: string;
         confirmationEmailSent?: boolean;
+        supportNotificationEmailSent?: boolean;
+        forwarded?: boolean;
       };
 
       const ticketId = payload.ticketId ?? 'unbekannt';
+      const supportNotice = payload.supportNotificationEmailSent === false
+        ? 'Support-Mail-Benachrichtigung: ausstehend oder nicht konfiguriert.'
+        : 'Support-Mail-Benachrichtigung: gesendet.';
+      const webhookNotice = payload.forwarded === true
+        ? 'Webhook-Weiterleitung: gesendet.'
+        : 'Webhook-Weiterleitung: nicht aktiv.';
+
       if (payload.confirmationEmailSent === false) {
         setSupportStatus(
           `Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}. ` +
-          'Hinweis: Die automatische E-Mail mit der Ticket-Kopie konnte noch nicht versendet werden.',
+          `Hinweis: Die automatische E-Mail mit der Ticket-Kopie konnte noch nicht versendet werden. ${supportNotice} ${webhookNotice}`,
         );
       } else {
         setSupportStatus(
           `Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}. ` +
-          'Sie haben eine automatische E-Mail mit einer Kopie Ihres Tickets erhalten.',
+          `Sie haben eine automatische E-Mail mit einer Kopie Ihres Tickets erhalten. ${supportNotice} ${webhookNotice}`,
         );
       }
       setTicketSubject('');
