@@ -5,6 +5,11 @@ _Stand: 2026-07-04 · Phase 2 (MVP Welle 1) · **Welle 1 vollständig ✅**_
 Dieses Dokument enthält alle offenen Aufgaben als priorisierte Backlog-Tickets.
 Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" definieren.
 
+## DRINGEND (separat)
+
+- 2026-07-08: SMTP-Absenderfreigabe / Ticketmail-Status finalisieren
+- Siehe: `docs/DRINGENDE_TODO_2026-07-08.md`
+
 ---
 
 ## HOTFIX-Block 2026-07-05 (P0 fuer MVP-Langzeittest)
