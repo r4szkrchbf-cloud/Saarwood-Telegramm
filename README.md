@@ -100,6 +100,12 @@ npm run build
 
 # Run all tests
 npm test
+
+# Daily project snapshot (auto-dated file in docs/)
+npm run snapshot:daily
+
+# Pre-deploy gate (runs snapshot + build + test + doc-date checks)
+npm run release:predeploy
 ```
 
 ## Native Desktop & Mobile Apps

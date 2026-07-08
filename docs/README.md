@@ -46,6 +46,12 @@ Die Projekt-Dokumentation ist thematisch sortiert:
 
 - [BETA_V1_RELEASE_NOTES](./BETA_V1_RELEASE_NOTES.md)
 
+## Automation
+
+- Daily Snapshot wird automatisch erzeugt mit `npm run snapshot:daily` und schreibt `docs/DAILY_SNAPSHOT_YYYY-MM-DD.md`.
+- Pre-Deploy Gate wird mit `npm run release:predeploy` ausgefuehrt und schreibt `docs/RELEASE_PREDEPLOY_CHECK_YYYY-MM-DD.md`.
+- Das Pre-Deploy Gate prueft automatisch: Build, Tests, Daily Snapshot, taeglicher Code-Doku-Abgleich (`STATUSABGLEICH_CODE_DOKU_YYYY-MM-DD.md`), `CODE_DOC_SYNC_DE.md` Datum und `PROJECT_STATUS_DE.md` Datum.
+
 ## Archiv
 
 - [Legacy Planning Files](./archive/legacy)
