@@ -757,6 +757,43 @@
   }
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet-only: keep split/prompter canvases fully inside viewport width. */
+  .view-split .app-workspace,
+  .view-prompter .app-workspace {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .view-split .editor-pane {
+    flex: 0 0 clamp(320px, 40%, 430px);
+  }
+
+  .view-split .prompter-pane,
+  .view-prompter .prompter-pane {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .view-split .prompter-stage,
+  .view-prompter .prompter-stage,
+  .view-split .prompter-viewport,
+  .view-prompter .prompter-viewport,
+  .view-split .prompter-transform-layer,
+  .view-prompter .prompter-transform-layer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Long helper badges can force horizontal overflow on iPad widths. */
+  .beta-warning,
+  .restart-hint {
+    display: none;
+  }
+}
+
 @media (max-width: 680px) {
   .app-workspace {
     min-height: 0;
