@@ -36,6 +36,8 @@ Heute abgeschlossen:
 Hinweis:
 - Tablet-Clipping in Split/Prompter wurde mit Live-Re-Test abgeschlossen; Detailbeleg inkl. Hostinger-Sync und Recovery in:
   - `docs/STATUSBERICHT_TABLET_LAYOUT_FIX_UND_HOSTINGER_SYNC_DE_2026-07-09.md`
+- Hostinger-Git-Checkout wurde nachgezogen (Deploy-Key + SSH + frischer Clone + erfolgreicher `update-app.sh` Endtest):
+  - `docs/STATUSBERICHT_HOSTINGER_GIT_CHECKOUT_SETUP_DE_2026-07-09.md`
 
 ## 3) Strategische GAP-Punkte
 

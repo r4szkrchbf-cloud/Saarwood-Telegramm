@@ -107,3 +107,9 @@ Kurzstatus:
 - Code-Fix in `packages/frontend/src/App.css` auf `main` gepusht.
 - Produktion wieder stabil (`/api/health` OK) und aktuelles Frontend-Asset verifiziert.
 - Viewport-Re-Test fuer Tablet-/Smartphone-Presets in `Split` und `Prompter` ohne horizontalen Overflow abgeschlossen.
+
+## 9. Addendum: Hostinger Git-Checkout Setup
+
+Der nachgelagerte Infrastrukturblock zur Wiederherstellung eines echten Git-Deploypfads auf Hostinger (Deploy-Key, SSH-Auth, frischer Clone, `update-app.sh` Endtest) ist separat dokumentiert:
+
+- `docs/STATUSBERICHT_HOSTINGER_GIT_CHECKOUT_SETUP_DE_2026-07-09.md`
