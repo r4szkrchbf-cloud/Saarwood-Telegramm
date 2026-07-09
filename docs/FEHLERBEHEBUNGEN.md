@@ -562,6 +562,43 @@ Kontext: Lizenz-Haertung fuer Offline-Betrieb und operative Vollkontrolle (Ausga
 
 ---
 
+## Eintrag 2026-07-09 19:05 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Expliziter Nachtest nach Deploy: Browser-E2E, Ticket-Persistenz, interne Mail und Empfaenger-Bestaetigung.
+
+### Ausgangsproblem
+- Nach dem technischen Fix sollte zusaetzlich live verifiziert werden, dass:
+  - Tickets wirklich gespeichert werden,
+  - interne Support-Benachrichtigung versendet wird,
+  - Empfaenger eine Bestaetigung mit Ticket-Kopie/Testbericht erhaelt.
+
+### Durchgefuehrte Schritte
+- Browser-E2E auf `/tester-form.html` ausgefuehrt und Formular vollstaendig abgesendet.
+- Erfolgsrueckmeldung in der UI geprueft (inkl. Ticket-ID und Mailhinweis).
+- Serverseitige Ticket-Datei geprueft (`/srv/saarwood_telepromter/backend/data/support-tickets.ndjson`).
+- Zusaetzlicher direkter API-POST gegen `/api/support/tickets` ausgefuehrt und Mail-Statusfelder ausgewertet.
+- Hostinger-Mailbox-Loginseite geoeffnet, um Inbox-Verifikation anzuschliessen.
+
+### Ergebnis
+- Browser-E2E erfolgreich:
+  - Ticket-ID `SWD-2026-000004` erzeugt.
+  - UI meldet: Formular gespeichert, Kopie per E-Mail angelegt.
+- API-Nachtest erfolgreich:
+  - Ticket-ID `SWD-2026-000005` erzeugt.
+  - Rueckgabe: `stored=true`, `confirmationEmailSent=true`, `supportNotificationEmailSent=true`.
+- Persistenz erfolgreich:
+  - Ticket `SWD-2026-000004` inkl. Testbericht und ergaenzender Notiz in `support-tickets.ndjson` nachgewiesen.
+- Inbox-Sichtpruefung in Hostinger war im Agent-Lauf blockiert, da die Session auf der Loginmaske endete (authentifizierter Zugriff erforderlich).
+
+### Offene Punkte
+- Fuer den finalen visuellen Inbox-Nachweis (Screenshot/Abgleich im Webmail) ist ein aktiver Login in Hostinger notwendig.
+
+### Lessons Learned
+- API-Mailflags plus persistenter Ticketnachweis liefern einen starken technischen E2E-Beleg.
+- Der letzte Nachweis-Schritt "sichtbare Inbox" ist in gesicherten Panels an eine authentifizierte Session gebunden.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ---
