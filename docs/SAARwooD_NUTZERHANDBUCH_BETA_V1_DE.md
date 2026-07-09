@@ -271,13 +271,3 @@ Fuer den stabilen Betrieb der Beta ist die manuelle Steuerung der Standard.
 - Ruckeln: Browser-Last reduzieren, nicht benoetigte Tabs schliessen.
 
 Dieses Handbuch endet hier.
-
-
-
-
-
-
-
-
-
-
