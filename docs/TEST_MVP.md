@@ -1518,3 +1518,37 @@ Bekannte Frontend-Build-Warnung zu Chunk-Groessen >500 kB technisch reduzieren u
 | Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
 |-------|------------------------|-------|-------|----------|
 | 23 | 2026-07-09 | Frontend-Chunk-Splitting + Build/Test-Retest | PASS | GRUEN |
+
+---
+
+## Runde 24 - 2026-07-09 UTC (Tablet-Querformat-Clipping Fix + Live-Re-Test)
+
+### Ziel
+
+Reproduziertes Clipping im Tablet-Querformat (Split/Prompter) beheben und auf Produktions-URL verifizieren.
+
+### Durchgefuehrte Schritte
+
+1. Live-Reproduktion ueber feste Viewports (inkl. 1280x800, 1366x1024).
+2. CSS-Hotfix in `packages/frontend/src/App.css` umgesetzt (Header/Workspace-Haertung + Breakpoint 1025-1366).
+3. Build lokal erfolgreich ausgefuehrt.
+4. Commit/Persistenz: `b1bc96c8055520fe1aa809001f68f48cc8a7a0aa`.
+5. Hostinger Full-Mirror + Build + Service-Restart.
+6. Nach Incident-Recovery: Produktions-Env-Pfade korrigiert und API + Frontend erneut verifiziert.
+7. Service-Worker-Cache im Test-Client geleert und Live-Re-Test wiederholt.
+
+### Verifikation
+
+- API: `GET /api/health` -> `status=ok`.
+- Frontend: ausgeliefertes HTML referenziert aktuelle Assets (`index-KHkhmdWN.js`, `index-j0dw0fzj.css`).
+- Viewport-Messung nach Fix (`Split` und `Prompter`):
+	- 1024x768: kein horizontaler Overflow
+	- 962x601: kein horizontaler Overflow
+	- 1280x800: kein horizontaler Overflow
+	- 1366x1024: kein horizontaler Overflow
+
+### Ergebnis Runde 24
+
+- Ergebnis: PASS (GRUEN)
+- Tablet-Querformat-Clipping ist im verifizierten Produktionsstand behoben.
+- Detailbeleg: `docs/STATUSBERICHT_TABLET_LAYOUT_FIX_UND_HOSTINGER_SYNC_DE_2026-07-09.md`

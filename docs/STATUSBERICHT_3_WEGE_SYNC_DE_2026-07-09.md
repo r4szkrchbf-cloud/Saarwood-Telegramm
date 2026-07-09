@@ -96,3 +96,14 @@ Durchgefuehrt gegen `https://teleprompter.saarwood.ch`:
 
 Bewertung:
 - Externer Smoke-Check ist bestanden (API + UI-Indikator live erreichbar und plausibel).
+
+## 8. Addendum: Tablet-Querformat-Fix + Hostinger-Recovery
+
+Fuer den nachgelagerten Incident-/Fix-Zyklus (Tablet-Clipping-Reproduktion, CSS-Hotfix, Hostinger-Full-Sync, Env-Recovery, Live-Re-Test) wurde ein separater Detailbericht erstellt:
+
+- `docs/STATUSBERICHT_TABLET_LAYOUT_FIX_UND_HOSTINGER_SYNC_DE_2026-07-09.md`
+
+Kurzstatus:
+- Code-Fix in `packages/frontend/src/App.css` auf `main` gepusht.
+- Produktion wieder stabil (`/api/health` OK) und aktuelles Frontend-Asset verifiziert.
+- Viewport-Re-Test fuer Tablet-/Smartphone-Presets in `Split` und `Prompter` ohne horizontalen Overflow abgeschlossen.

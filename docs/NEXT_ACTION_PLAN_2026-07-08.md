@@ -34,7 +34,8 @@ Heute abgeschlossen:
   - `docs/GAP_DSGVO_B2B_KURZKONZEPT_V1_DE_2026-07-09.md`
 
 Hinweis:
-- Tablet-Clipping in Split/Prompter wurde heute behoben und auf main gepusht.
+- Tablet-Clipping in Split/Prompter wurde mit Live-Re-Test abgeschlossen; Detailbeleg inkl. Hostinger-Sync und Recovery in:
+  - `docs/STATUSBERICHT_TABLET_LAYOUT_FIX_UND_HOSTINGER_SYNC_DE_2026-07-09.md`
 
 ## 3) Strategische GAP-Punkte
 
