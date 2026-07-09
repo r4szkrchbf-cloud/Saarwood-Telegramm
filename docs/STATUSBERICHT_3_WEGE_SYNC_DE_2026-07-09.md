@@ -72,3 +72,22 @@ Einordnung:
 - [x] Service aktiv und Healthcheck 200
 - [x] 3-Wege-Abgleich lokal/GitHub/Hostinger technisch nachgewiesen
 - [x] Secrets-Unterschiede zwischen aktuellem und altem Projekt geprueft und dokumentiert
+
+## 7. Externer Live-Smoke-Check (oeffentliche URL)
+
+Durchgefuehrt gegen `https://teleprompter.saarwood.ch`:
+
+1. Public Health Endpoint
+- Request: `GET /api/health`
+- Ergebnis: `{"status":"ok","uptime":4739,"wsClients":4,"mosClients":0}`
+
+2. Public Support-Info Endpoint
+- Request: `GET /api/support/info`
+- Ergebnis: `ok=true` inkl. produktiver `chatUrl`, `handbookUrl`, `testerGuideUrl`, `testerFormUrl`
+
+3. UI-Indikator in Output-Ansicht
+- URL: `/?view=prompter&output=1`
+- Sichtbarer Indikator im Live-Render: `READY` (Laufzeitstatus) in der Prompter-Ausgabe
+
+Bewertung:
+- Externer Smoke-Check ist bestanden (API + UI-Indikator live erreichbar und plausibel).
