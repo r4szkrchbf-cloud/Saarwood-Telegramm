@@ -64,6 +64,10 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        testerForm: path.resolve(__dirname, 'tester-form.html'),
+      },
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined;
@@ -79,7 +83,7 @@ export default defineConfig({
           return 'vendor';
         },
       },
-    },
+      },
   },
   test: {
     globals: true,

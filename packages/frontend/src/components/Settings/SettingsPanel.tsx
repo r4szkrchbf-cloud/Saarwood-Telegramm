@@ -13,8 +13,65 @@ type SettingsPage = 'settings' | 'io' | 'templates' | 'support' | 'about';
 const DEFAULT_SUPPORT_RESOURCE_URLS = {
   handbookUrl: '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf',
   testerGuideUrl: '/support/beta-tester-guide-de.pdf',
-  testerFormUrl: '/support/testerformular-beta-v1-de.pdf',
+  testerFormUrl: '/tester-form.html',
 } as const;
+
+function parseCsvRows(raw: string): string[][] {
+  const normalized = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < normalized.length; index += 1) {
+    const char = normalized[index];
+    const next = normalized[index + 1];
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (next === '"') {
+          cell += '"';
+          index += 1;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cell += char;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = true;
+      continue;
+    }
+
+    if (char === ',' || char === ';') {
+      row.push(cell.trim());
+      cell = '';
+      continue;
+    }
+
+    if (char === '\n') {
+      row.push(cell.trim());
+      if (row.some((value) => value.length > 0)) {
+        rows.push(row);
+      }
+      row = [];
+      cell = '';
+      continue;
+    }
+
+    cell += char;
+  }
+
+  row.push(cell.trim());
+  if (row.some((value) => value.length > 0)) {
+    rows.push(row);
+  }
+
+  return rows;
+}
 
 function normalizeSupportResourceUrl(url: string | null | undefined, fallback: string): string {
   if (!url || !url.trim()) return fallback;
@@ -158,6 +215,26 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       };
     });
   }, [plainTextToHtml]);
+
+  const parseProjectTitleCsv = useCallback((raw: string) => {
+    const rows = parseCsvRows(raw);
+    if (rows.length === 0) return [] as string[];
+
+    const values = rows.map((cols) => cols.map((col) => col.trim()));
+    const header = values[0].map((value) => value.toLowerCase());
+    const titleIndex = header.findIndex((value) => value === 'title' || value === 'name' || value === 'projekt' || value === 'sendung');
+    const headerConfidence = header.filter((value) => ['title', 'name', 'projekt', 'sendung', 'id', 'index'].includes(value)).length;
+    const hasHeader = titleIndex >= 0 && headerConfidence >= 2;
+    const dataRows = hasHeader ? values.slice(1) : values;
+
+    return dataRows
+      .map((cols) => {
+        if (hasHeader && titleIndex >= 0) return cols[titleIndex] ?? '';
+        return cols[0] ?? '';
+      })
+      .map((name) => name.trim())
+      .filter(Boolean);
+  }, []);
 
   const postClientLog = useCallback((entry: { level: 'info' | 'warn' | 'error'; source: string; message: string; details?: string }) => {
     void fetch('/api/support/logs/client', {
@@ -420,27 +497,6 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
   const handleImportProjectTitleClick = useCallback(() => {
     projectTitleImportInputRef.current?.click();
-  }, []);
-
-  const parseProjectTitleCsv = useCallback((raw: string) => {
-    const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-    if (rows.length === 0) return [] as string[];
-    const values = rows.map((line) => line.match(/("(?:[^"]|"")*"|[^,;]+)/g)?.map((col) =>
-      col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
-    ) ?? []);
-
-    const header = values[0].map((value) => value.toLowerCase());
-    const titleIndex = header.findIndex((value) => value === 'title' || value === 'name' || value === 'projekt' || value === 'sendung');
-    const headerConfidence = header.filter((value) => ['title', 'name', 'projekt', 'sendung', 'id', 'index'].includes(value)).length;
-    const hasHeader = titleIndex >= 0 && headerConfidence >= 2;
-    const dataRows = hasHeader ? values.slice(1) : values;
-    return dataRows
-      .map((cols) => {
-        if (hasHeader && titleIndex >= 0) return cols[titleIndex] ?? '';
-        return cols[0] ?? '';
-      })
-      .map((name) => name.trim())
-      .filter(Boolean);
   }, []);
 
   const handleImportProjectTitleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -752,19 +808,15 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         title = extracted.title;
       } else if (lowerName.endsWith('.csv')) {
         if (tier === 'basic') throw new Error('basic-tier-csv-import-blocked');
-        const rows = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const rows = parseCsvRows(raw);
         if (rows.length < 2) throw new Error('csv-empty');
-        const headerCols = rows[0]?.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
-          col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
-        ) ?? [];
-        const hasTitleColumn = headerCols[0]?.toLowerCase() === 'title';
+        const headerCols = rows[0].map((col) => col.toLowerCase());
+        const hasHeader = ['title', 'index', 'id', 'iscloaked', 'isdirectorsnote', 'text', 'html'].some((name) => headerCols.includes(name));
+        const hasTitleColumn = hasHeader ? headerCols[0] === 'title' : rows[0].length >= 7;
         const minimumColumns = hasTitleColumn ? 7 : 6;
-        if (headerCols.length < minimumColumns) throw new Error('csv-insufficient-columns');
-        const dataRows = rows.slice(1);
-        segments = dataRows.map((line, idx) => {
-          const cols = line.match(/("(?:[^"]|"")*"|[^,]+)/g)?.map((col) =>
-            col.replace(/^"|"$/g, '').replaceAll('""', '"').trim(),
-          ) ?? [];
+        const dataRows = hasHeader ? rows.slice(1) : rows;
+        if (dataRows.length === 0) throw new Error('csv-empty-data');
+        segments = dataRows.map((cols, idx) => {
           if (cols.length < minimumColumns) throw new Error('csv-row-insufficient-columns');
           const titleCol = hasTitleColumn ? cols[0] || '' : '';
           if (titleCol) title = titleCol;
@@ -856,7 +908,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     } finally {
       if (e.target) e.target.value = '';
     }
-  }, [extractTxtTitle, parsePlainTextSegments, plainTextToHtml, script, setScript, postClientLog, tier]);
+  }, [extractTxtTitle, parseCsvRows, parsePlainTextSegments, plainTextToHtml, script, setScript, postClientLog, tier]);
 
   const handleDownloadJsonTemplate = useCallback(() => {
     const sample = {

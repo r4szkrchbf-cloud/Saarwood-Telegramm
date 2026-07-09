@@ -56,7 +56,7 @@ Alternative mit Subdomains (empfohlen bei wachsendem Verkehr):
 ### 2.3 Dokumente und Tester-Formular auf Website
 
 - Handbuch und Tester-Guide als Download auf der Teleprompter-Unterseite bereitstellen.
-- Interaktives Tester-Formular unter fester URL bereitstellen (z. B. `/apps/teleprompter/test-form`).
+- Interaktives Tester-Formular unter fester URL bereitstellen (aktuell `/tester-form.html`, spaeter bei Bedarf auf eine App-Unterseite umleitbar).
 - Diese URLs in der App (Settings -> Support) als separate Fenster oeffnen.
 
 ### 2.4 Prozessbetrieb

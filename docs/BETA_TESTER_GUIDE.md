@@ -1,18 +1,18 @@
 # Saarwood Teleprompter - Beta-Tester-Leitfaden (Langzeittest)
 
 **Version:** Beta V1 (1.0.0-beta.1)  
-**Aktualisiert:** 2026-07-05  
+**Aktualisiert:** 2026-07-09  
 **Zweck:** Strukturierter Langzeittest mit echten Nutzern unter realen Sendebedingungen.
 
 Neu in dieser Revision:
-- Support-Ticket-Bestaetigung in der App mit Ticket-ID
-- Automatische Ticket-Kopie per E-Mail (wenn SMTP konfiguriert)
+
+- Smartphone-Hochkantregel und reduzierte Smartphone-Bedienung
 - Output-only Modus (`?view=prompter&output=1`)
 - Non-disruptive Restart (kein Stop fuer reine Ausgabe)
 - Desktop-Funktion "Monitor 2 Vollbild" fuer Prompter-Ausgabe
 - Lizenz-Status/Gate fuer Beta-Zugriff
 
-Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** in `docs/TEST_MVP.md` dokumentiert.
+Alle Testergebnisse, Fehler und Beobachtungen bitte mit Datum und Uhrzeit direkt im Testerformular erfassen.
 
 ---
 
@@ -21,14 +21,14 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 1. App installieren (siehe `docs/BETA_V1_RELEASE_NOTES.md` → Abschnitt Installation)
 2. Testszenarien aus diesem Leitfaden durchgehen
 3. **Jeden Befund sofort notieren** — mit Zeitstempel, Browser/Gerät, was du getan hast, was passiert ist
-4. Befunde an das Entwicklerteam weitergeben (GitHub Issue oder direkt in TEST_MVP.md eintragen)
+4. Befunde ueber das Testerformular einreichen
 
 ---
 
 ## Testprofil-Angaben (bitte für jeden Tester ausfüllen)
 
 | Feld | Wert |
-|------|------|
+| --- | --- |
 | Tester-Name / Alias | |
 | Teststart (Datum + Uhrzeit UTC) | |
 | Gerät | (z. B. MacBook Pro M2, iPhone 15, Windows 11 PC) |
@@ -42,7 +42,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 1 — Installation & Erster Start
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | I-01 | App im Browser öffnen | Ladezeit < 3 s, UI vollständig sichtbar | | |
 | I-02 | `BETA V1`-Badge im Header sichtbar | Orangefarbener Badge neben Logo | | |
 | I-03 | PWA-Installationsprompt erscheint (Chrome/Edge) | „Installieren"-Banner oder Icon in Adressleiste | | |
@@ -55,7 +55,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 2 — Editor & Script
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | E-01 | Demo-Script beim Start vorhanden | Zwei Segmente, korrekt formatiert | | |
 | E-02 | Neues Segment hinzufügen (+ Add segment) | Leeres Segment erscheint sofort | | |
 | E-03 | Text eingeben (100+ Zeichen) | Echtzeit-Darstellung im Prompter (Split-View) | | |
@@ -75,7 +75,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 3 - Teleprompter / Scroll-Engine
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | S-01 | Play-Button (oder Space-Taste) | Scrollen startet sofort, flüssig | | |
 | S-02 | Pause (Space oder ❙❙-Button) | Scrollen stoppt an genauer Position | | |
 | S-03 | Stop (Esc oder ■-Button) | Zurück zu Position 0 | | |
@@ -100,7 +100,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 4 — Einstellungen & Profile
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | P-01 | Schriftgröße vergrößern (Slider) | Prompter-Text ändert sich sofort | | |
 | P-02 | Schriftart wechseln | Prompter-Schrift ändert sich | | |
 | P-03 | Zeilenhöhe ändern | Zeilenabstand ändert sich | | |
@@ -117,8 +117,10 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 
 ## Checkliste 5 — Voice Tracking (Web Speech API)
 
+Nur testen, wenn Voice Tracking in eurer Testgruppe explizit freigeschaltet wurde.
+
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | V-01 | Voice Tracking aktivieren (Chrome/Edge) | Mikrofon-Berechtigung angefragt | | |
 | V-02 | Text vorlesen | Prompter scrollt automatisch zum gesprochenen Wort | | |
 | V-03 | Manuell scrollen → ASR pausiert 2 s | Nach manueller Eingabe keine ASR-Übernahme für 2 s | | |
@@ -129,7 +131,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 6 - WebSocket Remote Control
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | W-01 | Backend läuft, Frontend verbunden | Grüner WS-Indikator in ControlPanel | | |
 | W-02 | Backend nicht erreichbar | Roter Indikator, kein Absturz, Auto-Reconnect | | |
 | W-03 | Play-Kommando von zweitem Browser-Tab | Scrollen startet in beiden Instanzen | | |
@@ -143,15 +145,15 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 7 — Responsive / Mobile
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | M-01 | Öffnen auf Smartphone (Chrome Android) | Layout korrekt, kein Overflow | | |
 | M-02 | Öffnen auf iPad (Safari) | Layout korrekt | | |
 | M-03 | PWA auf iOS installieren | Standalone-Modus, kein Browser-Chrome | | |
 | M-04 | Touchscreen: Play/Stop/Speed | Buttons reagieren auf Touch | | |
 | M-05 | Orientation landscape → portrait | Layout passt sich an | | |
 | M-06 | Settings-Drawer auf kleinem Bildschirm | Volle Breite, scrollbar | | |
-| M-07 | Smartphone-Editor: Vorlagenkarte einklappen | Vorlagenkarte laesst sich per Button ein-/ausklappen | | |
-| M-08 | Smartphone-Editor: Control-Karte einklappen | Card mit Text auf Anfang / Voice ON/OFF laesst sich ein-/ausklappen | | |
+| M-07 | Smartphone-Editor: Vorlagenkarte sichtbar | Vorlagenkarte wird im Editor angezeigt | | |
+| M-08 | Smartphone-Editor: Control-Karte unten | Control-Karte ist unten angedockt | | |
 | M-09 | Smartphone-Editor: Prompter-Fenster fehlt | Kein `Prompter Fenster`-Button auf Smartphone | | |
 | M-10 | Smartphone-Prompter/Output-Ansicht | Entspricht funktional `?view=prompter&output=1` mit Pflicht-Controls | | |
 | M-11 | Smartphone-Header reduziert | Nur `SAARwooD Teleprompter`, kein Icon, kein Room-Hinweis | | |
@@ -162,7 +164,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | M-16 | Smartphone-Header: Settings neben View-Toggle | Settings-Button steht direkt bei `Editor`/`Prompter` | | |
 | M-17 | Smartphone-Prompter: Eine Bedienzeile | `Text auf Anfang`, Play/Pause, Mirror und Speed in einer Reihe | | |
 | M-18 | Smartphone-Prompter: Speed-Tasten vertikal | `+` und `-` sind uebereinander angeordnet | | |
-| M-19 | Smartphone-Editor: Vorlagenkarte bleibt eingeklappt | Kein automatisches Wiederaufklappen nach Resize/Rotate | | |
+| M-19 | Smartphone-Rotation zurueck auf Hochkant | App-Inhalt wird nach Hochkant wieder normal angezeigt | | |
 | M-20 | Smartphone Querformat-Sperre | Bei Querformat erscheint Hinweis auf Hochkantmodus, App-Inhalt bleibt gesperrt | | |
 
 ---
@@ -170,7 +172,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 8 - Performance & Stresstest
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | X-01 | 30-Minuten-Dauerscrollen | Kein Absturz, kein Memory-Leak | | |
 | X-02 | Script mit 10.000+ Zeichen live bearbeiten | Kein Einfrieren des Editors | | |
 | X-03 | Schnelles Wechseln zwischen View-Modi | Kein Layout-Flicker | | |
@@ -183,19 +185,17 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 9 - Support-Ticket und Kommunikation
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | T-01 | Support-Felder vollstaendig ausfuellen und Ticket absenden | Ticket wird erstellt, Ticket-ID wird angezeigt (`SWD-YYYY-XXXXXX`) | | |
 | T-02 | Ticket-Bestaetigungstext in der App pruefen | Text enthaelt: "Ihr Ticket ist beim Support eingegangen... Ticket-ID ..." | | |
-| T-03 | Automatische E-Mail bei aktivem SMTP | Absender erhaelt E-Mail mit Ticket-ID und Kopie (Name, Betreff, Nachricht) | | |
-| T-04 | Verhalten ohne SMTP | Ticket wird trotzdem gespeichert, App zeigt Hinweis dass Auto-Mail nicht gesendet werden konnte | | |
-| T-05 | Ticket-ID im Backend-Log pruefen | ID in Antwort und gespeicherten Tickets konsistent | | |
+| T-03 | Nach Absenden Formular-Link pruefen | Oeffnet sauber in neuem Fenster, keine Unterbrechung im Prompter | | |
 
 ---
 
 ## Checkliste 10 - Lizenz und Zugriff
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | L-01 | App ohne gueltiges Token starten (Lizenzmodus enforce) | Lizenz-Hinweis/Gate erscheint, geschuetzte Nutzung blockiert | | |
 | L-02 | Gueltiges Token aktivieren | Status wird aktiv, App nutzbar | | |
 | L-03 | Ungueltiges/abgelaufenes Token aktivieren | Klare Fehlermeldung, kein Aktiv-Status | | |
@@ -206,7 +206,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 ## Checkliste 11 - Desktop / Monitor 2 Output (Electron)
 
 | # | Test | Erwartet | Ergebnis | Fehler/Notiz |
-|---|------|----------|----------|--------------|
+| --- | --- | --- | --- | --- |
 | D-01 | Desktop-App starten, Button "Monitor 2 Vollbild" nutzen | Prompter-Ausgabe oeffnet auf zweitem Monitor im Vollbild | | |
 | D-02 | Kein zweiter Monitor angeschlossen | Klare Rueckmeldung, kein Absturz | | |
 | D-03 | Ausgabe-Fenster waehrend laufendem Scrollen oeffnen | Ausgabe startet stabil und synchron | | |
@@ -222,7 +222,7 @@ Bitte pro Tester mindestens diese Faelle durchfuehren:
 2. E-01, E-03, E-08, E-10
 3. S-01, S-02, S-04, S-16, S-17
 4. W-01, W-04, W-06
-5. T-01, T-02, T-03 (oder T-04 wenn SMTP fehlt)
+5. T-01, T-02, T-03
 6. L-01 und L-02
 7. D-01 bis D-04 (nur Desktop/Electron-Tester)
 
@@ -232,7 +232,7 @@ Bitte pro Tester mindestens diese Faelle durchfuehren:
 
 Für jeden gefundenen Fehler bitte folgendes Template verwenden:
 
-```
+```text
 ### BUG-[Nummer] — [Kurzbeschreibung]
 **Datum/Uhrzeit (UTC):** 
 **Tester:** 
@@ -252,7 +252,7 @@ Für jeden gefundenen Fehler bitte folgendes Template verwenden:
 
 ## Verbesserungsvorschlag-Vorlage
 
-```
+```text
 ### UX-[Nummer] — [Kurzbeschreibung]
 **Datum/Uhrzeit (UTC):** 
 **Tester:** 
@@ -268,7 +268,7 @@ Für jeden gefundenen Fehler bitte folgendes Template verwenden:
 Bitte am Ende des Testzeitraums folgende Gesamtbewertung ausfüllen:
 
 | Frage | Antwort (1=schlecht, 5=sehr gut) |
-|-------|----------------------------------|
+| --- | --- |
 | Wie stabil war die App insgesamt? | |
 | Wie flüssig war das Scrollen? | |
 | Wie intuitiv war die Bedienung? | |
@@ -278,4 +278,4 @@ Bitte am Ende des Testzeitraums folgende Gesamtbewertung ausfüllen:
 
 ---
 
-_Alle ausgefüllten Checklisten und Fehlerberichte werden in `docs/TEST_MVP.md` gesammelt._
+_Alle ausgefuellten Checklisten und Fehlerberichte werden ueber das Testerformular eingereicht._

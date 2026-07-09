@@ -12,7 +12,7 @@ describe('SupportService', () => {
     expect(service.getInfo({ protocol: 'https', host: 'teleprompter.saarwood.ch' })).toMatchObject({
       handbookUrl: 'https://teleprompter.saarwood.ch/support/saarwood-nutzerhandbuch-beta-v1-de.pdf',
       testerGuideUrl: 'https://teleprompter.saarwood.ch/support/beta-tester-guide-de.pdf',
-      testerFormUrl: 'https://teleprompter.saarwood.ch/support/testerformular-beta-v1-de.pdf',
+      testerFormUrl: 'https://teleprompter.saarwood.ch/tester-form.html',
     });
   });
 
@@ -26,7 +26,7 @@ describe('SupportService', () => {
 
     expect(info.handbookUrl).toBe('https://teleprompter.saarwood.ch/support/saarwood-nutzerhandbuch-beta-v1-de.pdf');
     expect(info.testerGuideUrl).toBe('https://teleprompter.saarwood.ch/support/beta-tester-guide-de.pdf');
-    expect(info.testerFormUrl).toBe('https://teleprompter.saarwood.ch/support/testerformular-beta-v1-de.pdf');
+    expect(info.testerFormUrl).toBe('https://teleprompter.saarwood.ch/tester-form.html');
   });
 
   it('keeps real document URLs untouched', () => {

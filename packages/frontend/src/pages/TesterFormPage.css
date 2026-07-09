@@ -1,0 +1,335 @@
+.tester-form-page,
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html,
+body,
+#root {
+  overflow: auto;
+}
+
+.tester-form-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(89, 138, 255, 0.25), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(247, 156, 46, 0.18), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #0b1627 48%, #f4efe8 48%, #f4efe8 100%);
+  color: #f5f7fb;
+  font-family: 'Avenir Next', 'SF Pro Text', 'Segoe UI', sans-serif;
+}
+
+.tester-form-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 24px 40px;
+}
+
+.tester-form-hero {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+
+.tester-form-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #c4d4ff;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tester-form-hero h1 {
+  margin: 18px 0 14px;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.tester-form-intro {
+  max-width: 62ch;
+  color: rgba(245, 247, 251, 0.82);
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.tester-form-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 18px;
+}
+
+.tester-form-badge {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 0.85rem;
+}
+
+.tester-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 22px;
+}
+
+.tester-form-card {
+  border-radius: 28px;
+  padding: 24px;
+  background: rgba(8, 16, 29, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
+}
+
+.tester-form-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tester-form-card-head h2 {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+
+.tester-form-card-head p,
+.tester-form-print-note p,
+.tester-form-success p,
+.tester-form-status {
+  color: rgba(245, 247, 251, 0.72);
+  line-height: 1.55;
+}
+
+.tester-form-print-btn,
+.tester-form-submit {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.tester-form-print-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f6f8ff;
+}
+
+.tester-form-submit {
+  background: linear-gradient(135deg, #f7b24b, #f98d3f);
+  color: #08111f;
+}
+
+.tester-form-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tester-form-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tester-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #edf2ff;
+  font-size: 0.95rem;
+}
+
+.tester-form-field--full {
+  grid-column: 1 / -1;
+}
+
+.tester-form-field input,
+.tester-form-field textarea {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fbff;
+  padding: 0.95rem 1rem;
+  font: inherit;
+  resize: vertical;
+}
+
+.tester-form-field input::placeholder,
+.tester-form-field textarea::placeholder {
+  color: rgba(245, 247, 251, 0.45);
+}
+
+.tester-form-field input:focus,
+.tester-form-field textarea:focus {
+  border-color: rgba(247, 178, 75, 0.8);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(247, 178, 75, 0.16);
+}
+
+.tester-form-actions {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.tester-form-status {
+  min-height: 1.5rem;
+}
+
+.tester-form-preview {
+  background: linear-gradient(180deg, rgba(245, 239, 232, 0.98), rgba(236, 231, 225, 0.96));
+  color: #0d1726;
+}
+
+.tester-form-preview .tester-form-card-head h2,
+.tester-form-preview .tester-form-card-head p,
+.tester-form-preview .tester-form-status,
+.tester-form-preview .tester-form-print-note p,
+.tester-form-preview .tester-form-success p {
+  color: #243143;
+}
+
+.tester-form-summary {
+  display: grid;
+  gap: 14px;
+}
+
+.tester-form-summary > div {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(8, 16, 29, 0.06);
+}
+
+.tester-form-summary dt {
+  margin-bottom: 6px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(13, 23, 38, 0.55);
+}
+
+.tester-form-summary dd {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.tester-form-summary--full {
+  grid-column: 1 / -1;
+}
+
+.tester-form-success,
+.tester-form-print-note {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(13, 23, 38, 0.14);
+}
+
+.tester-form-success h3,
+.tester-form-print-note h3 {
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.tester-form-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.tester-form-orb--one {
+  top: -140px;
+  right: -60px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(78, 116, 255, 0.36), rgba(78, 116, 255, 0));
+}
+
+.tester-form-orb--two {
+  left: -100px;
+  bottom: 80px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(247, 151, 57, 0.28), rgba(247, 151, 57, 0));
+}
+
+@media (max-width: 960px) {
+  .tester-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .tester-form-shell {
+    padding-inline: 16px;
+    padding-top: 28px;
+  }
+
+  .tester-form-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .tester-form-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .tester-form-card-head {
+    flex-direction: column;
+  }
+}
+
+@media print {
+  .tester-form-page {
+    background: #ffffff;
+    color: #111;
+  }
+
+  .tester-form-orb,
+  .tester-form-hero,
+  .tester-form-print-btn,
+  .tester-form-actions,
+  .tester-form-print-note {
+    display: none !important;
+  }
+
+  .tester-form-shell {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .tester-form-grid {
+    display: block;
+  }
+
+  .tester-form-card {
+    border: 0;
+    box-shadow: none;
+    background: #fff;
+    color: #111;
+    padding: 0;
+  }
+
+  .tester-form-fields,
+  .tester-form-summary {
+    break-inside: avoid;
+  }
+}

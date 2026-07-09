@@ -1,4 +1,4 @@
-# <span style="color:#ff3b30;font-weight:800;">SAAR</span><span style="color:#ffffff;font-weight:700;">woo</span><span style="color:#ff3b30;font-weight:800;">D</span> Teleprompter Beta V1 - Nutzerhandbuch
+# SAARwooD Teleprompter Beta V1 - Nutzerhandbuch
 
 ## 1. Start
 
@@ -14,9 +14,9 @@ Auf Smartphones gilt aktuell:
 - nur Hochkantbetrieb (Querformat ist gesperrt und zeigt einen Drehhinweis)
 - keine Titelanzeige und keine Titel-Steuerung
 - kein `Prompter Fenster`-Button
-- Vorlagenkarte und Editor-Steuerkarte sind einklappbar
 - im Header nur `SAARwooD Teleprompter`, ohne Icon und ohne Room-Hinweis
-- Vorlagenkarte sichtbar/einklappbar im Editor, Editor-Steuerkarte unten angedockt
+- Vorlagenkarte im Editor sichtbar
+- Editor-Steuerkarte unten angedockt
 - Settings-Button direkt neben den Umschaltern `Editor`/`Prompter`
 - im Prompter-Modus keine numerische Speed-Eingabe, nur `+`/`-`
 - im Prompter-Modus nur `V-Mirror`
@@ -91,8 +91,8 @@ Brauchen alle Geraete dasselbe WLAN?
 1. Titel oben im Editor setzen.
 2. Der Titel dient zugleich als Projektname oder Sendungsname und wird in Import-/Exportvorlagen mitgefuehrt.
 3. Segmente bearbeiten oder neue Segmente mit Add segment hinzufuegen.
-3. Fuer Testbetrieb kann in Settings der deutsche 4-Segment-Testtext geladen werden.
-4. Import aus TXT ist im Basic-Tier vorgesehen; JSON/CSV/TXT sind in hoehren Tiers verfuegbar.
+4. Fuer Testbetrieb kann in Settings der deutsche 4-Segment-Testtext geladen werden.
+5. Import aus TXT ist im Basic-Tier vorgesehen; JSON/CSV/TXT sind in hoehren Tiers verfuegbar.
 
 ## 2.1 Import und Export
 
@@ -114,7 +114,7 @@ Tier-Regeln:
 Je nach Format koennen folgende Felder vorkommen:
 
 | Feld | Bedeutung |
-|------|-----------|
+| --- | --- |
 | `title` | Titel des gesamten Scripts |
 | `segments` | Liste aller Script-Segmente |
 | `id` | Technische Kennung eines Segments |
@@ -139,21 +139,21 @@ Einfaches JSON-Beispiel:
 
 ```json
 {
-	"title": "Abendnachrichten",
-	"segments": [
-		{
-			"speaker": "Sprecherin 1",
-			"text": "Guten Abend und herzlich willkommen.",
-			"isCloaked": false,
-			"isDirectorsNote": false
-		},
-		{
-			"speaker": "Regie",
-			"text": "Noch nicht freigeben.",
-			"isCloaked": true,
-			"isDirectorsNote": true
-		}
-	]
+  "title": "Abendnachrichten",
+  "segments": [
+    {
+      "speaker": "Sprecherin 1",
+      "text": "Guten Abend und herzlich willkommen.",
+      "isCloaked": false,
+      "isDirectorsNote": false
+    },
+    {
+      "speaker": "Regie",
+      "text": "Noch nicht freigeben.",
+      "isCloaked": true,
+      "isDirectorsNote": true
+    }
+  ]
 }
 ```
 
@@ -198,6 +198,7 @@ Ab Expert gibt es zusaetzlich eine eigene Projekt-/Sendungsnamen-Bibliothek.
 ## 3. Prompter steuern
 
 Wichtige Buttons:
+
 - Text auf Anfang: stoppt und setzt Position auf 0
 - Prompter NeuStart: kompletter App-Neustart mit Reset
 - Play/Pause: startet oder pausiert den Lauf
@@ -210,7 +211,7 @@ Wichtige Buttons:
 - n oder N: Prompter NeuStart (mit Bestaetigung)
 - p oder P: separates Prompter-Fenster oeffnen
 - Escape: Stop
-- + oder = oder NumpadAdd: Geschwindigkeit +5
+- `+` oder `=` oder NumpadAdd: Geschwindigkeit +5
 - - oder _ oder NumpadSubtract: Geschwindigkeit -5
 - Pfeil hoch / runter: Richtung
 - h / H: Spiegelung horizontal
@@ -222,6 +223,7 @@ Wichtige Buttons:
 ## 5. Anzeigeeinstellungen
 
 Im Settings-Bereich:
+
 - Schriftgroesse
 - Schriftart
 - Zeilenhoehe
@@ -254,8 +256,7 @@ Empfehlung fuer den Live-Betrieb auf Mobilgeraeten:
 
 ## 6. Voice-Hinweis fuer Beta V1
 
-Voice Tracking ist im Expert-Tier verfuegbar und kann im passenden Browser aktiviert werden.
-Wenn kein Unterstuetzungs-Browser vorhanden ist oder das Feature bewusst klein gehalten werden soll, bleibt die manuelle Steuerung der Default.
+Fuer den stabilen Betrieb der Beta ist die manuelle Steuerung der Standard.
 
 ## 7. Betriebsempfehlung fuer Live-Einsatz
 
@@ -268,19 +269,15 @@ Wenn kein Unterstuetzungs-Browser vorhanden ist oder das Feature bewusst klein g
 
 - Keine Verbindung: Backend/WS pruefen, Seite neu laden.
 - Ruckeln: Browser-Last reduzieren, nicht benoetigte Tabs schliessen.
-- Falscher Startpunkt: Cue-Marker-Pruefung in Settings und Position resetten.
 
-## 9. Support-Notiz
+Dieses Handbuch endet hier.
 
-Fuer Pilotbetrieb alle Auffaelligkeiten mit Zeitstempel dokumentieren und in die Projektdoku uebernehmen.
-Support-Tickets und Client-Logs gehoeren in den Support-Prozess, nicht in den Prompter-Workflow.
 
-## 10. Hinweis zur kostenlosen Basic-Version
 
-Vor der oeffentlichen Hostinger-Freigabe der kostenlosen Basic-Version wird das Werbe- und Upgrade-Modell separat festgelegt.
-Aktuelle Produktempfehlung fuer die Diskussion:
 
-- Professional und Expert bleiben werbefrei.
-- Basic kann spaeter interne Upgrade-Hinweise enthalten.
-- Fuer Prompterbild und Output ist eine kleine, deutliche, aber nicht dominante Werbe-/Upgrade-Einblendung als moegliche Option vorgemerkt.
-- Vor technischer Umsetzung wird diese Platzierung gesondert diskutiert und freigegeben.
+
+
+
+
+
+

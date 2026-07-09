@@ -98,7 +98,7 @@ Umgebungsvariablen für das Backend:
 | `SUPPORT_TICKET_WEBHOOK_URL` | _(leer)_ | Optionaler Webhook fuer Ticket-Weiterleitung (z. B. Helpdesk) |
 | `SUPPORT_HANDBOOK_URL` | _(leer)_ | Link zum Handbuch-Download (oeffnet in neuem Fenster) |
 | `SUPPORT_TESTER_GUIDE_URL` | _(leer)_ | Link zum Tester-Guide-Download (oeffnet in neuem Fenster) |
-| `SUPPORT_TESTER_FORM_URL` | _(leer)_ | Link zum interaktiven Tester-Formular (oeffnet in neuem Fenster) |
+| `SUPPORT_TESTER_FORM_URL` | `/tester-form.html` | Link zum interaktiven Tester-Formular (oeffnet in neuem Fenster) |
 
 Beispiel mit allen Features:
 ```bash

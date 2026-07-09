@@ -73,7 +73,7 @@ const MAX_CLIENT_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 const MAX_CLIENT_LOG_BACKUPS = 5;
 const DEFAULT_HANDBOOK_PATH = '/support/saarwood-nutzerhandbuch-beta-v1-de.pdf';
 const DEFAULT_TESTER_GUIDE_PATH = '/support/beta-tester-guide-de.pdf';
-const DEFAULT_TESTER_FORM_PATH = '/support/testerformular-beta-v1-de.pdf';
+const DEFAULT_TESTER_FORM_PATH = '/tester-form.html';
 
 export class SupportService {
   private readonly chatUrl: string | null;
