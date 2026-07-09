@@ -7,8 +7,33 @@ on:
     branches: [main, master]
 
 jobs:
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION=8.24.2
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp
+          chmod +x /tmp/gitleaks
+
+      - name: Run gitleaks
+        run: /tmp/gitleaks detect --no-banner --redact --source . --config .gitleaks.toml
+
   ci:
     name: Type-check · Test · Build
+    needs: secret-scan
     runs-on: ubuntu-latest
     timeout-minutes: 15
 

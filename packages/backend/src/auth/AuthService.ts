@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { compare } from 'bcryptjs';
 
 export type AdminRole = 'owner' | 'operator' | 'editor' | 'viewer';
 export type AdminAuthMethod = 'password' | 'sso' | 'magic-link';
@@ -62,6 +63,10 @@ const FALLBACK_USERS: AuthUser[] = [
   },
 ];
 
+function isBcryptHash(value: string): boolean {
+  return /^\$2[aby]\$\d{2}\$/.test(value.trim());
+}
+
 function parseUsers(raw: string | undefined): AuthUser[] {
   if (!raw?.trim()) return FALLBACK_USERS;
 
@@ -96,8 +101,43 @@ export class AuthService {
   private readonly revokedJti = new Set<string>();
 
   constructor() {
-    this.users = parseUsers(process.env.ADMIN_AUTH_USERS_JSON);
-    this.jwtSecret = new TextEncoder().encode(process.env.ADMIN_AUTH_JWT_SECRET ?? 'dev-admin-auth-secret');
+    const isProduction = process.env.NODE_ENV === 'production';
+    const rawUsers = process.env.ADMIN_AUTH_USERS_JSON;
+    const parsedUsers = parseUsers(rawUsers);
+    const requireHashedPasswords = process.env.ADMIN_AUTH_REQUIRE_HASHED_PASSWORDS !== 'false';
+
+    if (isProduction && parsedUsers === FALLBACK_USERS) {
+      throw new Error(
+        'auth-config-error: ADMIN_AUTH_USERS_JSON is required in production and must not use fallback users',
+      );
+    }
+
+    if (isProduction && requireHashedPasswords) {
+      const usersWithPlaintextPassword = parsedUsers
+        .filter((user) => !isBcryptHash(user.password))
+        .map((user) => user.adminId || user.email);
+
+      if (usersWithPlaintextPassword.length > 0) {
+        throw new Error(
+          `auth-config-error: ADMIN_AUTH_USERS_JSON contains non-bcrypt passwords for: ${usersWithPlaintextPassword.join(', ')}`,
+        );
+      }
+    }
+
+    const rawJwtSecret = process.env.ADMIN_AUTH_JWT_SECRET?.trim();
+    if (isProduction) {
+      if (!rawJwtSecret) {
+        throw new Error('auth-config-error: ADMIN_AUTH_JWT_SECRET is required in production');
+      }
+
+      const forbiddenSecrets = new Set(['dev-admin-auth-secret', 'change-me', 'CHANGE_ME_IN_ENV']);
+      if (forbiddenSecrets.has(rawJwtSecret)) {
+        throw new Error('auth-config-error: ADMIN_AUTH_JWT_SECRET uses a forbidden placeholder/default value');
+      }
+    }
+
+    this.users = parsedUsers;
+    this.jwtSecret = new TextEncoder().encode(rawJwtSecret ?? 'dev-admin-auth-secret');
     this.issuer = process.env.ADMIN_AUTH_ISSUER ?? 'saarwood-auth';
     this.audience = process.env.ADMIN_AUTH_AUDIENCE ?? 'saarwood-admin';
     this.ttlSec = Number.parseInt(process.env.ADMIN_AUTH_TTL_SEC ?? '28800', 10);
@@ -122,8 +162,11 @@ export class AuthService {
       throw new Error('auth-user-not-found');
     }
 
-    if (params.method === 'password' && account.password !== params.password) {
-      throw new Error('auth-invalid-password');
+    if (params.method === 'password') {
+      const isValidPassword = await this.verifyPassword(account.password, params.password);
+      if (!isValidPassword) {
+        throw new Error('auth-invalid-password');
+      }
     }
 
     if (params.method === 'sso' && !this.getProviderConfig().ssoEnabled) {
@@ -207,5 +250,22 @@ export class AuthService {
     return this.users.find(
       (user) => user.email.toLowerCase() === needle || user.adminId.toLowerCase() === needle,
     ) ?? null;
+  }
+
+  private async verifyPassword(storedPassword: string, providedPassword: string): Promise<boolean> {
+    const normalizedStored = storedPassword.trim();
+    const normalizedProvided = providedPassword;
+
+    // bcrypt hash format: $2a$, $2b$, or $2y$ followed by cost and hash payload.
+    if (isBcryptHash(normalizedStored)) {
+      return compare(normalizedProvided, normalizedStored);
+    }
+
+    // Legacy plaintext is only tolerated outside production for local transition.
+    if (process.env.NODE_ENV === 'production') {
+      return false;
+    }
+
+    return normalizedStored === normalizedProvided;
   }
 }

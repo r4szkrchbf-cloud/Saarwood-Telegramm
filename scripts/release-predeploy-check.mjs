@@ -35,6 +35,23 @@ function hasTodayStand(filePath, date) {
   return standRegex.test(content);
 }
 
+function findForbiddenSecretPlaceholders(filePath) {
+  const content = readIfExists(filePath);
+  if (!content) return [];
+
+  const rules = [
+    { pattern: /^\s*ADMIN_AUTH_JWT_SECRET\s*=\s*dev-admin-auth-secret\s*$/m, label: 'ADMIN_AUTH_JWT_SECRET=dev-admin-auth-secret' },
+    { pattern: /^\s*ADMIN_AUTH_JWT_SECRET\s*=\s*change-me[^\n]*$/m, label: 'ADMIN_AUTH_JWT_SECRET=change-me*' },
+    { pattern: /^\s*ADMIN_API_KEY\s*=\s*change-me[^\n]*$/m, label: 'ADMIN_API_KEY=change-me*' },
+    { pattern: /^\s*SUPPORT_SMTP_PASS\s*=\s*change-me[^\n]*$/m, label: 'SUPPORT_SMTP_PASS=change-me*' },
+    { pattern: /^\s*ADMIN_AUTH_USERS_JSON\s*=.*CHANGE_ME_IN_ENV.*$/m, label: 'ADMIN_AUTH_USERS_JSON contains CHANGE_ME_IN_ENV' },
+  ];
+
+  return rules
+    .filter((rule) => rule.pattern.test(content))
+    .map((rule) => rule.label);
+}
+
 function git(command, fallback = 'n/a') {
   try {
     return execSync(command, { cwd: repoRoot, encoding: 'utf8' }).trim();
@@ -86,6 +103,16 @@ function main() {
   const buildResult = runCommand('npm', ['run', 'build']);
   const testResult = buildResult.ok ? runCommand('npm', ['run', 'test']) : { ok: false, code: 1, durationSec: '0.0' };
 
+  const productionEnvCandidates = [
+    path.join(repoRoot, '.env.production'),
+    path.join(repoRoot, 'deploy/hostinger/.env.production'),
+  ];
+
+  const placeholderFindings = productionEnvCandidates.flatMap((candidatePath) => {
+    const findings = findForbiddenSecretPlaceholders(candidatePath);
+    return findings.map((finding) => `${path.relative(repoRoot, candidatePath)} -> ${finding}`);
+  });
+
   const checks = [
     {
       label: `Daily Snapshot vorhanden (docs/DAILY_SNAPSHOT_${date}.md)`,
@@ -103,9 +130,21 @@ function main() {
       label: `PROJECT_STATUS_DE.md auf Stand ${date}`,
       ok: hasTodayStand(path.join(docsDir, 'PROJECT_STATUS_DE.md'), date),
     },
+    {
+      label: 'Keine verbotenen Secret-Placeholder in produktiven Env-Dateien',
+      ok: placeholderFindings.length === 0,
+    },
   ];
 
   const { reportPath, allPassed } = writeChecklistReport(date, checks, buildResult, testResult);
+
+  if (placeholderFindings.length > 0) {
+    process.stderr.write('Forbidden secret placeholders found:\n');
+    for (const finding of placeholderFindings) {
+      process.stderr.write(`- ${finding}\n`);
+    }
+  }
+
   process.stdout.write(`${path.relative(repoRoot, reportPath)}\n`);
 
   if (!allPassed) {

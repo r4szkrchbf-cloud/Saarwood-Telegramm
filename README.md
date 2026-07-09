@@ -175,11 +175,12 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 | `ENABLE_MOS` | `true` | Start MOS TCP listener |
 | `ENABLE_NDI` | `true` | Initialise NDI adapter |
 | `CORS_ORIGIN` | `http://localhost:3000,http://localhost:5173,https://teleprompter.saarwood.ch,https://admin.saarwood.ch,https://saarwood.ch` | Allowed CORS origins (comma-separated) |
-| `ADMIN_AUTH_JWT_SECRET` | `dev-admin-auth-secret` | JWT signing secret for central admin auth |
+| `ADMIN_AUTH_JWT_SECRET` | _kein produktiver Default_ | JWT signing secret for central admin auth. Must be set explicitly in production; the legacy dev-only fallback must never be used in production. |
 | `ADMIN_AUTH_TTL_SEC` | `28800` | JWT lifetime in seconds |
 | `ADMIN_AUTH_ISSUER` | `saarwood-auth` | JWT issuer claim |
 | `ADMIN_AUTH_AUDIENCE` | `saarwood-admin` | JWT audience claim |
-| `ADMIN_AUTH_USERS_JSON` | fallback demo users | JSON array of admin accounts (`adminId`, `email`, `displayName`, `role`, `password`) |
+| `ADMIN_AUTH_USERS_JSON` | fallback demo users | JSON array of admin accounts (`adminId`, `email`, `displayName`, `role`, `password`). Password should be a bcrypt hash (`$2a$`, `$2b$`, `$2y$`). In production, plaintext passwords are rejected. |
+| `ADMIN_AUTH_REQUIRE_HASHED_PASSWORDS` | `true` in production | Optional startup guard for admin users. In production, startup fails if any password in `ADMIN_AUTH_USERS_JSON` is not bcrypt (set `false` only for short migration windows). |
 | `ADMIN_AUTH_SSO_ENABLED` | `false` | Enables SSO login method in central auth endpoint |
 | `ADMIN_AUTH_MAGIC_LINK_ENABLED` | `false` | Enables Magic-Link login method in central auth endpoint |
 | `ADMIN_AUTH_SSO_PROVIDER` | `oidc` | Provider label for `/api/admin/auth/providers` |
@@ -192,6 +193,80 @@ See `docs/NATIVE_APP_GUIDE.md` for detailed build instructions and release signi
 | `SUPPORT_MAIL_REPLY_TO` | `support@saarwood.ch` | Reply-to address in support mails |
 | `SUPPORT_CONTACT_EMAIL` | `support@saarwood.ch` | Internal support inbox receiving a copy of each new ticket |
 | `SUPPORT_CONFIRMATION_MAIL_ENABLED` | `true` | Sends confirmation email to ticket creator |
+
+### Admin Auth Hash Migration
+
+Generate hashed admin users JSON from plaintext input:
+
+```bash
+npm run auth:hash-users --workspace=packages/backend -- \
+  --in secrets/admin-users.plain.json \
+  --out secrets/admin-users.hashed.json \
+  --cost 12
+```
+
+Input file example (`secrets/admin-users.plain.json`):
+
+```json
+[
+  {
+    "adminId": "ADM-OWNER-01",
+    "email": "owner@saarwood.ch",
+    "displayName": "Owner Console",
+    "role": "owner",
+    "password": "replace-with-strong-secret"
+  },
+  {
+    "adminId": "ADM-OPS-01",
+    "email": "operator@saarwood.ch",
+    "displayName": "Operator Desk",
+    "role": "operator",
+    "password": "replace-with-strong-secret"
+  }
+]
+```
+
+Output is the same schema with bcrypt hashes in `password`.
+
+Render one safe one-line env var from hashed JSON:
+
+```bash
+npm run auth:render-users-env --workspace=packages/backend -- \
+  --in secrets/admin-users.hashed.json \
+  --export \
+  --out secrets/admin-users.env
+```
+
+This prints and optionally writes:
+
+```bash
+export ADMIN_AUTH_USERS_JSON='[{"adminId":"...","email":"...","displayName":"...","role":"owner","password":"$2b$12$..."}]'
+```
+
+Then source it before starting the backend:
+
+```bash
+source secrets/admin-users.env
+```
+
+`ADMIN_AUTH_USERS_JSON` example (hashed):
+
+```json
+[
+  {
+    "adminId": "ADM-OWNER-01",
+    "email": "owner@saarwood.ch",
+    "displayName": "Owner Console",
+    "role": "owner",
+    "password": "$2b$12$exampleexampleexampleexampleexampleexampleexampleexample"
+  }
+]
+```
+
+Security note:
+
+- Keep plaintext source files only in local `secrets/` and never commit them.
+- In production, keep `ADMIN_AUTH_REQUIRE_HASHED_PASSWORDS=true`.
 
 ### Adminpanel support inbox endpoints
 

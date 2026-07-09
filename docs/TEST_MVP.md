@@ -1439,3 +1439,82 @@ Aktuellen Produktionsstand fuer die letzten UI- und Hotkey-Aenderungen dokumenti
 | Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
 |-------|------------------------|-------|-------|----------|
 | 18 | 2026-07-07 | UI-/Hotkey-/Layout-Abgleich live | PASS | GRUEN |
+
+---
+
+## Runde 22 - 2026-07-08 UTC (Support-E2E nach SMTP-/Secret-Rotation)
+
+### Ziel
+
+Produktiven Support-Flow nach operativer Secret-Rotation und SMTP-Login-Korrektur verifizieren:
+
+1. Ticket wird gespeichert.
+2. Bestaetigungsmail an Absender wird versendet.
+3. Support-Notification wird versendet.
+
+### Durchgefuehrte Schritte
+
+1. Produktive SMTP-/Support-Konfiguration auf dem VPS geprueft und auf Support-Mailbox ausgerichtet:
+	- `SUPPORT_SMTP_USER=support@saarwood.saarwood.ch`
+	- `SUPPORT_MAIL_FROM=support@saarwood.saarwood.ch`
+	- `SUPPORT_MAIL_REPLY_TO=support@saarwood.saarwood.ch`
+2. Service neu gestartet und Health verifiziert (`/api/health` gruen).
+3. Live-Testtickets gegen produktives Backend erstellt.
+
+### Verifikation
+
+Ticket `SWD-2026-000016`:
+- `stored=true`
+- `confirmationEmailSent=true`
+- `supportNotificationEmailSent=true`
+
+Ticket `SWD-2026-000017`:
+- `stored=true`
+- `confirmationEmailSent=true`
+- `supportNotificationEmailSent=true`
+
+### Ergebnis Runde 22
+
+- Ergebnis: PASS (GRUEN)
+- Der zuvor offene SMTP-/Sender-Autorisierungsblock ist fuer den aktuellen Produktionsstand technisch verifiziert abgeschlossen.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 22 | 2026-07-08 | Live-Support-E2E nach SMTP-Rotation | n/a | GRUEN |
+
+---
+
+## Runde 23 - 2026-07-09 UTC (Frontend-Performance-Chunk-Splitting verifiziert)
+
+### Ziel
+
+Bekannte Frontend-Build-Warnung zu Chunk-Groessen >500 kB technisch reduzieren und mit Build/Test belegen.
+
+### Durchgefuehrte Schritte
+
+1. Vite `manualChunks` im Frontend erweitert (u. a. `prosemirror-vendor`, `jose-vendor`, `capacitor-vendor`).
+2. Frontend-Produktionsbuild erneut ausgefuehrt.
+3. Frontend-Testsuite erneut ausgefuehrt.
+
+### Verifikation
+
+- Build: PASS (`npm run build --workspace=packages/frontend`)
+- Test: PASS (`npm run test --workspace=packages/frontend`) mit `3` Testdateien und `30` Tests gruen
+- Relevante Chunk-Groessen nach Split (minifiziert):
+	- `vendor`: `239.90 kB`
+	- `prosemirror-vendor`: `212.80 kB`
+	- `jspdf-vendor`: `343.01 kB`
+- Die Vite-Warnung zu Chunks >500 kB tritt im aktuellen Build nicht mehr auf.
+
+### Ergebnis Runde 23
+
+- Ergebnis: PASS (GRUEN)
+- Frontend-Performance-Massnahme fuer den bekannten >500-kB-Warnblock ist umgesetzt und verifiziert.
+
+## Runden-Uebersicht (Delta)
+
+| Runde | Datum / Uhrzeit (UTC) | Tests | Build | Ergebnis |
+|-------|------------------------|-------|-------|----------|
+| 23 | 2026-07-09 | Frontend-Chunk-Splitting + Build/Test-Retest | PASS | GRUEN |

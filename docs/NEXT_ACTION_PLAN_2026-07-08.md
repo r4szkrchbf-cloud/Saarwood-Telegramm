@@ -5,30 +5,28 @@ Stand: 2026-07-08
 ## 1) SMTP dringend
 
 Aktueller Stand:
-- Ticket-Speicherung funktioniert.
-- Mailversand scheitert wegen Sender-Autorisierung.
-- Produktion ist aktuell auf diese Kombination gesetzt:
-  - SUPPORT_SMTP_USER = office@saarwood.ch
-  - SUPPORT_MAIL_FROM = support@saarwood.saarwood.ch
-  - SUPPORT_CONTACT_EMAIL = office@saarwood.ch,support@saarwood.saarwood.ch
+- SMTP-Login ist auf `support@saarwood.saarwood.ch` umgestellt.
+- Produktives SMTP-Secret wurde rotiert.
+- Support-Flow ist live verifiziert:
+  - `SWD-2026-000016`: `confirmationEmailSent=true`, `supportNotificationEmailSent=true`
+  - `SWD-2026-000017`: `confirmationEmailSent=true`, `supportNotificationEmailSent=true`
 
 Konsequenz:
-- Provider lehnt den Absender ab, solange support@ nicht fuer den verwendeten SMTP-Login autorisiert ist.
-
-Naechster operativer Schritt:
-- Entweder SMTP-Login auf support@saarwood.saarwood.ch umstellen (inkl. korrektem Passwort),
-  oder support@ als erlaubte Sender-Identitaet fuer office@ beim Provider freischalten.
+- Der SMTP-Blocker ist im aktuellen Produktionsstand abgeschlossen.
 
 Abnahme:
-- Live-Testticket liefert confirmationEmailSent=true und supportNotificationEmailSent=true.
+- Erfuellt.
 
 ## 2) Backlog-Haupttickets
 
 Priorisierte Reihenfolge fuer die naechste Umsetzungswelle:
-1. SMTP-Freigabe (Blocker fuer Supportbetrieb)
-2. Support-Ressourcen finaler E2E-Kurztest in TEST_MVP
-3. Frontend-Performance-Warnung >500 kB auf klare Massnahme reduzieren
-4. Go-Live-Haertung (Deploy-Runbook + Abnahmecheckliste aktuell halten)
+1. Strategischen GAP-Arbeitsblock weiter in Entscheidungen ueberfuehren (Interviews/Preise/Lizenz/DSGVO)
+
+Heute abgeschlossen:
+- Support-Ressourcen finaler E2E-Kurztest in `docs/TEST_MVP.md` nachgezogen.
+- Frontend-Performance-Warnung >500 kB auf konkrete, verifizierte Massnahme reduziert (Vite-Chunk-Splitting + Build/Test-Retest).
+- Go-Live-Haertung (Runbook + Abnahmecheckliste) auf aktuellen Security-/SMTP-Produktionsstand synchronisiert.
+- Strategischer GAP-Arbeitsblock datiert gestartet: `docs/STATUSBERICHT_GAP_ARBEITSBLOCK_DE_2026-07-09.md`.
 
 Hinweis:
 - Tablet-Clipping in Split/Prompter wurde heute behoben und auf main gepusht.

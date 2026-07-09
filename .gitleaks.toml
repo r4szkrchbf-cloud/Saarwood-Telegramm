@@ -1,0 +1,15 @@
+title = "Saarwood Teleprompter Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Known documented placeholder values that are not real secrets"
+regexes = [
+  '''dev-admin-auth-secret''',
+  '''change-me(?:-very-long-random)?''',
+  '''CHANGE_ME_IN_ENV''',
+  '''-----BEGIN PRIVATE KEY-----\\n\.\.\.\\n-----END PRIVATE KEY-----''',
+  '''<dein-admin-key>''',
+  '''<secret>'''
+]

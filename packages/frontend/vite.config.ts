@@ -69,9 +69,12 @@ export default defineConfig({
           if (!id.includes('node_modules')) return undefined;
           if (id.includes('/html2canvas/')) return 'html2canvas-vendor';
           if (id.includes('/@tiptap/')) return 'tiptap';
+          if (id.includes('/prosemirror-') || id.includes('/orderedmap/')) return 'prosemirror-vendor';
           if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react-vendor';
           if (id.includes('/zustand/')) return 'zustand-vendor';
           if (id.includes('/dompurify/')) return 'dompurify-vendor';
+          if (id.includes('/jose/')) return 'jose-vendor';
+          if (id.includes('/@capacitor/')) return 'capacitor-vendor';
           if (id.includes('/jspdf/')) return 'jspdf-vendor';
           return 'vendor';
         },

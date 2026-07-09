@@ -1,6 +1,6 @@
 # Support-Runbook Lizenzverwaltung (Phase B)
 
-Stand: 2026-07-05
+Stand: 2026-07-09
 
 Dieses Runbook beschreibt die internen Standardkommandos fuer das Support-Team.
 
@@ -180,14 +180,28 @@ Pflicht/Empfehlung fuer Produktivbetrieb:
 ```bash
 export SUPPORT_CONFIRMATION_MAIL_ENABLED=true
 export SUPPORT_CONFIRMATION_SUBJECT_PREFIX="[Saarwood Support]"
-export SUPPORT_SMTP_HOST="smtp.example.com"
+export SUPPORT_SMTP_HOST="smtp.hostinger.com"
 export SUPPORT_SMTP_PORT="587"
 export SUPPORT_SMTP_SECURE="false"
-export SUPPORT_SMTP_USER="support-smtp-user"
+export SUPPORT_SMTP_USER="support@saarwood.saarwood.ch"
 export SUPPORT_SMTP_PASS="<secret>"
-export SUPPORT_MAIL_FROM="Saarwood Support <support@example.com>"
-export SUPPORT_MAIL_REPLY_TO="support@example.com"
+export SUPPORT_MAIL_FROM="Saarwood Support <support@saarwood.saarwood.ch>"
+export SUPPORT_MAIL_REPLY_TO="support@saarwood.saarwood.ch"
 ```
+
+Verifizierter Produktionsstand:
+
+1. Support-Tickets werden gespeichert.
+2. Bestaetigungs-E-Mail geht an den Absender.
+3. Support-Notification wird versendet.
+
+Nachweis im Testprotokoll:
+
+- `SWD-2026-000016`
+- `SWD-2026-000017`
+- beide mit `confirmationEmailSent=true` und `supportNotificationEmailSent=true`
+
+Referenz: `docs/TEST_MVP.md` (Runde 22)
 
 Erwartetes Verhalten:
 

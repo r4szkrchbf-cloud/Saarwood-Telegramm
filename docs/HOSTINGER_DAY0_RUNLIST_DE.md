@@ -1,7 +1,24 @@
 # Hostinger Day-0 Runlist (Public Beta)
 
-Stand: 2026-07-06  
+Stand: 2026-07-09  
 Ziel: Einmalige, saubere Inbetriebnahme auf Hostinger VPS mit reproduzierbaren Copy-Paste-Kommandos.
+
+## Betriebsstand-Update (2026-07-09)
+
+Der Day-0-Block ist fuer den aktuellen Produktionsstand weitgehend abgeschlossen und verifiziert.
+
+Bereits nachgewiesen:
+
+- Service aktiv: `systemctl is-active saarwood-teleprompter` = `active`
+- Healthcheck gruen: `/api/health`
+- Admin-Endpunkt mit rotiertem `ADMIN_API_KEY` erreichbar
+- Support-E2E nach SMTP-Umstellung verifiziert (Ticket `SWD-2026-000016`, `SWD-2026-000017` mit beiden Mailflags `true`)
+
+Referenzen:
+
+- `docs/ROTATIONSPROTOKOLL_2026-07-08.md`
+- `docs/TEST_MVP.md` (Runde 22)
+- `docs/SICHERHEITS_TAGESCHECKLISTE_2026-07-08.md`
 
 ## 0) Annahmen
 

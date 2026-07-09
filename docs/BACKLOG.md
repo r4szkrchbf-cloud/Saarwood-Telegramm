@@ -132,12 +132,17 @@ Trotzdem ist das Thema relevant fuer Ladezeit und Reaktionsverhalten auf schwaec
 - grosse Abhaengigkeiten und eager Imports reduzieren,
 - Messung je Schritt dokumentieren.
 
+**Umsetzung (2026-07-09):**
+- `packages/frontend/vite.config.ts` um feineres Vendor-Splitting erweitert (`prosemirror-vendor`, `jose-vendor`, `capacitor-vendor`).
+- Build-Retest ohne >500-kB-Warnung verifiziert.
+- Frontend-Testsuite nach der Anpassung erneut gruen.
+
 **Akzeptanzkriterien:**
-- [ ] Build bleibt gruen (`npm run build --workspace=packages/frontend`)
-- [ ] Warnung zur Chunk-Groesse ist entfernt oder nachvollziehbar reduziert
-- [ ] Mindestens ein wirksamer Split ist umgesetzt (lazy geladenes Feature oder manueller Chunk)
-- [ ] Vorher/Nachher-Messung dokumentiert (Chunk-Groesse minifiziert + gzip)
-- [ ] Keine Regression in Frontend-Tests (`npm run test --workspace=packages/frontend`)
+- [x] Build bleibt gruen (`npm run build --workspace=packages/frontend`)
+- [x] Warnung zur Chunk-Groesse ist entfernt oder nachvollziehbar reduziert
+- [x] Mindestens ein wirksamer Split ist umgesetzt (lazy geladenes Feature oder manueller Chunk)
+- [x] Vorher/Nachher-Messung dokumentiert (Chunk-Groesse minifiziert + gzip)
+- [x] Keine Regression in Frontend-Tests (`npm run test --workspace=packages/frontend`)
 
 ### TICKET-017 · Hostinger VPS als oeffentliche MVP-Variante vorbereiten
 
@@ -653,7 +658,7 @@ wird ein vollständiger CEA-708-Encoder mit API-Endpunkt und Frontend-Download b
 | TICKET-011  | Redundanz-Sync implementieren            | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
 | TICKET-012  | Betriebsdokumentation ergänzen           | 3     | Niedrig   | Alle         | 🔲 Offen     |
 | TICKET-013  | CEA-708 Caption Export                   | 3     | Niedrig   | Expert       | 🔲 Offen (Phase 3) |
-| TICKET-016  | Frontend-Bundlegroesse optimieren        | 2     | P1        | Alle         | 🔲 Offen     |
+| TICKET-016  | Frontend-Bundlegroesse optimieren        | 2     | P1        | Alle         | ✅ Erledigt  |
 | TICKET-017  | Hostinger VPS public MVP vorbereiten     | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-022  | Lizenz-Kill-Switch Beta V1               | 3     | P0        | Alle         | 🔲 Offen     |
 | TICKET-023  | Admin-/Support-Lizenzprozess             | 3     | P0        | Alle         | 🔲 Offen     |
