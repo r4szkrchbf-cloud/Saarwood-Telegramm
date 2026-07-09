@@ -24,7 +24,11 @@ const DEFAULT_CHARS_PER_PIXEL = 0.1;
  *  - Mirroring is applied as CSS transforms on the viewport so no
  *    pixel-manipulation is required.
  */
-export function PrompterDisplay() {
+interface PrompterDisplayProps {
+  isSmartphoneLayout?: boolean;
+}
+
+export function PrompterDisplay({ isSmartphoneLayout = false }: PrompterDisplayProps) {
   const speed = usePrompterStore((s) => s.scroll.speed);
   const isPlaying = usePrompterStore((s) => s.scroll.isPlaying);
   const direction = usePrompterStore((s) => s.scroll.direction);
@@ -138,6 +142,7 @@ export function PrompterDisplay() {
   // ─── Mirror + Rotation transform ────────────────────────────────────────
 
   const mirrorTransform = useMemo<string>(() => {
+    if (isSmartphoneLayout) return 'none';
     const sx = mirrorHorizontal ? -1 : 1;
     const sy = mirrorVertical ? -1 : 1;
     const scaleX = sx;
@@ -147,9 +152,9 @@ export function PrompterDisplay() {
     if (rotation !== 0) parts.push(`rotate(${rotation}deg)`);
     if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`);
     return parts.length > 0 ? parts.join(' ') : 'none';
-  }, [mirrorHorizontal, mirrorVertical, rotation]);
+  }, [isSmartphoneLayout, mirrorHorizontal, mirrorVertical, rotation]);
 
-  const isQuarterTurn = rotation === 90 || rotation === 270;
+  const isQuarterTurn = !isSmartphoneLayout && (rotation === 90 || rotation === 270);
 
   const portraitEdgeGap = useMemo(() => {
     if (!isQuarterTurn) return 0;
@@ -358,7 +363,7 @@ export function PrompterDisplay() {
             {voiceStatusLabel}
           </div>
 
-          {tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
+          {!isSmartphoneLayout && tier !== 'basic' && showProjectTitle && scriptTitle.trim() && (
             <div className="prompter-project-title" aria-label="Projekt- oder Sendungsname" style={projectTitleOverlayStyle}>
               <span className="prompter-project-title-label">Projekt / Sendung</span>
               <strong style={{ fontSize: `${effectiveProjectTitleFontSize}px` }}>{scriptTitle}</strong>

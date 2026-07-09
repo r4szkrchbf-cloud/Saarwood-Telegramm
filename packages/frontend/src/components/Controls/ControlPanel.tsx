@@ -27,6 +27,7 @@ interface ControlPanelProps {
   onOpenOutputWindow?: () => void;
   onOpenSecondMonitorOutput?: () => void;
   isDesktopApp?: boolean;
+  isSmartphoneLayout?: boolean;
   isMobileLayout?: boolean;
   isTabletLayout?: boolean;
   isOutputOnly?: boolean;
@@ -37,6 +38,7 @@ export function ControlPanel({
   onOpenOutputWindow,
   onOpenSecondMonitorOutput,
   isDesktopApp = false,
+  isSmartphoneLayout = false,
   isMobileLayout = false,
   isTabletLayout = false,
   isOutputOnly = false,
@@ -62,7 +64,7 @@ export function ControlPanel({
   const [speedInputCollapsed, setSpeedInputCollapsed] = useState(false);
   const isPrompterMode = viewMode === 'prompter' || isOutputOnly;
   const isEditorMode = viewMode === 'editor' && !isOutputOnly;
-  const showControllerPlayback = !isMobileLayout && !isOutputOnly && (viewMode === 'split' || isTabletLayout);
+  const showControllerPlayback = !isMobileLayout && !isSmartphoneLayout && !isOutputOnly && (viewMode === 'split' || isTabletLayout);
   const mobileEditorControlsCollapsedMode = isMobileLayout && viewMode === 'editor' && !isOutputOnly;
   const [mobileEditorControlsOpen, setMobileEditorControlsOpen] = useState(() => !mobileEditorControlsCollapsedMode);
 
@@ -179,7 +181,7 @@ export function ControlPanel({
     applySpeed(parsed);
   }, [speedInput, applySpeed]);
 
-  const allowSpeedInputCollapse = !isPrompterMode && !isEditorMode && isMobileLayout && typeof window !== 'undefined' && window.innerWidth < 360;
+  const allowSpeedInputCollapse = !isPrompterMode && !isEditorMode && isMobileLayout && !isSmartphoneLayout && typeof window !== 'undefined' && window.innerWidth < 360;
   const urlForcesOutputOnly = typeof window !== 'undefined'
     && new URLSearchParams(window.location.search).get('output') === '1';
 
@@ -257,7 +259,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && !isOutputOnly && !isMobileLayout && onOpenOutputWindow && (
+        {viewMode !== 'prompter' && !isOutputOnly && !isSmartphoneLayout && onOpenOutputWindow && (
           <button
             type="button"
             className="btn"
@@ -269,7 +271,7 @@ export function ControlPanel({
           </button>
         )}
 
-        {viewMode !== 'prompter' && !isOutputOnly && !isMobileLayout && isDesktopApp && onOpenSecondMonitorOutput && (
+        {viewMode !== 'prompter' && !isOutputOnly && !isSmartphoneLayout && isDesktopApp && onOpenSecondMonitorOutput && (
           <button
             type="button"
             className="btn"
@@ -305,7 +307,7 @@ export function ControlPanel({
           </div>
         )}
 
-        {isPrompterMode && (
+        {isPrompterMode && !isSmartphoneLayout && (
           <>
             <button
               type="button"
@@ -449,7 +451,7 @@ export function ControlPanel({
       )}
 
       {/* ─── Mirror controls ──────────────────────────────────────────── */}
-      {!isPrompterMode && !isEditorMode && (
+      {!isPrompterMode && !isEditorMode && !isSmartphoneLayout && (
         <div className="mirror-controls" role="group" aria-label="Mirror controls">
           <button
             type="button"
@@ -473,7 +475,7 @@ export function ControlPanel({
       )}
 
       {/* ─── Rotation controls ────────────────────────────────────────── */}
-      {!isTabletLayout && !isMobileLayout && (
+      {!isTabletLayout && !isMobileLayout && !isSmartphoneLayout && (
         <div className="rotation-controls" role="group" aria-label="Rotation controls">
           <button
             type="button"

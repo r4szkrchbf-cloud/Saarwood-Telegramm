@@ -411,6 +411,7 @@ export function App() {
   }, [isTouchDevice, viewportWidth, viewportHeight]);
 
   const isSmartphoneLandscapeLocked = isSmartphoneDevice && viewportWidth > viewportHeight;
+  const isSmartphoneLayout = isSmartphoneDevice;
   const [mobileTemplatePanelOpen, setMobileTemplatePanelOpen] = useState(true);
 
   const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({
@@ -778,6 +779,30 @@ export function App() {
     }
   }, [isMobileLayout, isOutputOnly, viewMode]);
 
+  useEffect(() => {
+    if (!isSmartphoneLayout) return;
+    if (
+      display.mirrorHorizontal
+      || display.mirrorVertical
+      || display.rotation !== 0
+      || display.showProjectTitle
+    ) {
+      setDisplay({
+        mirrorHorizontal: false,
+        mirrorVertical: false,
+        rotation: 0,
+        showProjectTitle: false,
+      });
+    }
+  }, [
+    display.mirrorHorizontal,
+    display.mirrorVertical,
+    display.rotation,
+    display.showProjectTitle,
+    isSmartphoneLayout,
+    setDisplay,
+  ]);
+
   // ─── Layout ────────────────────────────────────────────────────────────
 
   const rootClass = [
@@ -1055,6 +1080,7 @@ export function App() {
           onOpenOutputWindow={handleOpenOutputWindow}
           onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
           isDesktopApp={isDesktopApp}
+          isSmartphoneLayout={isSmartphoneLayout}
         />
       )}
 
@@ -1138,7 +1164,7 @@ export function App() {
               </section>
             ) : null}
 
-            {!isMobileLayout && (
+            {!isSmartphoneLayout && (
               <>
                 {/* Script title */}
                 <div className="editor-title-bar">
@@ -1231,7 +1257,7 @@ export function App() {
         {/* Prompter output pane */}
         {(viewMode === 'prompter' || viewMode === 'split') && (
           <section className="prompter-pane" aria-label="Teleprompter output">
-            <PrompterDisplay />
+            <PrompterDisplay isSmartphoneLayout={isSmartphoneLayout} />
           </section>
         )}
       </main>
@@ -1242,6 +1268,7 @@ export function App() {
           onOpenOutputWindow={handleOpenOutputWindow}
           onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
           isDesktopApp={isDesktopApp}
+          isSmartphoneLayout={isSmartphoneLayout}
         />
       )}
 
