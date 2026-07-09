@@ -1,6 +1,6 @@
 # Meldungen (Automatisch)
 
-Stand: 2026-07-09T18:55:16.627Z
+Stand: 2026-07-09T19:21:00.020Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zweck: Zentrale Uebersicht aller Nutzer-Rueckmeldungen (Erfolg, Fehler, Status) mit Fundstelle und Dateipfad.
 

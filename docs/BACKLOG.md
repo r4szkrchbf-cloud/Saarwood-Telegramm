@@ -7,6 +7,7 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ## DRINGEND (separat)
 
+- 2026-07-09: OBERSTE PRIORITAET - TV-Browser-Kompatibilitaet und TV Safe Boot gegen Schwarz/Weiss-Startseiten
 - 2026-07-09: OBERSTE PRIORITAET - Server aufraeumen + neue Server-Aktualisierungsregel fuer KI/Coding-Assistent
 - 2026-07-09: OBERSTE PRIORITAET - Separates Brainstorming fuer selektives Deploy statt 1:1 Commit-Deploy
 - 2026-07-08: SMTP-Absenderfreigabe / Ticketmail-Status finalisieren
@@ -43,6 +44,21 @@ Es wird ein separates Brainstorming angesetzt, um die kuenftige Deploy-Strategie
 - [ ] Entscheidungskriterien definiert (Sicherheit, Wartbarkeit, Recovery, Aufwand)
 - [ ] Ergebnisprotokoll mit naechsten Umsetzungsschritten liegt als Doku vor
 - [ ] Finale Entscheidung ist in den Agenten-/Deploy-Regeln uebernommen
+
+### TICKET-038 · TV-Browser-Kompatibilitaet absichern (TV Safe Boot)
+
+**Prioritaet:** P0 (OBERSTE PRIORITAET)
+**Beschreibung:**
+Auf Firestick ist die App mit minimalem Beschnitt brauchbar, auf anderen Smart-TVs bleibt `saarwood.ch` schwarz und `teleprompter.saarwood.ch` weiss. Es soll ein TV-Kompatibilitaetsblock umgesetzt werden, der leere Startseiten verhindert und klare Fallbacks anbietet.
+
+**Akzeptanzkriterien:**
+- [ ] TV-Kompatibilitaets-Check vor App-Init ist vorhanden (Feature-Detection fuer kritische APIs)
+- [ ] Fallback-Seite statt Blank Screen wird auf nicht kompatiblen TV-Browsern angezeigt
+- [ ] Globales Fehler-Overlay (`window.onerror`, `unhandledrejection`) zeigt fehlende Funktionen sichtbar an
+- [ ] Service-Worker-Strategie fuer problematische TV-Browser ist defensiv geregelt (disable/safe-mode)
+- [ ] Legacy-Build-Target/Polyfill-Strategie ist entschieden und dokumentiert
+- [ ] Overscan-/Viewport-Safe-Area fuer TV-Ausgabe ist dokumentiert und getestet
+- [ ] TV-spezifische Fehlercodes werden in `docs/MELDUNGEN.md` nachvollziehbar erfasst
 
 ### TICKET-031 · Offene Layout-Feinschliffe in Sammel-Backlog fuehren
 

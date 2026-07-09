@@ -599,6 +599,58 @@ Kontext: Expliziter Nachtest nach Deploy: Browser-E2E, Ticket-Persistenz, intern
 
 ---
 
+## Eintrag 2026-07-09 20:55 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Smart-TV Browserverhalten bei `saarwood.ch` und `teleprompter.saarwood.ch` (Firestick brauchbar, andere TV-Browser mit Schwarz/Weiss-Startseite).
+
+### Ausgangsproblem
+- Auf Firestick wird die Landingpage/App angezeigt (mit kleinem Beschnitt), damit funktional nutzbar.
+- Auf anderen TV-Browsern erscheint bei `saarwood.ch` eine schwarze Seite und bei `teleprompter.saarwood.ch` eine weisse Seite.
+- Dadurch entsteht der Eindruck "nicht erreichbar", obwohl der Dienst verfuegbar ist.
+
+### Technische Einordnung / wahrscheinlichste Ursachen
+1. TV-Browser-Engine teilweise zu alt:
+  - Aeltere Tizen/webOS/Android-TV-WebViews unterstuetzen moderne JS/CSS/APIs nicht vollstaendig.
+2. JavaScript-Startfehler ohne sichtbaren Fallback:
+  - Kritischer Fehler frueh im Boot-Prozess fuehrt zu Blank-Screen (schwarz/weiss je nach Grundstil).
+3. PWA-/Service-Worker-Eigenheiten auf TV-Browsern:
+  - Unvollstaendige SW-Unterstuetzung oder Cache-Zustaende koennen die App-Huelle blockieren.
+4. Fehlende Browser-APIs auf TV-Geraeten:
+  - Beispiele: WebCrypto/Storage/Media/neuere Plattform-APIs.
+5. Overscan/Viewport-Verhalten auf TV:
+  - Minimaler Beschnitt auf Firestick deutet auf TV-spezifisches Rendering/Safe-Area hin.
+
+### Warum Firestick eher funktioniert
+- Firestick nutzt in vielen Setups einen moderneren Chromium-Unterbau.
+- Damit werden mehr moderne Web-Features korrekt unterstuetzt.
+- Andere TV-Browser fallen unter dieselbe Feature-Schwelle und brechen frueher im App-Start.
+
+### Loesungsansaetze (priorisiert)
+1. TV Safe Boot:
+  - Vor App-Start Feature-Checks, danach entweder Voll-App oder robuste Fallback-Ansicht.
+2. Feature-Detection + Fallback-Seite:
+  - Klare Nutzerinfo statt leere Seite, wenn kritische API fehlt.
+3. Fehler-Overlay statt Blank Screen:
+  - `window.onerror`/`unhandledrejection` sichtbar im UI ausgeben.
+4. Legacy-Strategie:
+  - Vite/Build-Target fuer Legacy-TV-Browser bewerten, ggf. Polyfills separat aktivieren.
+5. Defensiver Service-Worker-Modus:
+  - SW fuer problematische TV-User-Agents deaktivieren oder Safe-Mode nutzen.
+6. TV-Safe-Area/Viewport-Regeln:
+  - Overscan-Beschnitt durch CSS/Safe-Area-Einstellungen minimieren.
+
+### Offene Punkte
+- TV-Testmatrix erstellen (Firestick + mindestens 2 weitere TV-Browserklassen).
+- Entscheiden, ob ein separater TV-Startpfad technisch/wirtschaftlich sinnvoll ist.
+- TV-spezifische Fehlercodes in `docs/MELDUNGEN.md` standardisiert erfassen.
+
+### Lessons Learned
+- "Schwarz/Weiss" auf TV ist oft ein Kompatibilitaets- und Bootstrapping-Thema, nicht automatisch DNS/Server-Down.
+- Ohne sichtbaren Fallback verschleiern fruehe JS-Fehler die eigentliche Ursache.
+- Eine robuste TV-First-Startstrecke (Safe Boot) reduziert Supportaufwand deutlich.
+
+---
+
 ## Vorlage fuer weitere Eintraege
 
 ---
