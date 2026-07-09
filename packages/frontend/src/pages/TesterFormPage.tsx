@@ -24,6 +24,7 @@ export function TesterFormPage() {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState(DEFAULT_SUBJECT);
   const [message, setMessage] = useState('');
+  const [notes, setNotes] = useState('');
   const [status, setStatus] = useState<SubmitState>('idle');
   const [statusMessage, setStatusMessage] = useState('');
   const [ticketId, setTicketId] = useState('');
@@ -35,7 +36,8 @@ export function TesterFormPage() {
     email: sanitize(email),
     subject: sanitize(subject) || DEFAULT_SUBJECT,
     message: sanitize(message),
-  }), [email, message, subject, testerId, testerName]);
+    notes: sanitize(notes),
+  }), [email, message, notes, subject, testerId, testerName]);
 
   const canSubmit = summary.email.length > 0 && summary.message.length >= 10 && status !== 'submitting';
 
@@ -48,6 +50,13 @@ export function TesterFormPage() {
     '',
     'Rueckmeldung:',
     summary.message,
+    ...(summary.notes
+      ? [
+        '',
+        'Ergaenzende Notizen:',
+        summary.notes,
+      ]
+      : []),
   ].join('\n');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -184,6 +193,16 @@ export function TesterFormPage() {
                   required
                 />
               </label>
+
+              <label className="tester-form-field tester-form-field--full">
+                <span>Ergaenzende Notizen (optional)</span>
+                <textarea
+                  value={notes}
+                  onChange={(event) => setNotes(event.target.value)}
+                  placeholder="Optional: zusaetzliche Hinweise ohne direkten Fehlerbezug"
+                  rows={4}
+                />
+              </label>
             </div>
 
             <div className="tester-form-actions">
@@ -222,6 +241,10 @@ export function TesterFormPage() {
               <div className="tester-form-summary--full">
                 <dt>Bericht</dt>
                 <dd>{summary.message || 'Noch kein Text erfasst.'}</dd>
+              </div>
+              <div className="tester-form-summary--full">
+                <dt>Ergaenzende Notizen</dt>
+                <dd>{summary.notes || 'Keine zusaetzlichen Notizen.'}</dd>
               </div>
             </dl>
 

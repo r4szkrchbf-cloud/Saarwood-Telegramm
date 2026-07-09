@@ -9,6 +9,8 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 - 2026-07-08: SMTP-Absenderfreigabe / Ticketmail-Status finalisieren
 - Siehe: `docs/DRINGENDE_TODO_2026-07-08.md`
+- 2026-07-09: Minor PDF-/Format-Feinschliffe priorisiert
+- Siehe: `docs/TODO_MINOR_PDF_FORMAT_2026-07-09.md`
 
 ---
 

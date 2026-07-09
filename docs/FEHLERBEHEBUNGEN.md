@@ -258,6 +258,63 @@ Kontext: Vollstaendiger Doku-Abgleich auf den aktuellen Code- und Teststand, Ers
 - `PROJECT_STATUS_DE.md` komplett auf aktuellen Stand gebracht (Build/Test/LAN-Prioritaeten).
 - `TEST_MVP.md` um Runde 2 erweitert (Frontend-Test FAIL, Backend-Test PASS, Build PASS).
 - `BACKLOG.md` um P0-Hotfix-Block fuer MVP-Langzeittest erweitert.
+
+---
+
+## Eintrag 2026-07-09 17:15 (lokale Zeit)
+Name: GitHub Copilot (GPT-5.3-Codex) mit manuelangel
+Kontext: Live-Supportblock oeffentliche Beta: Link-Fehlverhalten, Ticket-POST-Fehler 500, Formularinhalt-Sync und Produktionsbetrieb Hostinger.
+
+### Ausgangsprobleme
+- In `Einstellungen > Kontakt & Support` oeffneten Handbuch, Live-Tester-Guide und Testerformular im neuen Fenster teilweise die App-Shell statt der eigentlichen Zielressourcen. Sichtbar war ein neuer Room statt PDF/Formular.
+- `POST /api/support/tickets` schlug in Produktion wiederholt fehl mit:
+  - `{ "ok": false, "error": "support-ticket-create-failed" }`
+- Fehlerdiagnose war verlangsamt, weil der Catch-Block in der API absichtlich nur den generischen Fehler zurueckgibt.
+- Der produktive Env-Stand wich von lokalen Defaults ab (URL/Pfad-Overrides), wodurch lokale Annahmen nicht direkt griffen.
+- Testerformular-Feldmatrix war nicht vollstaendig mit der Doku abgeglichen (optionale Ergaenzungsnotizen fehlten im UI und in der Ticket-Nachricht).
+
+### Technische Ursachen (Root Cause)
+1. PWA-Navigation-Fallback (Workbox) fing dokumentartige Ziele teilweise als App-Navigation ab.
+2. Produktions-Env nutzte fuer Ticket-Dateien einen anderen Pfad als zuvor geprueft:
+   - `SUPPORT_TICKET_FILE=/srv/saarwood_telepromter/backend/data/support-tickets.ndjson`
+   - `SUPPORT_TICKET_SEQUENCE_FILE=/srv/saarwood_telepromter/backend/data/support-ticket-sequence.json`
+3. Gleichzeitig liefen Client-Logs ueber `packages/backend/data`, wodurch zwei Datenpfadwurzeln parallel aktiv waren.
+4. Ticket-Sequence-Datei war zeitweise leer/ungueltig bzw. der Zielpfad nicht konsistent vorbereitet.
+5. Dateirechte/Owner waren in Teilbereichen nicht auf den effektiven Service-User abgestimmt.
+
+### Durchgefuehrte Fehlerbehebungen
+- Support-Link-Verhalten stabilisiert:
+  - Feste Formular-URL auf `/tester-form.html` vereinheitlicht (Code + Env + Doku).
+  - Workbox-Navigation-Fallback denylist erweitert fuer Support-Dokumente/Formular (`/support/`, `/tester-form.html`, `.pdf`).
+- Produktionspfade und Dateirechte korrigiert:
+  - Ticket-Dateien im konfigurierten Pfad erstellt und initialisiert.
+  - Owner/Group auf `www-data:www-data`, restriktive Rechte gesetzt.
+  - Sequence-Datei mit gueltigem JSON-Startwert versehen (`{"year":2026,"seq":0}`).
+  - Service neu gestartet.
+- Verifikation mit echten Live-POSTs:
+  - Ticket-IDs erfolgreich erzeugt (`SWD-2026-000001`, `SWD-2026-000002`, `SWD-2026-000003`).
+  - API-Rueckgabe bestaetigt Speicher- und Mailpfad:
+    - `stored: true`
+    - `confirmationEmailSent: true`
+    - `supportNotificationEmailSent: true`
+- Testerformular inhaltlich auf Feldmatrix erweitert:
+  - Optionalfeld `Ergaenzende Notizen` in Formular, Vorschau und Ticket-Text aufgenommen.
+
+### Ergebnis
+- Ticket-Erstellung ist in Produktion wieder funktionsfaehig.
+- Interne Support-Mail und Bestaetigungsmail werden laut Live-API-Antworten erfolgreich versendet.
+- Ticketdaten werden persistent in der Ticket-Storage-Datei abgelegt.
+- Support-Links oeffnen die vorgesehenen Ressourcen statt App-Room-Fallback.
+- Feldmatrix im Testerformular ist auf aktuelle Spezifikation synchronisiert.
+
+### Restpunkt / Monitoring
+- Historische `EACCES`-Eintraege fuer Client-Logs sind im Error-Log weiterhin sichtbar (Altlasten im Logverlauf).
+- Aktuelle Live-Probes fuer Ticket-POST und Client-Log-POST sind erfolgreich; Pfadkonsistenz bleibt als Betriebsbeobachtung aktiv.
+
+### Lessons Learned
+- Bei Produktionsstoerungen zuerst aktive Env-Overrides gegen Code-Defaults spiegeln; gleiche Featuregruppe kann auf mehrere Datenpfade zeigen.
+- PWA-Navigation-Fallback muss fuer dokumentartige Ressourcen explizit ausgeschlossen werden.
+- Generische 500-Fehler sollten intern mit korrelierbaren Detail-Logs angereichert sein, damit Root-Cause-Analyse nicht ueber SSH-Triage verlangsamt wird.
 - Neuer Bericht angelegt: `STATUSBERICHT_MVP_LAN_DE_2026-07-05.md`.
 - Divergenzen zwischen Code und Doku systematisch beschrieben (inkl. Ursachen).
 
