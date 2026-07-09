@@ -11,6 +11,7 @@
 Auf Smartphones gilt aktuell:
 
 - nur `editor` und `prompter`
+- nur Hochkantbetrieb (Querformat ist gesperrt und zeigt einen Drehhinweis)
 - keine Titelanzeige und keine Titel-Steuerung
 - kein `Prompter Fenster`-Button
 - Vorlagenkarte und Editor-Steuerkarte sind einklappbar

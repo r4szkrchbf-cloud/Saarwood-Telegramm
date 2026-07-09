@@ -163,6 +163,7 @@ Alle Testergebnisse, Fehler und Beobachtungen werden **mit Datum und Uhrzeit** i
 | M-17 | Smartphone-Prompter: Eine Bedienzeile | `Text auf Anfang`, Play/Pause, Mirror und Speed in einer Reihe | | |
 | M-18 | Smartphone-Prompter: Speed-Tasten vertikal | `+` und `-` sind uebereinander angeordnet | | |
 | M-19 | Smartphone-Editor: Vorlagenkarte bleibt eingeklappt | Kein automatisches Wiederaufklappen nach Resize/Rotate | | |
+| M-20 | Smartphone Querformat-Sperre | Bei Querformat erscheint Hinweis auf Hochkantmodus, App-Inhalt bleibt gesperrt | | |
 
 ---
 

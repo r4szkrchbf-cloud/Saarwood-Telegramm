@@ -394,7 +394,23 @@ export function App() {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
   }, []);
-  const isSmartphoneLandscapeLocked = isMobileLayout && isTouchDevice && viewportWidth > viewportHeight;
+  const isSmartphoneDevice = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+
+    const ua = navigator.userAgent || '';
+    const navWithUAData = navigator as Navigator & { userAgentData?: { mobile?: boolean } };
+    const uaDataMobile = navWithUAData.userAgentData?.mobile === true;
+    const phoneUa = /iPhone|iPod|Android.+Mobile|Windows Phone|IEMobile|Opera Mini/i.test(ua);
+
+    // Fallback for environments with incomplete UA hints.
+    const narrowTouchPhoneLike = isTouchDevice
+      && Math.max(viewportWidth, viewportHeight) <= 932
+      && Math.min(viewportWidth, viewportHeight) <= 430;
+
+    return uaDataMobile || phoneUa || narrowTouchPhoneLike;
+  }, [isTouchDevice, viewportWidth, viewportHeight]);
+
+  const isSmartphoneLandscapeLocked = isSmartphoneDevice && viewportWidth > viewportHeight;
   const [mobileTemplatePanelOpen, setMobileTemplatePanelOpen] = useState(true);
 
   const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({

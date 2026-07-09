@@ -18,6 +18,11 @@ Fokus: maximale Bedienklarheit im Live-Betrieb mit Einhand-Logik und minimaler v
 - Keine UI fuer 90/270 Grad in Mobile-Kontext.
 - Drehung erfolgt ueber Geraeteausrichtung.
 
+2.1 Smartphone-Ausrichtung ist verbindlich Hochkant:
+- Smartphone-Ansicht wird nur im Hochkantmodus dargestellt.
+- Bei Querformat auf Smartphones wird eine Sperransicht mit Drehhinweis angezeigt.
+- Tablet/Desktop bleiben von dieser Sperre ausgenommen.
+
 3. Smartphone-Layout bleibt streng reduziert:
 - Auf dem Smartphone gibt es nur `editor` und `prompter`.
 - Der Button `Prompter Fenster` faellt auf Smartphone komplett weg.
