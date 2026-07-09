@@ -1,6 +1,6 @@
 # Agenten- und KI-Regelbook (Automatisch)
 
-Stand: 2026-07-09T19:44:04.724Z
+Stand: 2026-07-09T20:10:50.345Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zweck: Zentrales Verzeichnis aller Regeldateien und Agentensteuerungsdateien mit Kurzbeschreibung und Pfad.
 

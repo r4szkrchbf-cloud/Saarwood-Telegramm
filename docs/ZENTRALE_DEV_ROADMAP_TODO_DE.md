@@ -1,6 +1,6 @@
 # Zentrale Dev-Roadmap und TODO (Automatisch)
 
-Stand: 2026-07-09T19:44:04.724Z
+Stand: 2026-07-09T20:10:50.345Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Scope: Nur Entwickler-/Chefentwickler-Planung, keine Tester- oder User-Empfehlungen als Quelle.
 

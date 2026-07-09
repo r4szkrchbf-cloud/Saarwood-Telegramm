@@ -1,27 +1,29 @@
 # IST-Projektstatus (Automatisch)
 
-Stand: 2026-07-09T19:44:04.724Z
+Stand: 2026-07-09T20:10:50.345Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 
 ## 1) Betriebsstatus Snapshot
 
 - Branch: main
-- Lokaler HEAD: 936aa8f750910ff2d0e18395d43bf5b2e62547b1
-- GitHub main HEAD: 936aa8f750910ff2d0e18395d43bf5b2e62547b1
+- Lokaler HEAD: f41c10654248d56cfee21c676b89201fefb91708
+- GitHub main HEAD: f41c10654248d56cfee21c676b89201fefb91708
 - Lokal/GitHub synchron: ja
 
 ## 2) Letzte geaenderte Dateien (letzter Commit)
 
 - docs/AGENTEN_KI_REGELBOOK_DE.md
+- docs/APP_STORE_VEROEFFENTLICHUNG_GUIDE_DE.md
 - docs/BACKLOG.md
-- docs/FEHLERBEHEBUNGEN.md
 - docs/MELDUNGEN.md
+- docs/PFADINDEX_AENDERBARE_INHALTE_DE.md
 - docs/PROJEKTSTATUS_AUTOMATISCH_DE.md
 - docs/ZENTRALE_DEV_ROADMAP_TODO_DE.md
 
 ## 3) Fortlaufende Aenderungshistorie (Datum | Autor | Commit | Betreff)
 
+- 2026-07-09 21:45:21 +0200 | Hans Manuel Angel | f41c106 | docs: add app store release guide and backlog ticket
 - 2026-07-09 21:22:39 +0200 | Hans Manuel Angel | 936aa8f | docs: TV-Kompatibilitaet als P0 aufnehmen und Fehlerdoku erweitern
 - 2026-07-09 20:59:57 +0200 | Hans Manuel Angel | c8ac58a | docs+automation: add and structure central messages catalog
 - 2026-07-09 19:42:40 +0200 | Hans Manuel Angel | a54cfe3 | docs+ops: add auto governance rulebook and top-priority server deploy policy tasks
@@ -46,7 +48,6 @@ Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 - 2026-07-08 17:08:46 +0200 | Hans Manuel Angel | ddbe113 | docs(plan): add next action plan for smtp backlog and gap blocks
 - 2026-07-08 17:08:10 +0200 | Hans Manuel Angel | d739a56 | fix(frontend): prevent tablet split/prompter right-edge clipping
 - 2026-07-08 16:28:06 +0200 | Hans Manuel Angel | 73dbd7f | docs: add open task scan snapshot 2026-07-08
-- 2026-07-08 08:38:53 +0200 | Hans Manuel Angel | a6ef41f | chore(ops): automate daily snapshot and predeploy release checklist
 
 ## 4) Pflegehinweis
 
