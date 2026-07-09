@@ -245,6 +245,7 @@ export function App() {
   const room = initialContext.room;
   const [roomCopied, setRoomCopied] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
+  const [viewportHeight, setViewportHeight] = useState(() => (typeof window === 'undefined' ? 720 : window.innerHeight));
   const isDesktopApp = typeof window !== 'undefined' && Boolean(window.saarwoodDesktop?.isDesktopApp);
   const [licenseState, setLicenseState] = useState<LicenseState>({
     loading: true,
@@ -376,13 +377,25 @@ export function App() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const onResize = () => setViewportWidth(window.innerWidth);
+    const onResize = () => {
+      setViewportWidth(window.innerWidth);
+      setViewportHeight(window.innerHeight);
+    };
     window.addEventListener('resize', onResize, { passive: true });
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+    };
   }, []);
 
   const isMobileLayout = viewportWidth <= 768;
   const isTabletLayout = viewportWidth <= 1024;
+  const isTouchDevice = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
+  }, []);
+  const isSmartphoneLandscapeLocked = isMobileLayout && isTouchDevice && viewportWidth > viewportHeight;
   const [mobileTemplatePanelOpen, setMobileTemplatePanelOpen] = useState(true);
 
   const editorProjectTitleStyle = useMemo<CSSProperties>(() => ({
@@ -767,6 +780,18 @@ export function App() {
     ? ['editor', 'prompter']
     : ['editor', 'split', 'prompter'];
   const showControlPanel = !isOutputOnly;
+
+  if (isSmartphoneLandscapeLocked) {
+    return (
+      <div className="orientation-lock-screen" role="alert" aria-live="polite" aria-label="Bitte Hochkantmodus verwenden">
+        <div className="orientation-lock-card">
+          <h2>Nur Hochkantmodus auf Smartphones</h2>
+          <p>Die Smartphone-Ansicht ist fuer stabilen Betrieb auf Hochkant ausgelegt.</p>
+          <p>Bitte das Geraet in den Hochkantmodus drehen.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;

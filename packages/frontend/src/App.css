@@ -4,6 +4,7 @@
   display: grid;
   grid-template-rows: auto auto 1fr;
   grid-template-columns: 1fr;
+  min-height: 100svh;
   height: 100dvh;
   overflow: hidden;
   background: var(--bg);
@@ -296,6 +297,7 @@
 .app-workspace {
   grid-row: 3;
   display: flex;
+  min-height: 0;
   overflow: hidden;
   flex: 1;
 }
@@ -583,6 +585,39 @@
   font-size: 0.9rem;
 }
 
+.orientation-lock-screen {
+  min-height: 100svh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: linear-gradient(160deg, #0f1117 0%, #161a22 55%, #101319 100%);
+  color: #f3f6ff;
+}
+
+.orientation-lock-card {
+  width: min(560px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  background: rgba(20, 24, 34, 0.9);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+}
+
+.orientation-lock-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.12rem;
+}
+
+.orientation-lock-card p {
+  margin: 0;
+  color: #d7deee;
+}
+
+.orientation-lock-card p + p {
+  margin-top: 0.3rem;
+}
+
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
@@ -758,6 +793,32 @@
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+  .app {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .app-workspace,
+  .editor-pane,
+  .prompter-pane {
+    min-height: 0;
+  }
+
+  .app-header {
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    min-height: 48px;
+  }
+
+  .app-logo {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
   /* Tablet-only: keep split/prompter canvases fully inside viewport width. */
   .view-split .app-workspace,
   .view-prompter .app-workspace {
@@ -767,7 +828,7 @@
   }
 
   .view-split .editor-pane {
-    flex: 0 0 clamp(320px, 40%, 430px);
+    flex: 0 0 clamp(280px, 36%, 400px);
   }
 
   .view-split .prompter-pane,
@@ -789,7 +850,10 @@
 
   /* Long helper badges can force horizontal overflow on iPad widths. */
   .beta-warning,
-  .restart-hint {
+  .restart-hint,
+  .license-hint,
+  .room-hint,
+  .room-copy-btn {
     display: none;
   }
 }
