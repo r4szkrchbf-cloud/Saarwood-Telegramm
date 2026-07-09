@@ -59,6 +59,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  min-width: 0;
   padding: 0.5rem 1rem;
   background: #000000;
   border-bottom: 1px solid #1a1a1a;
@@ -297,7 +298,10 @@
 .app-workspace {
   grid-row: 3;
   display: flex;
+  width: 100%;
+  max-width: 100%;
   min-height: 0;
+  min-width: 0;
   overflow: hidden;
   flex: 1;
 }
@@ -789,6 +793,63 @@
     border-top: 1px solid var(--border);
     border-bottom: none;
     box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1366px) {
+  .app-header {
+    height: auto;
+    min-height: 48px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+    padding: 0.5rem 0.65rem;
+    overflow: hidden;
+  }
+
+  .app-logo {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+    white-space: normal;
+    row-gap: 0.22rem;
+  }
+
+  .view-switcher {
+    margin-left: auto;
+    width: auto;
+    justify-content: flex-end;
+    order: 1;
+    gap: 0.4rem;
+  }
+
+  .beta-warning,
+  .restart-hint,
+  .license-hint,
+  .room-hint,
+  .room-copy-btn {
+    display: none;
+  }
+
+  .view-split .app-workspace,
+  .view-prompter .app-workspace {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .view-split .prompter-pane,
+  .view-prompter .prompter-pane,
+  .view-split .prompter-stage,
+  .view-prompter .prompter-stage,
+  .view-split .prompter-viewport,
+  .view-prompter .prompter-viewport,
+  .view-split .prompter-transform-layer,
+  .view-prompter .prompter-transform-layer {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
