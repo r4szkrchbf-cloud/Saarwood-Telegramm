@@ -89,5 +89,10 @@ Durchgefuehrt gegen `https://teleprompter.saarwood.ch`:
 - URL: `/?view=prompter&output=1`
 - Sichtbarer Indikator im Live-Render: `READY` (Laufzeitstatus) in der Prompter-Ausgabe
 
+4. Zweiter UI-Indikator mit Screenshot-Beleg
+- URL: `/?view=prompter&output=1`
+- Zusaetzlich verifiziert: `Voice: AUS` in der Live-Ausgabe sichtbar
+- Screenshot-Beleg: `docs/assets/smoke-ui-indikator-voice-und-ready-2026-07-09.png`
+
 Bewertung:
 - Externer Smoke-Check ist bestanden (API + UI-Indikator live erreichbar und plausibel).
