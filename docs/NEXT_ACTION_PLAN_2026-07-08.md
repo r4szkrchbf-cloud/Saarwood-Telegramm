@@ -20,13 +20,18 @@ Abnahme:
 ## 2) Backlog-Haupttickets
 
 Priorisierte Reihenfolge fuer die naechste Umsetzungswelle:
-1. Strategischen GAP-Arbeitsblock weiter in Entscheidungen ueberfuehren (Interviews/Preise/Lizenz/DSGVO)
+1. Strategischen GAP-Arbeitsblock in Freigabeentscheidungen ueberfuehren (Interviews fixieren, v1-Dokumente entscheiden)
 
 Heute abgeschlossen:
 - Support-Ressourcen finaler E2E-Kurztest in `docs/TEST_MVP.md` nachgezogen.
 - Frontend-Performance-Warnung >500 kB auf konkrete, verifizierte Massnahme reduziert (Vite-Chunk-Splitting + Build/Test-Retest).
 - Go-Live-Haertung (Runbook + Abnahmecheckliste) auf aktuellen Security-/SMTP-Produktionsstand synchronisiert.
 - Strategischer GAP-Arbeitsblock datiert gestartet: `docs/STATUSBERICHT_GAP_ARBEITSBLOCK_DE_2026-07-09.md`.
+- GAP-v1-Artefakte erstellt:
+  - `docs/GAP_INTERVIEWFRAGENKATALOG_V1_DE_2026-07-09.md`
+  - `docs/GAP_PREIS_TIER_GRENZEN_V1_DE_2026-07-09.md`
+  - `docs/GAP_LIZENZ_BETA_POLICY_V1_DE_2026-07-09.md`
+  - `docs/GAP_DSGVO_B2B_KURZKONZEPT_V1_DE_2026-07-09.md`
 
 Hinweis:
 - Tablet-Clipping in Split/Prompter wurde heute behoben und auf main gepusht.

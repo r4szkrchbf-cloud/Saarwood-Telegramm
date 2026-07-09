@@ -7,16 +7,17 @@ Ziel: Strategischen GAP-Block aus dem Next-Action-Plan starten, strukturieren un
 
 - Arbeitsblock wurde gestartet.
 - Scope, Verantwortungen, Zeitfenster und Entscheidungspunkte sind fuer die naechste Umsetzungswelle festgelegt.
-- Ergebnis ist bewusst als arbeitsfaehiger Startzustand dokumentiert (nicht als Endabnahme).
+- v1-Lieferobjekte fuer Interviews, Preis/Tier, Lizenz-Policy und DSGVO/B2B sind erstellt.
+- Ergebnis bleibt ein arbeitsfaehiger Zwischenstand (Entscheidungsfreigaben stehen noch aus).
 
 ## 2. Arbeitsauftraege und Status
 
 | Arbeitspaket | Ziel | Status | Zieltermin |
 | --- | --- | --- | --- |
-| GAP-01 Nutzerinterviews | 5 strukturierte Kunden-/Nutzerinterviews terminieren | In Arbeit | 2026-07-14 |
-| GAP-02 Preis-/Tiergrenzen v1 | Preisgrenzen und Leistungsgrenzen fuer Basic/Professional/Expert dokumentieren | In Arbeit | 2026-07-15 |
-| GAP-03 Lizenzmodell Beta | Lizenzmodell fuer Beta verbindlich festzurren | In Arbeit | 2026-07-16 |
-| GAP-04 DSGVO/B2B Kurzkonzept | Datenschutz- und Vertragsrahmen als Kurzkonzept dokumentieren | In Arbeit | 2026-07-17 |
+| GAP-01 Nutzerinterviews | 5 strukturierte Kunden-/Nutzerinterviews terminieren | In Arbeit (Katalog v1 erstellt) | 2026-07-14 |
+| GAP-02 Preis-/Tiergrenzen v1 | Preisgrenzen und Leistungsgrenzen fuer Basic/Professional/Expert dokumentieren | Teilweise erledigt (v1-Dokument) | 2026-07-15 |
+| GAP-03 Lizenzmodell Beta | Lizenzmodell fuer Beta verbindlich festzurren | Teilweise erledigt (Policy v1) | 2026-07-16 |
+| GAP-04 DSGVO/B2B Kurzkonzept | Datenschutz- und Vertragsrahmen als Kurzkonzept dokumentieren | Teilweise erledigt (Kurzkonzept v1) | 2026-07-17 |
 
 ## 3. Interview-Planung (Startliste)
 
@@ -65,10 +66,10 @@ Entscheidungspunkte fuer Freigabe:
 
 ## 7. Naechste messbare Ergebnisse
 
-1. Interviewfragenkatalog v1 und Einladungsstatus fuer 5 Interviews.
-2. Preis-/Tierdokument v1 als Entscheidungsgrundlage.
-3. Lizenz-Beta-Policy v1 (Laufzeit/Revocation/Offline).
-4. DSGVO/B2B Kurzkonzept v1 mit offenen Rechtsfragen.
+1. Einladungsstatus fuer 5 Interviews von `angefragt` auf `fix` ziehen.
+2. Preis-/Tiergrenzen v1 im Freigabe-Meeting entscheiden.
+3. Lizenz-Beta-Policy v1 in verbindliche Laufzeit-/Offline-Regeln ueberfuehren.
+4. DSGVO/B2B-Kurzkonzept v1 mit Rechtspruefung finalisieren.
 
 ## 8. Verknuepfte Dokumente
 
@@ -76,3 +77,7 @@ Entscheidungspunkte fuer Freigabe:
 - docs/LICENSING_AND_RELEASE_PLAN_DE.md
 - docs/BASIC_TIER_ADS_CONCEPT_DE.md
 - docs/HOSTINGER_GOLIVE_CHECKLIST_OWNER_DE.md
+- docs/GAP_INTERVIEWFRAGENKATALOG_V1_DE_2026-07-09.md
+- docs/GAP_PREIS_TIER_GRENZEN_V1_DE_2026-07-09.md
+- docs/GAP_LIZENZ_BETA_POLICY_V1_DE_2026-07-09.md
+- docs/GAP_DSGVO_B2B_KURZKONZEPT_V1_DE_2026-07-09.md

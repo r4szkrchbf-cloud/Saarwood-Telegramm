@@ -205,9 +205,9 @@ Abgleich: Runbook und Owner-Abnahmecheckliste wurden auf Security-/SMTP-Produkti
 Beleg: `docs/HOSTINGER_DAY0_RUNLIST_DE.md`, `docs/HOSTINGER_GOLIVE_CHECKLIST_OWNER_DE.md`, `docs/SUPPORT_LICENSE_RUNBOOK_DE.md`, `docs/NEXT_ACTION_PLAN_2026-07-08.md`.
 
 4. Strategischen GAP-Arbeitsblock anstossen und datiert dokumentieren
-Status: gestartet (teilweise erledigt).
-Abgleich: Datierter GAP-Statusbericht wurde angelegt; Arbeitspakete, Interview-Startliste (5 Slots), Preis-/Tier-Entwurf, Lizenzmodell-Entwurf und DSGVO/B2B-Kurzkonzept sind initial dokumentiert.
-Beleg: `docs/STATUSBERICHT_GAP_ARBEITSBLOCK_DE_2026-07-09.md`, `docs/NEXT_ACTION_PLAN_2026-07-08.md`.
+Status: deutlich fortgeschritten (teilweise erledigt).
+Abgleich: Datierter GAP-Statusbericht wurde weitergefuehrt und vier v1-Entscheidungsdokumente wurden erstellt (Interviewkatalog, Preis/Tier, Lizenz-Policy, DSGVO/B2B-Kurzkonzept).
+Beleg: `docs/STATUSBERICHT_GAP_ARBEITSBLOCK_DE_2026-07-09.md`, `docs/GAP_INTERVIEWFRAGENKATALOG_V1_DE_2026-07-09.md`, `docs/GAP_PREIS_TIER_GRENZEN_V1_DE_2026-07-09.md`, `docs/GAP_LIZENZ_BETA_POLICY_V1_DE_2026-07-09.md`, `docs/GAP_DSGVO_B2B_KURZKONZEPT_V1_DE_2026-07-09.md`, `docs/NEXT_ACTION_PLAN_2026-07-08.md`.
 Naechste Umsetzungsstufe:
 - Intervieweinladungen auf `fix` bringen und protokollieren.
 - Preis-/Tiergrenzen als freigabefaehige Version v1 abschliessen.
