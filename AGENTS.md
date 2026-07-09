@@ -4,8 +4,8 @@ Diese Regeln gelten fuer KI- und Coding-Assistenten in diesem Repo.
 
 ## Zaehlstand (aktuell)
 
-- Automatik-Bereiche: 2
-- Verbindliche Regeln: 8 klar verpflichtend + 1 bedingt verpflichtend
+- Automatik-Bereiche: 3
+- Verbindliche Regeln: 11 klar verpflichtend + 1 bedingt verpflichtend
 - Trigger-Pfade fuer Pfadindex-Automatik: 10
 
 ## Pfadindex-Automatik
@@ -63,3 +63,19 @@ Empfehlung (alle Automatiken):
 Pflichtinhalt der Pflege:
 - Neue Regel-/Governance-Dateien werden mit Pfad und Kurzbeschreibung im Regelbook erfasst.
 - Bestehende Eintraege bleiben aktuell und konsistent mit den realen Repo-Dateien.
+
+## Meldungen-Automatik
+
+Die zentrale Meldungsdatei fuer Nutzer-Rueckmeldungen wird automatisch gepflegt:
+
+- docs/MELDUNGEN.md
+
+Pflichtkommando:
+- npm run docs:governance:sync
+
+Empfehlung (alle Automatiken):
+- npm run docs:sync-all
+
+Pflichtinhalt der Pflege:
+- Alle erkannten Nutzer-Rueckmeldungen (Status/Fehler/Erfolg) werden mit Fundstelle und Dateipfad dokumentiert.
+- Bei Aenderung von Meldungstexten bleibt docs/MELDUNGEN.md ohne manuelle Nacharbeit aktuell.

@@ -1,0 +1,273 @@
+# Meldungen (Automatisch)
+
+Stand: 2026-07-09T18:55:16.627Z
+Pflegemodus: Automatisch ueber npm run docs:governance:sync
+Zweck: Zentrale Uebersicht aller Nutzer-Rueckmeldungen (Erfolg, Fehler, Status) mit Fundstelle und Dateipfad.
+
+## 1) Regeln fuer Pflege
+
+- Diese Datei wird automatisch aus Frontend- und Backend-Quelltext erzeugt.
+- Nach Aenderungen an Rueckmeldungen/Fehlertexten: npm run docs:sync-all ausfuehren.
+
+## 2) Meldungen und Fundstellen
+
+Anzahl erkannter Meldungen: 83
+
+### Fehlermeldungen
+
+Anzahl Fehlermeldungen: 37
+
+- Meldung: admin-api-disabled
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:142
+- Meldung: admin-unauthorized
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:147
+- Meldung: admin-unauthorized
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:161
+- Meldung: admin-unauthorized
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:167
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:208
+- Meldung: auth-token-missing
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:224
+- Meldung: auth-token-invalid
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:230
+- Meldung: Validation failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:272
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:302
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:313
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:324
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:335
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:346
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:373
+- Meldung: support-ticket-create-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:392
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:399
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:432
+- Meldung: validation-failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:438
+- Meldung: ticket-not-found
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:448
+- Meldung: Unauthorized
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:467
+- Meldung: Validation failed
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/routes/api.ts:475
+- Meldung: Not found
+  - Typ: backend-api-error
+  - Fundstelle: packages/backend/src/server.ts:149
+- Meldung: Aktivierung fehlgeschlagen (Netzwerk/Server).
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:675
+- Meldung: Vorlage konnte nicht importiert werden. Bitte JSON-Vorlage pruefen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:612
+- Meldung: JSON-Export fehlgeschlagen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:669
+- Meldung: CSV-Export fehlgeschlagen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:679
+- Meldung: TXT-Export fehlgeschlagen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:699
+- Meldung: PDF-Export fehlgeschlagen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:737
+- Meldung: PDF-Export fehlgeschlagen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:740
+- Meldung: Kalibrierung fehlgeschlagen. Bitte Browser-Mikrofonberechtigung pruefen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1023
+- Meldung: Ticket konnte nicht erstellt werden.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1057
+- Meldung: Ticket konnte nicht gesendet werden (Netzwerkfehler).
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1092
+- Meldung: Senden fehlgeschlagen: ${messageText}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/pages/TesterFormPage.tsx:101
+- Meldung: Mikrofonzugriff verweigert
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:145
+- Meldung: Netzwerkfehler bei der Spracherkennung
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:153
+- Meldung: Spracherkennungsfehler: ${event.error}
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:156
+- Meldung: Mikrofonzugriff fehlgeschlagen
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:191
+
+### Informationsmeldungen
+
+Anzahl Informationsmeldungen: 46
+
+- Meldung: Bitte einen Lizenzschluessel eingeben.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:618
+- Meldung: Lizenz wird geprueft ...
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:623
+- Meldung: Lizenz aktiviert.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:639
+- Meldung: Lizenz ungueltig oder deaktiviert.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:647
+- Meldung: Lizenz offline kryptografisch verifiziert.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:661
+- Meldung: Offline-Aktivierung erst nach mindestens einer erfolgreichen Online-Pruefung moeglich.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:673
+- Meldung: Lokaler Lizenzschluessel entfernt.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/App.tsx:993
+- Meldung: Projekt-/Sendungsname gespeichert: ${nextName}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:474
+- Meldung: Projekt-/Sendungsname umbenannt: ${nextName}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:483
+- Meldung: Projekt-/Sendungsname geloescht.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:489
+- Meldung: Projekt-/Sendungsname als aktiver Script-Titel angewendet.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:495
+- Meldung: Projekt-/Sendungsnamen importiert: ${names.length}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:518
+- Meldung: Projekt-/Sendungsnamen konnten nicht importiert werden. Bitte CSV oder TXT pruefen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:521
+- Meldung: Vorlagenimport ist nur im Expert-Tier verfuegbar.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:566
+- Meldung: Vorlage importiert: ${imported.name}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:609
+- Meldung: JSON-Export erfolgreich erstellt.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:666
+- Meldung: CSV-Export erfolgreich erstellt.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:676
+- Meldung: TXT-Export erfolgreich erstellt.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:696
+- Meldung: PDF-Export erfolgreich erstellt.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:732
+- Meldung: Drucken blockiert. Bitte Pop-up erlauben.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:749
+- Meldung: Druckansicht geoeffnet.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:781
+- Meldung: Import erfolgreich: ${segments.length} Segmente geladen (${file.name}).
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:901
+- Meldung: Kalibrierung laeuft: Bitte den Testsatz klar und normal laut sprechen ...
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:981
+- Meldung: Keine stabile Erkennung erhalten. Bitte Mikrofon pruefen und erneut kalibrieren.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1007
+- Meldung: Erkannt: "${lastTranscript || '---'}" | Trefferqualitaet: ${Math.round(qualityScore * 100)}% | Empfohlene Empfindlichkeit gesetzt auf ${recommended}%
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1018
+- Meldung: Bitte alle Ticket-Felder ausfuellen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1034
+- Meldung: Support-Ticket wird gesendet ...
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1039
+- Meldung: Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1078
+- Meldung: Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}.Hinweis: Die automatische E-Mail mit der Ticket-Kopie konnte noch nicht versendet werden. ${supportNotice} ${webhookNotice}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1078
+- Meldung: Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1083
+- Meldung: Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: ${ticketId}.Sie haben eine automatische E-Mail mit einer Kopie Ihres Tickets erhalten. ${supportNotice} ${webhookNotice}
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1083
+- Meldung: Bitte Support-Key eingeben.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1101
+- Meldung: Support-Logs werden geladen ...
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1105
+- Meldung: Kein Zugriff auf Support-Logs.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1113
+- Meldung: Support-Logs geladen: ${logs.length} Eintraege (letzte 78 Stunden).
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1121
+- Meldung: Support-Logs konnten nicht geladen werden.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1123
+- Meldung: Bitte E-Mail-Adresse und mindestens 10 Zeichen Rueckmeldung ausfuellen.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/pages/TesterFormPage.tsx:66
+- Meldung: Sende Testerformular ...
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/pages/TesterFormPage.tsx:71
+- Meldung: Formular gespeichert. Eine Kopie wurde an die angegebene E-Mail-Adresse gesendet.
+  - Typ: frontend-status
+  - Fundstelle: packages/frontend/src/pages/TesterFormPage.tsx:97
+- Meldung: Fülle die Pflichtfelder aus und sende dann ab.
+  - Typ: frontend-aria-live
+  - Fundstelle: packages/frontend/src/pages/TesterFormPage.tsx:212
+- Meldung: Web-Speech-API wird in diesem Browser nicht unterstuetzt
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:111
+- Meldung: Keine Sprache erkannt
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:141
+- Meldung: Kein Mikrofon verfuegbar
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:149
+- Meldung: Spracherkennung startet neu
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:163
+- Meldung: Mikrofon wird gestartet
+  - Typ: frontend-speech-detail
+  - Fundstelle: packages/frontend/src/services/SpeechRecognitionService.ts:171
+- Meldung: Ihr Ticket ist beim Support eingegangen. Bitte verwenden Sie diese Ticket-ID: SWD-2026-000007. Sie haben eine automatische E-Mail mit einer Kopie Ihres Tickets erhalten. Support-Mail-Benachrichtigung: gesendet. Webhook-Weiterleitung: nicht aktiv.
+  - Typ: frontend-status-live-example
+  - Fundstelle: packages/frontend/src/components/Settings/SettingsPanel.tsx:1079

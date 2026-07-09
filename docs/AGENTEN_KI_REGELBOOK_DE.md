@@ -1,6 +1,6 @@
 # Agenten- und KI-Regelbook (Automatisch)
 
-Stand: 2026-07-09T17:41:00.734Z
+Stand: 2026-07-09T18:55:16.627Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zweck: Zentrales Verzeichnis aller Regeldateien und Agentensteuerungsdateien mit Kurzbeschreibung und Pfad.
 
@@ -17,6 +17,8 @@ Zweck: Zentrales Verzeichnis aller Regeldateien und Agentensteuerungsdateien mit
   - Dieses selbstpflegende Verzeichnis aller Regel- und Agentensteuerungsdateien.
 - docs/CHECKLIST_AENDERUNGEN_FORMULARE_PFADE_DE.md
   - Operative Checkliste fuer sichere Aenderungen an Formularen, Pfaden und Support-Ressourcen.
+- docs/MELDUNGEN.md
+  - Auto-generierte zentrale Uebersicht aller Nutzer-Rueckmeldungen inkl. Fundstelle/Dateipfad.
 - docs/PFADINDEX_AENDERBARE_INHALTE_DE.md
   - Auto-generierte Uebersicht aller aenderbaren Pfade und Formular-/Landingpage-Dateien.
 - docs/PROJEKTSTATUS_AUTOMATISCH_DE.md

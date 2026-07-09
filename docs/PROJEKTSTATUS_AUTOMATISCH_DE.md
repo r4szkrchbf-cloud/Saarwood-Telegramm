@@ -1,22 +1,32 @@
 # IST-Projektstatus (Automatisch)
 
-Stand: 2026-07-09T17:41:00.734Z
+Stand: 2026-07-09T18:55:16.627Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 
 ## 1) Betriebsstatus Snapshot
 
 - Branch: main
-- Lokaler HEAD: 463c2005ff64b878913d44fcea1adc9a7e4c6433
-- GitHub main HEAD: 463c2005ff64b878913d44fcea1adc9a7e4c6433
+- Lokaler HEAD: a54cfe302238bcca041279571def3bd2589a5298
+- GitHub main HEAD: a54cfe302238bcca041279571def3bd2589a5298
 - Lokal/GitHub synchron: ja
 
 ## 2) Letzte geaenderte Dateien (letzter Commit)
 
-- docs/FEHLERBEHEBUNGEN.md
+- AGENTS.md
+- docs/AGENTEN_KI_REGELBOOK_DE.md
+- docs/BACKLOG.md
+- docs/CHECKLIST_AENDERUNGEN_FORMULARE_PFADE_DE.md
+- docs/PFADINDEX_AENDERBARE_INHALTE_DE.md
+- docs/PROJEKTSTATUS_AUTOMATISCH_DE.md
+- docs/ZENTRALE_DEV_ROADMAP_TODO_DE.md
+- package.json
+- scripts/sync-governance-docs.mjs
+- scripts/sync-pathindex.mjs
 
 ## 3) Fortlaufende Aenderungshistorie (Datum | Autor | Commit | Betreff)
 
+- 2026-07-09 19:42:40 +0200 | Hans Manuel Angel | a54cfe3 | docs+ops: add auto governance rulebook and top-priority server deploy policy tasks
 - 2026-07-09 19:05:45 +0200 | Hans Manuel Angel | 463c200 | docs: add post-deploy live verification and mailbox auth note
 - 2026-07-09 18:53:21 +0200 | Hans Manuel Angel | cfc3577 | fix: stabilize support ticket flow and align tester form/docs
 - 2026-07-09 17:09:43 +0200 | Hans Manuel Angel | ad3a47b | Fix PWA fallback for support docs and tester form
@@ -41,7 +51,6 @@ Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 - 2026-07-08 08:38:53 +0200 | Hans Manuel Angel | a6ef41f | chore(ops): automate daily snapshot and predeploy release checklist
 - 2026-07-08 04:32:28 +0200 | Hans Manuel Angel | c87fa79 | docs(status): add commit snapshot and code-doc alignment report
 - 2026-07-08 04:23:40 +0200 | Hans Manuel Angel | eb5593c | docs: add urgent todo for smtp sender authorization
-- 2026-07-08 02:52:04 +0200 | Hans Manuel Angel | 423a965 | fix(ui+support): harden output-only mode and ticket-mail transparency
 
 ## 4) Pflegehinweis
 
