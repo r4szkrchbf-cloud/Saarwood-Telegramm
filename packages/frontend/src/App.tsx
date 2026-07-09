@@ -381,8 +381,8 @@ export function App() {
       setViewportWidth(window.innerWidth);
       setViewportHeight(window.innerHeight);
     };
-    window.addEventListener('resize', onResize, { passive: true });
-    window.addEventListener('orientationchange', onResize, { passive: true });
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
     return () => {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('orientationchange', onResize);
@@ -390,7 +390,6 @@ export function App() {
   }, []);
 
   const isMobileLayout = viewportWidth <= 768;
-  const isTabletLayout = viewportWidth <= 1024;
   const isTouchDevice = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
@@ -825,7 +824,7 @@ export function App() {
   };
 
   // ─── Hotkey manager ────────────────────────────────────────────────────
-  useHotkeyManager(!isOutputOnly, handleOpenOutputWindow);
+  useHotkeyManager(!isOutputOnly);
 
   const toggleTemplatePanel = useCallback(() => {
     setMobileTemplatePanelOpen((current) => !current);
@@ -1040,9 +1039,6 @@ export function App() {
           onOpenOutputWindow={handleOpenOutputWindow}
           onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
           isDesktopApp={isDesktopApp}
-          isMobileLayout={isMobileLayout}
-          isTabletLayout={isTabletLayout}
-          isOutputOnly={isOutputOnly}
         />
       )}
 
@@ -1230,9 +1226,6 @@ export function App() {
           onOpenOutputWindow={handleOpenOutputWindow}
           onOpenSecondMonitorOutput={handleOpenSecondMonitorOutput}
           isDesktopApp={isDesktopApp}
-          isMobileLayout={isMobileLayout}
-          isTabletLayout={isTabletLayout}
-          isOutputOnly={isOutputOnly}
         />
       )}
 
