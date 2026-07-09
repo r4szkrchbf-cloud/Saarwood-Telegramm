@@ -68,6 +68,7 @@ export class ControlServer {
         if (owner === client) {
           this.roomPositionOwner.delete(room);
         }
+        this._cleanupRoomIfEmpty(room);
         this._broadcast(
           { type: 'CONTROLLER_DISCONNECTED', timestamp: Date.now() },
           ws,
@@ -85,6 +86,9 @@ export class ControlServer {
         this.clients.delete(ws);
         this.clientRoom.delete(ws);
         this.clientId.delete(ws);
+        if (errorRoom) {
+          this._cleanupRoomIfEmpty(errorRoom);
+        }
       });
     });
 
@@ -222,6 +226,14 @@ export class ControlServer {
     return initial;
   }
 
+  private _cleanupRoomIfEmpty(room: string): void {
+    const stillHasClients = Array.from(this.clientRoom.values()).some((clientRoom) => clientRoom === room);
+    if (stillHasClients) return;
+
+    this.roomState.delete(room);
+    this.roomPositionOwner.delete(room);
+  }
+
   private _send(ws: WebSocket, msg: WsMessage): void {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(msg));
@@ -230,6 +242,32 @@ export class ControlServer {
 
   get clientCount(): number {
     return this.clients.size;
+  }
+
+  get roomCount(): number {
+    return this.roomState.size;
+  }
+
+  getRoomStats(): Array<{
+    room: string;
+    clients: number;
+    isPlaying: boolean;
+    speed: number;
+    position: number;
+    direction: 'down' | 'up';
+  }> {
+    const clientsPerRoom = new Map<string, number>();
+    this.clientRoom.forEach((room) => {
+      clientsPerRoom.set(room, (clientsPerRoom.get(room) ?? 0) + 1);
+    });
+
+    return Array.from(this.roomState.entries())
+      .map(([room, state]) => ({
+        room,
+        clients: clientsPerRoom.get(room) ?? 0,
+        ...state,
+      }))
+      .sort((left, right) => left.room.localeCompare(right.room));
   }
 
   /** Clean shutdown. */

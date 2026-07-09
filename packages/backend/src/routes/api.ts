@@ -177,7 +177,18 @@ export function createRouter(
       status: 'ok',
       uptime: Math.floor(process.uptime()),
       wsClients: controlServer.clientCount,
+      wsRooms: controlServer.roomCount,
       mosClients: mosHandler.connectedNrcsCount,
+    });
+  });
+
+  router.get('/admin/ws/rooms', async (req, res) => {
+    if (!(await enforceAdminAccess(req, res))) return;
+
+    res.json({
+      ok: true,
+      roomCount: controlServer.roomCount,
+      rooms: controlServer.getRoomStats(),
     });
   });
 

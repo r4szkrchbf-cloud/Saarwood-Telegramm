@@ -821,17 +821,15 @@ export function App() {
     : ['editor', 'split', 'prompter'];
   const showControlPanel = !isOutputOnly;
 
-  if (isSmartphoneLandscapeLocked) {
-    return (
-      <div className="orientation-lock-screen" role="alert" aria-live="polite" aria-label="Bitte Hochkantmodus verwenden">
-        <div className="orientation-lock-card">
-          <h2>Nur Hochkantmodus auf Smartphones</h2>
-          <p>Die Smartphone-Ansicht ist fuer stabilen Betrieb auf Hochkant ausgelegt.</p>
-          <p>Bitte das Geraet in den Hochkantmodus drehen.</p>
-        </div>
+  const orientationLockOverlay = isSmartphoneLandscapeLocked ? (
+    <div className="orientation-lock-screen" role="alert" aria-live="polite" aria-label="Bitte Hochkantmodus verwenden">
+      <div className="orientation-lock-card">
+        <h2>Nur Hochkantmodus auf Smartphones</h2>
+        <p>Die Smartphone-Ansicht ist fuer stabilen Betrieb auf Hochkant ausgelegt.</p>
+        <p>Bitte das Geraet in den Hochkantmodus drehen.</p>
       </div>
-    );
-  }
+    </div>
+  ) : null;
 
   const handleOpenOutputWindow = () => {
     if (typeof window === 'undefined') return;
@@ -968,6 +966,7 @@ export function App() {
 
   return (
     <div className={rootClass}>
+      {orientationLockOverlay}
       {licenseBlocked && (
         <div className="license-gate" role="dialog" aria-label="Lizenzaktivierung erforderlich" aria-modal="true">
           <div className="license-gate-card">
