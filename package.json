@@ -10,6 +10,9 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=packages/frontend\" \"npm run dev --workspace=packages/backend\"",
+    "docs:pathindex:sync": "node scripts/sync-pathindex.mjs",
+    "docs:governance:sync": "node scripts/sync-governance-docs.mjs",
+    "docs:sync-all": "npm run docs:pathindex:sync && npm run docs:governance:sync",
     "snapshot:daily": "node scripts/generate-daily-snapshot.mjs",
     "release:predeploy": "node scripts/release-predeploy-check.mjs",
     "build": "npm run build --workspace=packages/frontend && npm run build --workspace=packages/backend",

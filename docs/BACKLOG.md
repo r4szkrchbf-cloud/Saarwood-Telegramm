@@ -7,6 +7,8 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ## DRINGEND (separat)
 
+- 2026-07-09: OBERSTE PRIORITAET - Server aufraeumen + neue Server-Aktualisierungsregel fuer KI/Coding-Assistent
+- 2026-07-09: OBERSTE PRIORITAET - Separates Brainstorming fuer selektives Deploy statt 1:1 Commit-Deploy
 - 2026-07-08: SMTP-Absenderfreigabe / Ticketmail-Status finalisieren
 - Siehe: `docs/DRINGENDE_TODO_2026-07-08.md`
 - 2026-07-09: Minor PDF-/Format-Feinschliffe priorisiert
@@ -15,6 +17,32 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 ---
 
 ## HOTFIX-Block 2026-07-05 (P0 fuer MVP-Langzeittest)
+
+### TICKET-036 · Server aufraeumen und neue KI-Server-Aktualisierungsregel definieren
+
+**Prioritaet:** P0 (OBERSTE PRIORITAET)
+**Beschreibung:**
+Der VPS soll bereinigt und die Deploy-Regel so geaendert werden, dass kuenftig nicht mehr jeder komplette Commit 1:1 auf den Server gespiegelt wird. Fuer KI/Coding-Assistenten ist eine klare Server-Update-Regel mit Runtime-Fokus festzulegen.
+
+**Akzeptanzkriterien:**
+- [ ] Runtime-relevante App-Dateien auf dem VPS sind eindeutig inventarisiert (Allowlist/Scope)
+- [ ] Nicht benoetigte Repo-/Doku-Dateien auf dem Server sind bewertet und Aufraeumplan ist dokumentiert
+- [ ] Verbindliche KI-/Agentenregel fuer Server-Updates ist dokumentiert (selektives Deploy statt pauschalem 1:1 Commit-Pull)
+- [ ] Deployment-Checkliste unterscheidet klar zwischen Git-Sync und Runtime-Deploy
+- [ ] Rollback- und Sicherheitsaspekte fuer das neue Deploy-Muster sind dokumentiert
+
+### TICKET-037 · Separates Brainstorming fuer selektives Server-Deploy
+
+**Prioritaet:** P0 (OBERSTE PRIORITAET)
+**Beschreibung:**
+Es wird ein separates Brainstorming angesetzt, um die kuenftige Deploy-Strategie (nur app-noetige Dateien/Funktionen auf dem VPS) fachlich und technisch sauber zu entscheiden.
+
+**Akzeptanzkriterien:**
+- [ ] Brainstorming-Termin und Zielbild sind dokumentiert
+- [ ] Optionenvergleich erstellt (Full-Repo-Deploy vs selektives Artefakt-/Runtime-Deploy)
+- [ ] Entscheidungskriterien definiert (Sicherheit, Wartbarkeit, Recovery, Aufwand)
+- [ ] Ergebnisprotokoll mit naechsten Umsetzungsschritten liegt als Doku vor
+- [ ] Finale Entscheidung ist in den Agenten-/Deploy-Regeln uebernommen
 
 ### TICKET-031 · Offene Layout-Feinschliffe in Sammel-Backlog fuehren
 

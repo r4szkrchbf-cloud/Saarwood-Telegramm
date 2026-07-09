@@ -1,0 +1,228 @@
+# Zentrale Dev-Roadmap und TODO (Automatisch)
+
+Stand: 2026-07-09T17:41:00.734Z
+Pflegemodus: Automatisch ueber npm run docs:governance:sync
+Scope: Nur Entwickler-/Chefentwickler-Planung, keine Tester- oder User-Empfehlungen als Quelle.
+
+## 1) Leitplanken
+
+- Diese Datei ist die zentrale technische TODO-/Roadmap-Datei fuer das Gesamtprojekt.
+- Quelle fuer Planung: interne Entwicklerdokumente und technische Backlog-Tickets.
+- Keine direkten Feature-Empfehlungen aus Tester- oder User-Feedback in dieser Datei aufnehmen.
+
+## 2) Geplante Funktionen und Erweiterungen (automatisch aus Entwickler-Backlog)
+
+- TICKET-036 | P0 (OBERSTE PRIORITAET) | Server aufraeumen und neue KI-Server-Aktualisierungsregel definieren
+- TICKET-037 | P0 (OBERSTE PRIORITAET) | Separates Brainstorming fuer selektives Server-Deploy
+- TICKET-031 | P0 | Offene Layout-Feinschliffe in Sammel-Backlog fuehren
+- TICKET-032 | P0 | Einstellungen > Kontakt/Support Links aktiv schalten
+- TICKET-033 | P1 | Expert-Uhr im Prompter (Desktop/Tablet + separates Output-Fenster)
+- TICKET-034 | P0 | Vollabgleich 3 Projekte + Dokumentation vor Support-Link-Block
+- TICKET-035 | P1 | Teleprompter-Fernsteuerung und externe Steuerhardware nur fuer Expert-Tier
+- TICKET-013 | P0 | Frontend-Testharness fuer Persist-Store stabilisieren
+- TICKET-014 | P0 | MVP-LAN-Testcheckliste produktionsnah machen
+- TICKET-015 | Hoch | Doku-Code-Drift kontinuierlich verhindern
+- TICKET-016 | P1 | Frontend-Bundlegroesse optimieren (Vite Warning > 500 kB)
+- TICKET-017 | P0 | Hostinger VPS als oeffentliche MVP-Variante vorbereiten
+- TICKET-027 | P0 | Werbekonzept fuer kostenlose Basic-Version vor Hostinger-Go-Live finalisieren
+- TICKET-028 | P0 | Teleprompter-Sessions isolieren (kein globales Shared State)
+- TICKET-029 | P0 | Scroll-Stottern und Sync-Last im Livebetrieb reduzieren
+- TICKET-030 | P0 | Sofortige Rotation offengelegter Produktions-Secrets
+- TICKET-018 | P0 (direkt nach Abschluss des Langzeittests) | Restproblem Speed-Slider-Sprung (nach Langzeittest beheben)
+- TICKET-019 | P1 (direkt nach Langzeittest) | Automatische Bildschirmanpassung + Screen-Presets
+- TICKET-020 | P1 (nach MVP-Langzeittest) | Tally-Schnittstelle (On-Air/Preview Status)
+- TICKET-021 | P0 | Voice Tracking in Beta als nicht enthalten markieren und neu aufbauen
+- TICKET-022 | P0 | Lizenz-Kill-Switch fuer Beta V1 (signierte Schluessel + Revocation)
+- TICKET-023 | P0 | Admin-/Support-Workflow fuer Lizenzausgabe und Sperrung
+- TICKET-032 | P1 | Teleprompter-Runbook mit finalen Cross-Repo-Verweisen stabil halten
+- TICKET-024 | P0 | Public MVP Rollout (Internet + Offline) verbindlich umsetzen
+- TICKET-025 | P0 | In-App Supportkontakt, Chat und Tickets (operator-only)
+- TICKET-026 | P1 | Plattform-Baukasten fuer mehrere Apps (API + Events)
+- TICKET-031 | P0 | Smartphone-Design und Layout-Strategie zuerst neu definieren
+- TICKET-001 | unbekannt | CI-Workflow einrichten ✅
+- TICKET-002 | unbekannt | ESLint einrichten (Frontend + Backend) ✅
+- TICKET-003 | unbekannt | ASR-Steuerung im UI aktivieren ✅
+- TICKET-004 | unbekannt | MOS-Integration vertiefen
+- TICKET-005 | unbekannt | Presenter-Profile UI vervollständigen
+- TICKET-006 | unbekannt | MVP-Scope Welle 1 finalisieren ✅
+- TICKET-007 | unbekannt | Text-Rotation (0°/90°/180°/270°) implementieren
+- TICKET-008 | unbekannt | Hotkey-Manager implementieren
+- TICKET-009 | unbekannt | Ingest-API `/api/v1/ingest` bauen
+- TICKET-010 | unbekannt | NDI Native Addon anbinden
+- TICKET-011 | unbekannt | Redundanz-Sync implementieren
+- TICKET-012 | unbekannt | Betriebsdokumentation ergänzen
+- TICKET-013 | unbekannt | CEA-708 Caption Export implementieren
+
+## 3) Offene Aufgaben bis heute (automatisch)
+
+Anzahl offene Aufgaben: 164
+
+- [ ] (docs/BACKLOG.md) Runtime-relevante App-Dateien auf dem VPS sind eindeutig inventarisiert (Allowlist/Scope)
+- [ ] (docs/BACKLOG.md) Nicht benoetigte Repo-/Doku-Dateien auf dem Server sind bewertet und Aufraeumplan ist dokumentiert
+- [ ] (docs/BACKLOG.md) Verbindliche KI-/Agentenregel fuer Server-Updates ist dokumentiert (selektives Deploy statt pauschalem 1:1 Commit-Pull)
+- [ ] (docs/BACKLOG.md) Deployment-Checkliste unterscheidet klar zwischen Git-Sync und Runtime-Deploy
+- [ ] (docs/BACKLOG.md) Rollback- und Sicherheitsaspekte fuer das neue Deploy-Muster sind dokumentiert
+- [ ] (docs/BACKLOG.md) Brainstorming-Termin und Zielbild sind dokumentiert
+- [ ] (docs/BACKLOG.md) Optionenvergleich erstellt (Full-Repo-Deploy vs selektives Artefakt-/Runtime-Deploy)
+- [ ] (docs/BACKLOG.md) Entscheidungskriterien definiert (Sicherheit, Wartbarkeit, Recovery, Aufwand)
+- [ ] (docs/BACKLOG.md) Ergebnisprotokoll mit naechsten Umsetzungsschritten liegt als Doku vor
+- [ ] (docs/BACKLOG.md) Finale Entscheidung ist in den Agenten-/Deploy-Regeln uebernommen
+- [ ] (docs/BACKLOG.md) Offene Layout-Wuensche sind als Liste mit Ziel-Layout (Desktop/Tablet/Mobil) erfasst
+- [ ] (docs/BACKLOG.md) Pro Wunsch ist ein klares Soll-Verhalten inkl. Positionierung dokumentiert
+- [ ] (docs/BACKLOG.md) Umsetzung erfolgt erst nach expliziter Freigabe pro Ticketblock
+- [ ] (docs/BACKLOG.md) Link zu Handbuch oeffnet korrekt
+- [ ] (docs/BACKLOG.md) Link zum Live-Tester-Guide oeffnet korrekt
+- [ ] (docs/BACKLOG.md) Link zum Testerformular oeffnet korrekt
+- [ ] (docs/BACKLOG.md) Handbuch, Live-Tester-Guide und Testerformular liegen als PDF-Dateien vor
+- [ ] (docs/BACKLOG.md) PDF-Links oeffnen in einem separaten Fenster/Tab
+- [ ] (docs/BACKLOG.md) PDF-Dateien sind direkt herunterladbar
+- [ ] (docs/BACKLOG.md) Links funktionieren in Desktop/Tablet/Mobil
+- [ ] (docs/BACKLOG.md) Kurztest in `docs/TEST_MVP.md` dokumentiert
+- [ ] (docs/BACKLOG.md) Uhr ist nur sichtbar, wenn Tier = Expert
+- [ ] (docs/BACKLOG.md) Uhr ist im Prompter-Modus (Desktop/Tablet) sichtbar
+- [ ] (docs/BACKLOG.md) Uhr ist im separaten Prompter-Ausgabefenster sichtbar
+- [ ] (docs/BACKLOG.md) Uhr ist in den Einstellungen konfigurierbar (Position/Ein-Aus)
+- [ ] (docs/BACKLOG.md) Uhr beeinflusst den Scrolltext nicht und bleibt lesbar
+- [ ] (docs/BACKLOG.md) Aenderungen in allen drei Projekten sind gegengeprueft und konsistent
+- [ ] (docs/BACKLOG.md) Relevante Doku-Dateien sind auf den aktuellen Code-Stand aktualisiert
+- [ ] (docs/BACKLOG.md) Offene Abweichungen sind als explizite Tickets dokumentiert
+- [ ] (docs/BACKLOG.md) Abgleichsergebnis ist datiert in einem Statusdokument festgehalten
+- [ ] (docs/BACKLOG.md) Erweiterte Fernsteuerung ist klar als Expert-Tier-Funktion definiert
+- [ ] (docs/BACKLOG.md) Steuerbefehle koennen konzeptionell ueber USB, LAN und WLAN gesendet/empfangen werden
+- [ ] (docs/BACKLOG.md) Sync-Architektur fuer Steuerbefehle und Statusanzeigen ist beschrieben
+- [ ] (docs/BACKLOG.md) Stream Deck und aehnliche Controller sind als Integrationsziel dokumentiert
+- [ ] (docs/BACKLOG.md) Konzept fuer eigene Tastaturen/Mikroprozessor-Controller ist dokumentiert
+- [ ] (docs/BACKLOG.md) Sicherheits- und Pairing-Anforderungen fuer externe Steuerhardware sind beschrieben
+- [ ] (docs/BACKLOG.md) `npm run test --workspace=packages/frontend` ist komplett gruen
+- [ ] (docs/BACKLOG.md) `prompterStore.test.ts` laeuft stabil lokal und in CI
+- [ ] (docs/BACKLOG.md) Persist-Middleware wird im Testkontext korrekt gemockt oder isoliert
+- [ ] (docs/BACKLOG.md) Testcheckliste dokumentiert (Startsequenz, Browser, Netzwerk, Rollback)
+- [ ] (docs/BACKLOG.md) Erfolgskriterien definiert (Stabilitaet, Latenz, Bedienbarkeit, Fehlerquote)
+- [ ] (docs/BACKLOG.md) Logging-Schema fuer Nutzerfeedback und technische Vorfaelle festgelegt
+- [ ] (docs/BACKLOG.md) `PROJECT_STATUS_DE.md`, `TEST_MVP.md`, `FEHLERBEHEBUNGEN.md` werden nach jedem Gate-Lauf aktualisiert
+- [ ] (docs/BACKLOG.md) Neue Statusberichte werden datiert unter `docs/` abgelegt
+- [ ] (docs/BACKLOG.md) Jeder Build-/Testlauf wird mit Datum/Uhrzeit und Ergebnis dokumentiert
+- [ ] (docs/BACKLOG.md) Hostinger VPS-Plan ausgewaehlt und dokumentiert
+- [ ] (docs/BACKLOG.md) Public MVP-Architektur festgelegt (Domain, Frontend, Backend, WebSocket)
+- [ ] (docs/BACKLOG.md) `VITE_WS_URL` oder vergleichbare Konfiguration fuer externe Backend-URL umgesetzt
+- [ ] (docs/BACKLOG.md) Test-Deployment auf VPS erfolgreich
+- [ ] (docs/BACKLOG.md) Betriebsdoku fuer oeffentliche Nutzung erstellt
+- [ ] (docs/BACKLOG.md) Pilotbetrieb fuer echte Nutzer moeglich
+- [ ] (docs/BACKLOG.md) Entscheidung dokumentiert: nur interne Upgrade-Hinweise oder zusaetzlich Sponsor-Flaechen
+- [ ] (docs/BACKLOG.md) Entscheidung dokumentiert, ob Upgrade-Hinweise auch im Prompter-/Output-Bild erscheinen duerfen
+- [ ] (docs/BACKLOG.md) Falls Prompter-/Output-Werbung erlaubt wird: nur kleine Overlay-Ebene, nicht im Scrolltext, nicht stoerend
+- [ ] (docs/BACKLOG.md) Professional und Expert bleiben werbefrei
+- [ ] (docs/BACKLOG.md) Datenschutz-/Consent-Bedarf fuer die gewaehlte Werbeform bewertet
+- [ ] (docs/BACKLOG.md) Hostinger-Go-Live-Dokumentation verweist auf das finale Werbemodell
+- [ ] (docs/BACKLOG.md) WebSocket-Verbindung nutzt Session-/Room-ID (z. B. Query-Parameter)
+- [ ] (docs/BACKLOG.md) Backend broadcastet nur innerhalb derselben Session/Room
+- [ ] (docs/BACKLOG.md) Neuer Client erhaelt nur den Zustand seiner Session/Room (kein fremder Zustand)
+- [ ] (docs/BACKLOG.md) Output-Fenster uebernimmt beim Oeffnen dieselbe Session/Room wie Controller-Fenster
+- [ ] (docs/BACKLOG.md) Manuelle 2-Client-Pruefung bestaetigt: Session A beeinflusst Session B nicht
+- [ ] (docs/BACKLOG.md) Output-Only-Clients senden keine Script-/Settings-/Positions-Updates zurueck
+- [ ] (docs/BACKLOG.md) Position-Sync wird gedrosselt (throttled/coalesced) und verursacht keine Echo-Schleifen
+- [ ] (docs/BACKLOG.md) CPU-Last und Netzwerknachrichten sinken messbar in Mehrclient-Szenario
+- [ ] (docs/BACKLOG.md) Scrollen bleibt visuell stabil bei mindestens 2 parallelen Session/Room-Instanzen
+- [ ] (docs/BACKLOG.md) Kurztestprotokoll in `docs/TEST_MVP.md` ergaenzt (Szenario, Ergebnis, Auffaelligkeiten)
+- [ ] (docs/BACKLOG.md) Alle oben genannten Secrets sind mit neuen Werten ersetzt und sicher gespeichert.
+- [ ] (docs/BACKLOG.md) `/srv/saarwood_telepromter/.env.production` ist aktualisiert und Service neu gestartet.
+- [ ] (docs/BACKLOG.md) Bestehende Admin-Sessions/Token mit altem JWT-Secret sind ungueltig (Re-Login erzwungen).
+- [ ] (docs/BACKLOG.md) Support-Ticket-E2E bleibt nach Rotation gruen (`confirmationEmailSent=true`, `supportNotificationEmailSent=true`).
+- [ ] (docs/BACKLOG.md) Rotationszeitpunkt und verantwortliche Person sind in einem datierten Statusbericht dokumentiert.
+- [ ] (docs/BACKLOG.md) Reproduktion sauber dokumentiert (inkl. exakter Fokus-/View-/Play-Zustaende)
+- [ ] (docs/BACKLOG.md) Slider reagiert in allen Fokuszustaenden linear ohne Spruenge
+- [ ] (docs/BACKLOG.md) Keyboard-Steuerung konsistent (Left/Right) in Editor-, Split- und Prompter-View
+- [ ] (docs/BACKLOG.md) Kein Nebeneffekt auf Play/Pause/Stop-Hotkeys
+- [ ] (docs/BACKLOG.md) Regression-Tests erweitert (manuell + automatisiert, soweit sinnvoll)
+- [ ] (docs/BACKLOG.md) Automatische Anpassung funktioniert robust fuer Quer- und Hochformat
+- [ ] (docs/BACKLOG.md) 90/270 Grad Modi koennen auf verschiedenen Geraeteklassen sauber skaliert werden
+- [ ] (docs/BACKLOG.md) Preset-Auswahl fuer definierte Zielgeraete in Settings verfuegbar
+- [ ] (docs/BACKLOG.md) Presets speichern/verladen ueber bestehendes Profilsystem moeglich
+- [ ] (docs/BACKLOG.md) Dokumentation mit empfohlenen Presets fuer Broadcast-Workflows vorhanden
+- [ ] (docs/BACKLOG.md) Tablet-Strategie fuer mehr Nutzflaeche trotz Browser-UI bewertet (PWA-Install, Vollbild, optional Native-Wrapper) und als Bedienempfehlung dokumentiert
+- [ ] (docs/BACKLOG.md) Separates Smartphone-Layoutkonzept fuer kommende Version definiert (kleinere Headerdichte, priorisierte Controls, schnellere Einhand-Bedienung)
+- [ ] (docs/BACKLOG.md) Technische Ziel-Schnittstelle festgelegt (z. B. HTTP, WebSocket, GPIO/Relay-Bridge)
+- [ ] (docs/BACKLOG.md) Eingangssignale fuer mindestens `ON_AIR` und `PREVIEW` definiert
+- [ ] (docs/BACKLOG.md) Visuelle Tally-Anzeige im Prompter-Output implementiert (klarer Farbindikator)
+- [ ] (docs/BACKLOG.md) Fallback-Verhalten bei Signalverlust definiert und dokumentiert
+- [ ] (docs/BACKLOG.md) Manuelle Testfaelle fuer Program/Preview-Wechsel in `TEST_MVP.md` dokumentiert
+- [ ] (docs/BACKLOG.md) App-Header zeigt klaren Hinweis: Voice Tracking in Beta-Version nicht enthalten
+- [ ] (docs/BACKLOG.md) Nutzerhandbuch und Beschreibung dokumentieren den eingeschraenkten Beta-Status
+- [ ] (docs/BACKLOG.md) Offener Repro- und Fehlerkatalog fuer Voice Tracking ist in der Doku enthalten
+- [ ] (docs/BACKLOG.md) Neuer Stabilitaetsplan mit messbaren Kriterien (z. B. 30 Minuten fehlerfreier Lauf ohne Fehltrigger) dokumentiert
+- [ ] (docs/BACKLOG.md) Erst nach erfolgreichen Stabilitaetstests wird der Hinweis wieder entfernt
+- [ ] (docs/BACKLOG.md) Lizenzdatenmodell definiert (`lic_id`, `tier`, `expires_at`, `grace_offline_until`, `beta_generation`)
+- [ ] (docs/BACKLOG.md) Backend-Endpunkt `/api/license/status` implementiert
+- [ ] (docs/BACKLOG.md) Revocation fuer einzelne `lic_id` und ganze `beta_generation` moeglich
+- [ ] (docs/BACKLOG.md) Frontend zeigt klaren Lizenzstatus (aktiv/abgelaufen/gesperrt/offline-grace)
+- [ ] (docs/BACKLOG.md) Offline-Gnadenfrist ist technisch umgesetzt und dokumentiert
+- [ ] (docs/BACKLOG.md) Kein geheimer Privatschluessel im Frontend/Electron-Bundle enthalten
+- [ ] (docs/BACKLOG.md) Interner Prozess "Lizenz erstellen" dokumentiert
+- [ ] (docs/BACKLOG.md) Interner Prozess "Lizenz sperren" dokumentiert
+- [ ] (docs/BACKLOG.md) Notfallprozess fuer 72h-Emergency-Lizenz dokumentiert
+- [ ] (docs/BACKLOG.md) Audit-Log fuer Ausgabe/Sperrung mit Timestamp und Operator vorhanden
+- [ ] (docs/BACKLOG.md) Runbook fuer Supportfaelle (Geraetewechsel, Verlust, Missbrauch) vorhanden
+- [ ] (docs/BACKLOG.md) Cross-Repo-Links werden quartalsweise auf Erreichbarkeit geprueft
+- [ ] (docs/BACKLOG.md) Repo-Zustaendigkeiten bleiben in Runbooks und README konsistent
+- [ ] (docs/BACKLOG.md) Hostinger VPS Zielsetup final (Domain, TLS, Reverse Proxy, Node-Prozessmanager)
+- [ ] (docs/BACKLOG.md) WebSocket unter oeffentlicher Domain stabil getestet
+- [ ] (docs/BACKLOG.md) Deployment-Runbook fuer Public MVP erstellt
+- [ ] (docs/BACKLOG.md) Electron-Offline-Betrieb als offizieller Fallback dokumentiert
+- [ ] (docs/BACKLOG.md) Abnahme-Checkliste fuer Go-Live (Health, Lizenzstatus, WS, Rollback) erstellt
+- [ ] (docs/BACKLOG.md) Support-Bereich im Settings-Panel vorhanden
+- [ ] (docs/BACKLOG.md) Kontakt-E-Mail und Chat-Link konfigurierbar via Backend-Env
+- [ ] (docs/BACKLOG.md) Ticket-Erstellung via API-Endpunkt erfolgreich
+- [ ] (docs/BACKLOG.md) Ticket wird serverseitig gespeichert und optional per Webhook weitergeleitet
+- [ ] (docs/BACKLOG.md) Ticket-ID ist zentral fortlaufend und supportfaehig (z. B. `SWD-YYYY-XXXXXX`)
+- [ ] (docs/BACKLOG.md) Output-Only-View (`?view=prompter&output=1`) bleibt frei von Support-UI
+- [ ] (docs/BACKLOG.md) API-Vertrag fuer app-uebergreifende Calls dokumentiert (`/api/v1/...`)
+- [ ] (docs/BACKLOG.md) Event-Vertrag fuer Kernereignisse dokumentiert (z. B. `ticket.created`, `script.updated`)
+- [ ] (docs/BACKLOG.md) Service-zu-Service-Auth-Standard festgelegt (API-Key/JWT)
+- [ ] (docs/BACKLOG.md) Keine direkte DB-Kopplung zwischen Apps (nur API/Event)
+- [ ] (docs/BACKLOG.md) Rollout-Schema fuer getrennte App-Server (www + app-subdomains/-paths) dokumentiert
+- [ ] (docs/BACKLOG.md) Smartphone-spezifisches Layoutkonzept dokumentiert
+- [ ] (docs/BACKLOG.md) Priorisierte Bedienelemente fuer kleine Screens festgelegt
+- [ ] (docs/BACKLOG.md) Tablet-Regeln werden nicht blind auf Smartphone uebertragen
+- [ ] (docs/BACKLOG.md) Eine klare Design-Richtung fuer mobile Einhand-Bedienung definiert
+- [ ] (docs/BACKLOG.md) Umsetzungsschritte fuer den naechsten UI-Release beschrieben
+- [ ] (docs/BACKLOG.md) `MOS_UPDATE`-WebSocket-Nachricht wird im Frontend zu konkreten `ScriptSegment`-Einträgen gemappt
+- [ ] (docs/BACKLOG.md) Empfangene MOS-Stories erscheinen als Segmente im Editor
+- [ ] (docs/BACKLOG.md) Hot-Update während des Scrollens: neue Segmente erscheinen ohne Scroll-Unterbrechung
+- [ ] (docs/BACKLOG.md) `mosItemId` in `ScriptSegment` wird beim MOS-Import korrekt gesetzt
+- [ ] (docs/BACKLOG.md) MOS-Verbindungsstatus wird im ControlPanel oder SettingsPanel angezeigt (verbunden / getrennt)
+- [ ] (docs/BACKLOG.md) Integrationstest: MOS-Simulator schickt `mosROCreate` → Segmente erscheinen im Editor
+- [ ] (docs/BACKLOG.md) Bestehendes Profil kann überschrieben werden (per Name oder Auswahl)
+- [ ] (docs/BACKLOG.md) Profil-Auswahl im SettingsPanel ist alphabetisch sortiert
+- [ ] (docs/BACKLOG.md) Löschen eines aktiven Profils setzt `activeProfileId` korrekt zurück
+- [ ] (docs/BACKLOG.md) Unit-Tests für saveProfile (neues Profil, Überschreiben, Löschen) vorhanden
+- [ ] (docs/BACKLOG.md) Pflichtenheft für NDI-Addon erstellt (welche NDI SDK API-Funktionen werden benötigt)
+- [ ] (docs/BACKLOG.md) `ndi-sdk-node` (node-gyp Wrapper) evaluiert oder eigenes Addon geskaffoldet
+- [ ] (docs/BACKLOG.md) `NativeNdiAdapter.init()` startet einen echten NDI Sender (verifiziert mit NDI Tools Monitor)
+- [ ] (docs/BACKLOG.md) `NativeNdiAdapter.sendFrame()` sendet BGRA-Frames mit korrektem PTS
+- [ ] (docs/BACKLOG.md) Graceful Fallback zu Stub wenn Addon nicht geladen werden kann (bleibt bestehen)
+- [ ] (docs/BACKLOG.md) `/api/ndi/status` liefert `available: true` wenn Addon aktiv
+- [ ] (docs/BACKLOG.md) Backend: neuer Endpunkt `POST /api/peer` zum Verbinden mit einer Peer-Instanz
+- [ ] (docs/BACKLOG.md) `SYNC_STATE` wird vom Primary regelmäßig (alle 100 ms) an den Backup gesendet
+- [ ] (docs/BACKLOG.md) Backup-Instanz übernimmt Scroll-Position und Skript-Stand vom Primary
+- [ ] (docs/BACKLOG.md) Failover: wenn Primary unerreichbar, Backup übernimmt Steuerung ohne manuellen Eingriff
+- [ ] (docs/BACKLOG.md) Heartbeat-Timeout konfigurierbar via `REDUNDANCY_TIMEOUT_MS` Environment-Variable
+- [ ] (docs/BACKLOG.md) Redundanz-Status im ControlPanel sichtbar (Rolle + Sync-Zustand)
+- [ ] (docs/BACKLOG.md) `docs/OPERATIONS.md`: Systemanforderungen, Installationsschritte, Umgebungsvariablen
+- [ ] (docs/BACKLOG.md) Docker-Compose-Beispiel für lokalen Broadcast-Betrieb (Backend + statisches Frontend)
+- [ ] (docs/BACKLOG.md) Monitoring-Hinweise: Health-Endpunkt `/api/health`, Log-Ausgaben, Neustart-Strategie
+- [ ] (docs/BACKLOG.md) Bekannte Limitierungen (NDI, ST 2110, Browser-ASR) klar benannt
+- [ ] (docs/BACKLOG.md) `POST /api/v1/export/cea708` im Backend (Encoder: Bit-Packing, Window-Management)
+- [ ] (docs/BACKLOG.md) Ausgabeformat: SCC oder MCC (konfigurierbar)
+- [ ] (docs/BACKLOG.md) Frontend-UI: „Export Captions"-Button im Editor oder ControlPanel (nur Expert-Tier sichtbar)
+- [ ] (docs/BACKLOG.md) Datei-Download im Browser (`.scc` / `.mcc`)
+- [ ] (docs/BACKLOG.md) Zeitsynchronisation mit Scroll-Position (PTS-Berechnung auf Basis Scroll-Speed)
+- [ ] (docs/BACKLOG.md) Integrationstest: Script → Export → valides SCC-Dateiformat
+- [ ] (docs/DRINGENDE_TODO_2026-07-08.md) Mailversand fuer Ticket-Bestaetigung ist `confirmationEmailSent: true`
+- [ ] (docs/DRINGENDE_TODO_2026-07-08.md) Mailversand fuer Support-Notification ist `supportNotificationEmailSent: true`
+- [ ] (docs/DRINGENDE_TODO_2026-07-08.md) Support-Zieladresse `support@saarwood.saarwood.ch` erhaelt Ticket-Kopie
+- [ ] (docs/DRINGENDE_TODO_2026-07-08.md) Live-Testticket in Produktion dokumentiert (Ticket-ID + API-Response + kurzer Log-Auszug)
+
+## 4) Pflegehinweis
+
+- Aktualisierung laeuft per Script und soll nach Aenderungen ausgefuehrt werden.
+- Pflichtkommando: npm run docs:sync-all
