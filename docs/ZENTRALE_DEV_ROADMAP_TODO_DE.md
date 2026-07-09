@@ -1,6 +1,6 @@
 # Zentrale Dev-Roadmap und TODO (Automatisch)
 
-Stand: 2026-07-09T19:21:00.020Z
+Stand: 2026-07-09T19:44:04.724Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Scope: Nur Entwickler-/Chefentwickler-Planung, keine Tester- oder User-Empfehlungen als Quelle.
 
@@ -15,6 +15,7 @@ Scope: Nur Entwickler-/Chefentwickler-Planung, keine Tester- oder User-Empfehlun
 - TICKET-036 | P0 (OBERSTE PRIORITAET) | Server aufraeumen und neue KI-Server-Aktualisierungsregel definieren
 - TICKET-037 | P0 (OBERSTE PRIORITAET) | Separates Brainstorming fuer selektives Server-Deploy
 - TICKET-038 | P0 (OBERSTE PRIORITAET) | TV-Browser-Kompatibilitaet absichern (TV Safe Boot)
+- TICKET-039 | P1 | Store-Veroeffentlichung vorbereiten (Android, Apple, Microsoft)
 - TICKET-031 | P0 | Offene Layout-Feinschliffe in Sammel-Backlog fuehren
 - TICKET-032 | P0 | Einstellungen > Kontakt/Support Links aktiv schalten
 - TICKET-033 | P1 | Expert-Uhr im Prompter (Desktop/Tablet + separates Output-Fenster)
@@ -56,7 +57,7 @@ Scope: Nur Entwickler-/Chefentwickler-Planung, keine Tester- oder User-Empfehlun
 
 ## 3) Offene Aufgaben bis heute (automatisch)
 
-Anzahl offene Aufgaben: 171
+Anzahl offene Aufgaben: 177
 
 - [ ] (docs/BACKLOG.md) Runtime-relevante App-Dateien auf dem VPS sind eindeutig inventarisiert (Allowlist/Scope)
 - [ ] (docs/BACKLOG.md) Nicht benoetigte Repo-/Doku-Dateien auf dem Server sind bewertet und Aufraeumplan ist dokumentiert
@@ -75,6 +76,12 @@ Anzahl offene Aufgaben: 171
 - [ ] (docs/BACKLOG.md) Legacy-Build-Target/Polyfill-Strategie ist entschieden und dokumentiert
 - [ ] (docs/BACKLOG.md) Overscan-/Viewport-Safe-Area fuer TV-Ausgabe ist dokumentiert und getestet
 - [ ] (docs/BACKLOG.md) TV-spezifische Fehlercodes werden in `docs/MELDUNGEN.md` nachvollziehbar erfasst
+- [ ] (docs/BACKLOG.md) Leitfaden liegt als zentrale Doku vor (`docs/APP_STORE_VEROEFFENTLICHUNG_GUIDE_DE.md`)
+- [ ] (docs/BACKLOG.md) Android-Strategie ist festgelegt (TWA/Bubblewrap inkl. Digital Asset Links)
+- [ ] (docs/BACKLOG.md) Apple-Strategie ist festgelegt (Capacitor iOS + App Store Connect Ablauf)
+- [ ] (docs/BACKLOG.md) Microsoft-Strategie ist festgelegt (PWA-Einreichung via Partner Center)
+- [ ] (docs/BACKLOG.md) Release-Checkliste pro Store ist definiert (Manifest, Icons, Datenschutzhinweise, Support-Kontakt)
+- [ ] (docs/BACKLOG.md) Verantwortlichkeiten und Go-Live-Reihenfolge sind dokumentiert
 - [ ] (docs/BACKLOG.md) Offene Layout-Wuensche sind als Liste mit Ziel-Layout (Desktop/Tablet/Mobil) erfasst
 - [ ] (docs/BACKLOG.md) Pro Wunsch ist ein klares Soll-Verhalten inkl. Positionierung dokumentiert
 - [ ] (docs/BACKLOG.md) Umsetzung erfolgt erst nach expliziter Freigabe pro Ticketblock

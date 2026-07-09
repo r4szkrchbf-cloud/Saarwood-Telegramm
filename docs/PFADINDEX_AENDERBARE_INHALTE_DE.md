@@ -36,6 +36,7 @@ Hinweis: Diese Datei ist automatisch generiert via npm run docs:pathindex:sync.
 
 ## 6) Bearbeitbare Quell-Dokumente (Markdown)
 
+- docs/APP_STORE_VEROEFFENTLICHUNG_GUIDE_DE.md
 - docs/BETA_TESTER_GUIDE.md
 - docs/CHECKLIST_AENDERUNGEN_FORMULARE_PFADE_DE.md
 - docs/NATIVE_APP_GUIDE.md

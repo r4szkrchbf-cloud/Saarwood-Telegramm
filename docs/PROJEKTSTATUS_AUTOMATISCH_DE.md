@@ -1,27 +1,28 @@
 # IST-Projektstatus (Automatisch)
 
-Stand: 2026-07-09T19:21:00.020Z
+Stand: 2026-07-09T19:44:04.724Z
 Pflegemodus: Automatisch ueber npm run docs:governance:sync
 Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 
 ## 1) Betriebsstatus Snapshot
 
 - Branch: main
-- Lokaler HEAD: c8ac58a7472d763bed77fee16d378b55e4f1f0f4
-- GitHub main HEAD: c8ac58a7472d763bed77fee16d378b55e4f1f0f4
+- Lokaler HEAD: 936aa8f750910ff2d0e18395d43bf5b2e62547b1
+- GitHub main HEAD: 936aa8f750910ff2d0e18395d43bf5b2e62547b1
 - Lokal/GitHub synchron: ja
 
 ## 2) Letzte geaenderte Dateien (letzter Commit)
 
-- AGENTS.md
 - docs/AGENTEN_KI_REGELBOOK_DE.md
+- docs/BACKLOG.md
+- docs/FEHLERBEHEBUNGEN.md
 - docs/MELDUNGEN.md
 - docs/PROJEKTSTATUS_AUTOMATISCH_DE.md
 - docs/ZENTRALE_DEV_ROADMAP_TODO_DE.md
-- scripts/sync-governance-docs.mjs
 
 ## 3) Fortlaufende Aenderungshistorie (Datum | Autor | Commit | Betreff)
 
+- 2026-07-09 21:22:39 +0200 | Hans Manuel Angel | 936aa8f | docs: TV-Kompatibilitaet als P0 aufnehmen und Fehlerdoku erweitern
 - 2026-07-09 20:59:57 +0200 | Hans Manuel Angel | c8ac58a | docs+automation: add and structure central messages catalog
 - 2026-07-09 19:42:40 +0200 | Hans Manuel Angel | a54cfe3 | docs+ops: add auto governance rulebook and top-priority server deploy policy tasks
 - 2026-07-09 19:05:45 +0200 | Hans Manuel Angel | 463c200 | docs: add post-deploy live verification and mailbox auth note
@@ -46,7 +47,6 @@ Zielphase: PRE-LAUNCH fuer ausgesuchte Tester (kein oeffentlicher Launch)
 - 2026-07-08 17:08:10 +0200 | Hans Manuel Angel | d739a56 | fix(frontend): prevent tablet split/prompter right-edge clipping
 - 2026-07-08 16:28:06 +0200 | Hans Manuel Angel | 73dbd7f | docs: add open task scan snapshot 2026-07-08
 - 2026-07-08 08:38:53 +0200 | Hans Manuel Angel | a6ef41f | chore(ops): automate daily snapshot and predeploy release checklist
-- 2026-07-08 04:32:28 +0200 | Hans Manuel Angel | c87fa79 | docs(status): add commit snapshot and code-doc alignment report
 
 ## 4) Pflegehinweis
 

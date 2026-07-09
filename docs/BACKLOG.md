@@ -7,6 +7,7 @@ Jedes Ticket enthält Akzeptanzkriterien (AK), die den „Definition of Done" de
 
 ## DRINGEND (separat)
 
+- 2026-07-09: App-Veroeffentlichung fuer Android, Apple App Store und Microsoft Store als eigener Umsetzungsblock planen
 - 2026-07-09: OBERSTE PRIORITAET - TV-Browser-Kompatibilitaet und TV Safe Boot gegen Schwarz/Weiss-Startseiten
 - 2026-07-09: OBERSTE PRIORITAET - Server aufraeumen + neue Server-Aktualisierungsregel fuer KI/Coding-Assistent
 - 2026-07-09: OBERSTE PRIORITAET - Separates Brainstorming fuer selektives Deploy statt 1:1 Commit-Deploy
@@ -59,6 +60,21 @@ Auf Firestick ist die App mit minimalem Beschnitt brauchbar, auf anderen Smart-T
 - [ ] Legacy-Build-Target/Polyfill-Strategie ist entschieden und dokumentiert
 - [ ] Overscan-/Viewport-Safe-Area fuer TV-Ausgabe ist dokumentiert und getestet
 - [ ] TV-spezifische Fehlercodes werden in `docs/MELDUNGEN.md` nachvollziehbar erfasst
+
+### TICKET-039 · Store-Veroeffentlichung vorbereiten (Android, Apple, Microsoft)
+
+**Prioritaet:** P1
+**Beschreibung:**
+Fuer die Web-App wird ein separater Veroeffentlichungsleitfaden umgesetzt und operationalisiert, damit die Auslieferung in Android (Play Store), Apple App Store und Microsoft Store planbar, wiederholbar und auditierbar ist.
+
+**Akzeptanzkriterien:**
+- [ ] Leitfaden liegt als zentrale Doku vor (`docs/APP_STORE_VEROEFFENTLICHUNG_GUIDE_DE.md`)
+- [ ] Android-Strategie ist festgelegt (TWA/Bubblewrap inkl. Digital Asset Links)
+- [ ] Apple-Strategie ist festgelegt (Capacitor iOS + App Store Connect Ablauf)
+- [ ] Microsoft-Strategie ist festgelegt (PWA-Einreichung via Partner Center)
+- [ ] Release-Checkliste pro Store ist definiert (Manifest, Icons, Datenschutzhinweise, Support-Kontakt)
+- [ ] Verantwortlichkeiten und Go-Live-Reihenfolge sind dokumentiert
+
 
 ### TICKET-031 · Offene Layout-Feinschliffe in Sammel-Backlog fuehren
 
